@@ -1,0 +1,3 @@
+bin/
+terraform-provider-workbench
+**/terraform.tfstate.backup
