@@ -1,0 +1,52 @@
+# .github/workflows/reusable/release-provider.yml
+name: Release Terraform Provider
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (build and sign, but do not publish release)'
+        type: boolean
+        required: false
+        default: false
+    secrets:
+      GPG_PRIVATE_KEY:
+        description: 'GPG Private Key for signing releases'
+        required: true
+      PASSPHRASE:
+        description: 'Passphrase for the GPG Private Key'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for goreleaser to create releases
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # Required for goreleaser to properly determine version
+
+      - name: Set up Go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
+        id: import_gpg
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Run GoReleaser (Dry Run or Release)
+        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        with:
+          distribution: goreleaser
+          args: release --clean ${{ inputs.dry_run && '--snapshot --skip=publish' || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

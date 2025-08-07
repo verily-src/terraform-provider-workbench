@@ -1,0 +1,74 @@
+# .github/workflows/reusable-changelog-version-diff.yml
+name: Changelog Version Diff
+
+description: >
+  Compares the version in CHANGELOG.md between two refs and outputs the version and whether it changed.
+
+on:
+  workflow_call:
+    inputs:
+      begin_ref:
+        required: true
+        type: string
+      end_ref:
+        required: true
+        type: string
+    outputs:
+      before_version:
+        description: "Version parsed from CHANGELOG.md at begin_ref."
+        value: ${{ jobs.diff.outputs.before_version }}
+      after_version:
+        description: "Version parsed from CHANGELOG.md at end_ref."
+        value: ${{ jobs.diff.outputs.after_version }}
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    outputs:
+      before_version: ${{ steps.parse_compare.outputs.before_version }}
+      after_version: ${{ steps.parse_compare.outputs.after_version }}
+    steps:
+      - name: Checkout begin_ref
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.begin_ref }}
+          path: begin
+
+      - name: Checkout end_ref
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.end_ref }}
+          path: end
+
+      - name: Parse versions from CHANGELOG.md
+        id: parse_compare
+        run: |
+          # This step parses Terraform version headers from CHANGELOG.md files.
+          # It expects headers in the format: ## X.Y.Z (see https://developer.hashicorp.com/terraform/plugin/best-practices/versioning#version-headers)
+          parse_version() {
+            local file="$1"
+            if [ ! -f "$file" ]; then
+              echo "v0.0.0"
+              return
+            fi
+            # Find the first line that starts with '## ' and looks like a version header (e.g., '## 1.2.3')
+            # 1. grep: get lines that start with '## ' followed by a digit and dot-separated digits
+            # 2. head: take the first such line
+            # 3. cut: remove the leading '## ' to get just the version string
+            local ver_line
+            ver_line=$(grep -m1 -E '^## [0-9]+(\.[0-9]+)*' "$file" | head -n1)
+            local ver
+            if [ -n "$ver_line" ]; then
+              # Remove the leading '## '
+              ver=$(echo "$ver_line" | cut -d' ' -f2)
+              echo "v$ver"
+            else
+              echo "v0.0.0"
+            fi
+          }
+
+          before_version=$(parse_version "begin/CHANGELOG.md")
+          after_version=$(parse_version "end/CHANGELOG.md")
+
+          echo "before_version=$before_version" >> $GITHUB_OUTPUT
+          echo "after_version=$after_version" >> $GITHUB_OUTPUT
