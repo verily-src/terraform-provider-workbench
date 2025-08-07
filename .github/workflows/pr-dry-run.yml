@@ -1,0 +1,64 @@
+# .github/workflows/pr-dry-run.yml
+name: PR Checks and Release Dry Run
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  changelog_version_check:
+    uses: ./.github/workflows/reusable-changelog-version-diff.yml
+    with:
+      begin_ref: ${{ github.event.pull_request.base.sha }}
+      end_ref: ${{ github.event.pull_request.head.sha }}
+
+  changelog_version_enforce:
+    runs-on: ubuntu-latest
+    needs: changelog_version_check
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Check if tag for new version exists
+        if: ${{ needs.changelog_version_check.outputs.before_version != needs.changelog_version_check.outputs.after_version }}
+        run: |
+          git fetch --tags
+          if git tag --list "${{ needs.changelog_version_check.outputs.after_version }}" | grep -q .; then
+            echo "::error::Tag ${{ needs.changelog_version_check.outputs.after_version }} already exists. Please update the version in CHANGELOG.md."
+            exit 1
+          fi
+
+      - name: Add/Update PR comment if version did not change
+        if: ${{ needs.changelog_version_check.outputs.before_version == needs.changelog_version_check.outputs.after_version }}
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- changelog-version-warning -->
+            :warning: Version in CHANGELOG.md did not change (still ${{ needs.changelog_version_check.outputs.before_version }}). 
+            This PR will not result in the creation of a new release.
+
+      - name: Add/Update PR comment if version changed
+        if: ${{ needs.changelog_version_check.outputs.before_version != needs.changelog_version_check.outputs.after_version }}
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- changelog-version-info -->
+            :information_source: Version in CHANGELOG.md updated to ${{ needs.changelog_version_check.outputs.after_version }}.
+            This will trigger the creation of a new release when merged into main.
+
+  call_dry_run_workflow:
+    needs: changelog_version_enforce
+    uses: ./.github/workflows/reusable-release-provider.yml
+    with:
+      dry_run: true # This tells the reusable workflow to perform a dry run
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      PASSPHRASE: ${{ secrets.PASSPHRASE }}
