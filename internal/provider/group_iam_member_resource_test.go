@@ -351,7 +351,7 @@ func testAccCheckGroupRoles(host, groupName, groupTFID string, want *user.GroupM
 		}
 
 		ctx := context.Background()
-		c, err := api.NewUserClient(ctx, host)
+		c, err := api.NewUserClient(ctx, host, false)
 		if err != nil {
 			return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 		}
@@ -381,7 +381,7 @@ func testAccCheckGroupRoles(host, groupName, groupTFID string, want *user.GroupM
 }
 
 func userGrantRole(ctx context.Context, host, groupName, groupOrg string, op user.SetAccessOperation, role user.GroupRole, member string) error {
-	c, err := api.NewUserClient(ctx, host)
+	c, err := api.NewUserClient(ctx, host, false)
 	if err != nil {
 		return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 	}

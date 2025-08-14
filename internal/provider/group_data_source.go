@@ -130,7 +130,7 @@ func (d *GroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	c, err := api.NewUserClient(ctx, d.client.Host)
+	c, err := api.NewUserClient(ctx, d.client.Host, d.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user client",

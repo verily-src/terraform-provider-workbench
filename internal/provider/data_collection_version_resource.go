@@ -166,7 +166,7 @@ func (r *VersionResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 	// Check if the provided workspaceID is a valid data collection ID
-	c, _ := api.NewWSMClient(ctx, r.client.Host)
+	c, _ := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 	w, err := api.GetWorkspace(ctx, c, data.WorkspaceId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -212,7 +212,7 @@ func (r *VersionResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 
 	// Update metadata
 	r.updateMetadata(ctx, c, resp, &data.FolderModel, &state.FolderModel)
@@ -287,7 +287,7 @@ func (r *VersionResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -320,7 +320,7 @@ func (r *VersionResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

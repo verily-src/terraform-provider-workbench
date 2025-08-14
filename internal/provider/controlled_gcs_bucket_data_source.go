@@ -174,7 +174,7 @@ func (d *ControlledGcsBucketDataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, d.client.Host)
+	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

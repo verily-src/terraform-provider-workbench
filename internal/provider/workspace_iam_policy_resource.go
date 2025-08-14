@@ -118,7 +118,7 @@ func (r *WorkspaceIamPolicyResource) Create(ctx context.Context, req resource.Cr
 }
 
 func (r *WorkspaceIamPolicyResource) setRoles(ctx context.Context, workspaceID string, requests []wsm.SetAccessRequest) error {
-	c, err := api.NewWSMClient(ctx, r.client.Host)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		return fmt.Errorf("unable to create Workbench client, unexpected error: %w", err)
 	}
@@ -200,7 +200,7 @@ func (r *WorkspaceIamPolicyResource) Read(ctx context.Context, req resource.Read
 	}
 
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

@@ -25,10 +25,6 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		// TODO(BENCH-5114): Update this string with the published name of your provider.
-		// Also update the tfplugindocs generate command to either remove the
-		// -provider-name flag or set its value to the updated provider name.
-		// Address: "registry.terraform.io/hashicorp/scaffolding",
 		Address: "registry.terraform.io/verily-src/workbench",
 		Debug:   debug,
 	}

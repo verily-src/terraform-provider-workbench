@@ -142,7 +142,7 @@ func (r *GroupIamBindingResource) Create(ctx context.Context, req resource.Creat
 }
 
 func (r *GroupIamBindingResource) setRoles(ctx context.Context, groupName user.GroupNameParam, orgIdParam *user.OrgIdQueryParam, requests []user.SetAccessRequest) error {
-	c, err := api.NewUserClient(ctx, r.client.Host)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		return fmt.Errorf("unable to create Workbench client, unexpected error: %w", err)
 	}
@@ -218,7 +218,7 @@ func (r *GroupIamBindingResource) Read(ctx context.Context, req resource.ReadReq
 	}
 
 	// Create a new client
-	c, err := api.NewUserClient(ctx, r.client.Host)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
