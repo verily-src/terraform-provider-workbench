@@ -27,11 +27,17 @@ type WorkbenchProvider struct {
 
 // ClientConfig holds the configuration for the Workbench client.
 type ClientConfig struct {
+	// Host is the Workbench server host URL.
+	// It defaults to "https://workbench.verily.com" if not set.
 	Host string
+	// UseIdToken indicates whether to use an ID token for authentication.
+	// Local development should set this to false.
+	UseIdToken bool
 }
 
 type workbenchProviderModel struct {
-	Host types.String `tfsdk:"host"`
+	Host       types.String `tfsdk:"host"`
+	UseIdToken types.Bool   `tfsdk:"use_id_token"`
 }
 
 // Metadata returns the provider type name and version.
@@ -45,7 +51,11 @@ func (p *WorkbenchProvider) Schema(ctx context.Context, req provider.SchemaReque
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				MarkdownDescription: "example of a wsm server is https://workbench.verily.com",
+				MarkdownDescription: "example of a Workbench server is https://workbench.verily.com",
+				Optional:            true,
+			},
+			"use_id_token": schema.BoolAttribute{
+				MarkdownDescription: "Set to true to use an ID token for authentication. Set to false for local development.",
 				Optional:            true,
 			},
 		},
@@ -68,9 +78,9 @@ func (p *WorkbenchProvider) Configure(ctx context.Context, req provider.Configur
 	if data.Host.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("host"),
-			"Unknown HashiCups API Host",
-			"The provider cannot create the HashiCups API client as there is an unknown configuration value for the HashiCups API host. "+
-				"Either target apply the source of the value first, set the value statically in the configuration, or use the HASHICUPS_HOST environment variable.",
+			"Unknown Workbench API Host",
+			"The provider cannot create the Workbench API client as there is an unknown configuration value for the Workbench API host. "+
+				"Either target apply the source of the value first, set the value statically in the configuration, or use the WORKBENCH_HOST environment variable.",
 		)
 	}
 
@@ -84,11 +94,19 @@ func (p *WorkbenchProvider) Configure(ctx context.Context, req provider.Configur
 		host = "https://workbench.verily.com"
 	}
 
+	// Handle UseIdToken with default value of false
+	useIdToken := false
+	if !data.UseIdToken.IsNull() {
+		useIdToken = data.UseIdToken.ValueBool()
+	}
+
 	ctx = tflog.SetField(ctx, "host", host)
+	ctx = tflog.SetField(ctx, "use_id_token", useIdToken)
 	tflog.Debug(ctx, "Creating Workbench client")
 
 	client := &ClientConfig{
-		Host: host,
+		Host:       host,
+		UseIdToken: useIdToken,
 	}
 
 	resp.DataSourceData = client

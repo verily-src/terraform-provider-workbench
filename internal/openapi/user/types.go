@@ -388,6 +388,9 @@ type OrganizationCreateRequest struct {
 	GroupName  *string            `json:"groupName,omitempty"`
 	Properties *map[string]string `json:"properties,omitempty"`
 
+	// SkipCreatingOrgGroup If true, skip creating the org-managed group.
+	SkipCreatingOrgGroup *bool `json:"skipCreatingOrgGroup,omitempty"`
+
 	// TosRequired ToS required for this organization
 	TosRequired *bool `json:"tosRequired,omitempty"`
 

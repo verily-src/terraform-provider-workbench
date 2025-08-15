@@ -98,9 +98,9 @@ func uxid(s string) *string {
 }
 
 // NewUserClient creates a new user manager client with the given host and context.
-func NewUserClient(ctx context.Context, host string) (*user.ClientWithResponses, error) {
+func NewUserClient(ctx context.Context, host string, useIdToken bool) (*user.ClientWithResponses, error) {
 	userUrl := fmt.Sprintf("%s/api/user", host)
-	httpClient, err := createHttpClient(ctx, userUrl)
+	httpClient, err := createHttpClient(ctx, userUrl, useIdToken)
 	if err != nil {
 		return nil, err
 	}

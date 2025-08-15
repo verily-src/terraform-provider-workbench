@@ -1,7 +1,8 @@
 terraform {
   required_providers {
     workbench = {
-      source = "registry.terraform.io/verily-src/workbench"
+      source  = "verily-src/workbench"
+      version = ">= 0.0.1"
     }
   }
 }

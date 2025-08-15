@@ -14,6 +14,15 @@ description: |-
 ## Example Usage
 
 ```terraform
+terraform {
+  required_providers {
+    workbench = {
+      source  = "verily-src/workbench"
+      version = ">= 0.0.1"
+    }
+  }
+}
+
 provider "workbench" {
   host = "https://workbench.verily.com"
 }
@@ -24,4 +33,5 @@ provider "workbench" {
 
 ### Optional
 
-- `host` (String) example of a wsm server is https://workbench.verily.com
+- `host` (String) example of a Workbench server is https://workbench.verily.com
+- `use_id_token` (Boolean) Set to true to use an ID token for authentication. Set to false for local development.
