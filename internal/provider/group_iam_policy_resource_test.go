@@ -275,7 +275,7 @@ func TestAccGroupIamPolicyResource(t *testing.T) {
 						return "", err
 					}
 					groupName := "test-group-2"
-					return fmt.Sprintf("organizations/%s/groups/%s/roles/MEMBER", orgId, groupName), nil
+					return fmt.Sprintf("organizations/%s/groups/%s/roles", orgId, groupName), nil
 				},
 				ResourceName:      "workbench_group_iam_policy.test",
 				ImportStateVerify: true,

@@ -231,7 +231,7 @@ func (r *DataCollectionResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 
 	// Update metadata
 	r.updateMetadata(ctx, c, resp, &data.WorkspaceModel, &state.WorkspaceModel)
@@ -329,7 +329,7 @@ func (r *DataCollectionResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -358,7 +358,7 @@ func (r *DataCollectionResource) Delete(ctx context.Context, req resource.Delete
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

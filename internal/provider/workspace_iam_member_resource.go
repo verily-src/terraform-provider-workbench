@@ -59,7 +59,7 @@ func (r *WorkspaceIamMemberResource) Read(ctx context.Context, req resource.Read
 	}
 
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

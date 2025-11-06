@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -171,9 +172,50 @@ resource "workbench_data_collection" "test" {
 					),
 				},
 			},
+			// Import Testing
+			{
+				ImportState: true,
+				ImportStateIdFunc: func(s *terraform.State) (string, error) {
+					workspaceID, err := getVersionWorkspaceID(s, "test")
+					if err != nil {
+						return "", err
+					}
+					versionID, err := getVersionID(s, "test")
+					if err != nil {
+						return "", err
+					}
+					return fmt.Sprintf("workspaces/%s/resources/%s", workspaceID, versionID), nil
+				},
+				ResourceName:      "workbench_data_collection_version.test",
+				ImportStateVerify: true,
+			},
 			// Deletion is handled automatically by the testing framework.
 		},
 	})
+}
+
+func getVersionID(s *terraform.State, versionTFID string) (string, error) {
+	rs, ok := s.RootModule().Resources[fmt.Sprintf("workbench_data_collection_version.%s", versionTFID)]
+	if !ok {
+		return "", fmt.Errorf("data collection version %s not found in state", versionTFID)
+	}
+	versionID, ok := rs.Primary.Attributes["id"]
+	if !ok {
+		return "", fmt.Errorf("ID for data collection version %s not found in state", versionTFID)
+	}
+	return versionID, nil
+}
+
+func getVersionWorkspaceID(s *terraform.State, versionTFID string) (string, error) {
+	rs, ok := s.RootModule().Resources[fmt.Sprintf("workbench_data_collection_version.%s", versionTFID)]
+	if !ok {
+		return "", fmt.Errorf("data collection version %s not found in state", versionTFID)
+	}
+	workspaceID, ok := rs.Primary.Attributes["workspace_id"]
+	if !ok {
+		return "", fmt.Errorf("workspace ID for data collection version %s not found in state", versionTFID)
+	}
+	return workspaceID, nil
 }
 
 func testAccVersionResourceConfig(displayName string, description string, properties string, releaseNotesURL string, published bool) string {

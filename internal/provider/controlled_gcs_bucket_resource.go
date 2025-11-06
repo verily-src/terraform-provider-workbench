@@ -192,7 +192,7 @@ func (r *ControlledGcsBucketResource) Create(ctx context.Context, req resource.C
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -233,7 +233,7 @@ func (r *ControlledGcsBucketResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -264,7 +264,7 @@ func (r *ControlledGcsBucketResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -293,7 +293,7 @@ func (r *ControlledGcsBucketResource) Delete(ctx context.Context, req resource.D
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

@@ -1,5 +1,5 @@
 {{- /* This is based off of the default template from
-     * https://github.com/hashicorp/terraform-plugin-docs/blob/20d59379a481902ab13b77deabad17683d2653dc/internal/provider/template.go#L272,
+     * https://github.com/hashicorp/terraform-plugin-docs/blob/v0.22.0/internal/provider/template.go#L307-L350,
      * with some lint rules disabled.
      * - MD012: Multiple consecutive blank lines
      * - MD022: Headings should be surrounded by blank lines
@@ -11,6 +11,7 @@ subcategory: ""
 description: |-
 {{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
+
 <!-- markdownlint-disable MD012 MD022 -->
 
 # {{.Name}} ({{.Type}})
@@ -24,11 +25,22 @@ description: |-
 {{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
-{{- if .HasImport }}
+
+{{- if or .HasImport .HasImportIDConfig }}
 
 ## Import
 
 Import is supported using the following syntax:
+{{- end }}
+{{- if .HasImportIDConfig }}
+
+In Terraform v1.5.0 and later, the [`import` block](https://developer.hashicorp.com/terraform/language/import) can be used with the `id` attribute, for example:
+
+{{tffile .ImportIDConfigFile }}
+{{- end }}
+{{- if .HasImport }}
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 {{codefile "shell" .ImportFile }}
 {{- end }}

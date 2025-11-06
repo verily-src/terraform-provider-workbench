@@ -19,7 +19,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &WorkspaceIamBindingDataSource{}
 )
 
-// NewWorkspaceIamDataSource iniitializes a new WSM IAM member data source.
+// NewWorkspaceIamDataSource initializes a new WSM IAM member data source.
 func NewWorkspaceIamBindingDataSource() datasource.DataSource {
 	return &WorkspaceIamBindingDataSource{}
 }
@@ -84,7 +84,7 @@ func (d *WorkspaceIamBindingDataSource) Read(ctx context.Context, req datasource
 	}
 
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

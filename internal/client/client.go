@@ -14,6 +14,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
+	"google.golang.org/api/impersonate"
+	"google.golang.org/api/option"
 )
 
 // OauthClientFromGoogleCredentials creates a http client for use with Workbench APIs using
@@ -26,7 +28,28 @@ func OauthClientFromGoogleCredentials(ctx context.Context) (*http.Client, error)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get default credentials: %w", err)
 	}
+
 	return oauth2.NewClient(ctx, creds.TokenSource), nil
+}
+
+// OauthClientWithImpersonation creates an http client that impersonates the given service account.
+// The impersonate library uses application default credentials (ADC) as the base, which automatically
+// handles workload identity in GKE environments.
+func OauthClientWithImpersonation(ctx context.Context, serviceAccount string) (*http.Client, error) {
+	credentials, err := google.FindDefaultCredentials(ctx, "https://www.googleapis.com/auth/cloud-platform")
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate default credentials: %v", err)
+	}
+
+	ts, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
+		TargetPrincipal: serviceAccount,
+		Scopes:          []string{"openid", "https://www.googleapis.com/auth/userinfo.email"},
+	}, option.WithCredentials(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("unable to create impersonation token source for %s: %w", serviceAccount, err)
+	}
+
+	return oauth2.NewClient(ctx, ts), nil
 }
 
 // OauthClientFromWorkloadIdentity creates an http client for communication between Workbench services internally inside a GKE cluster
@@ -35,6 +58,7 @@ func OauthClientFromWorkloadIdentity(ctx context.Context, audience string) (*htt
 	if err != nil {
 		return nil, fmt.Errorf("unable to create token source: %w", err)
 	}
+
 	return oauth2.NewClient(ctx, tokenSource), nil
 }
 

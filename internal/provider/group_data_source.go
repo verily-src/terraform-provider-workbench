@@ -17,7 +17,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &GroupDataSource{}
 )
 
-// NewGroupDataSource iniitializes a new workspace data source.
+// NewGroupDataSource initializes a new workspace data source.
 func NewGroupDataSource() datasource.DataSource {
 	return &GroupDataSource{}
 }
@@ -130,7 +130,7 @@ func (d *GroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	c, err := api.NewUserClient(ctx, d.client.Host, d.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user client",

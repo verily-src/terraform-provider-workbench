@@ -70,7 +70,7 @@ func (d *GroupIamPolicyDataSource) Schema(ctx context.Context, req datasource.Sc
 												Computed:    true,
 											},
 											"organization": schema.StringAttribute{
-												Description: "UxID of the organization. If it is a UFID, it must be prefixed with a tilde (~).",
+												Description: "Workbench organization ID.",
 												Computed:    true,
 											},
 										},
@@ -121,7 +121,7 @@ func (d *GroupIamPolicyDataSource) Read(ctx context.Context, req datasource.Read
 	}
 
 	// Create a new client
-	c, err := api.NewUserClient(ctx, d.client.Host, d.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

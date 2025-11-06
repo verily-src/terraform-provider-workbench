@@ -105,6 +105,11 @@ type ClientInterface interface {
 	// ListPodEnvironments request
 	ListPodEnvironments(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// MoveGroupWithBody request with any body
+	MoveGroupWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	MoveGroup(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPodAsAdmin request
 	GetPodAsAdmin(ctx context.Context, orgIdParam OrgIdParam, podIdParam PodIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -325,6 +330,9 @@ type ClientInterface interface {
 	// SetUserStateV2 request
 	SetUserStateV2(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, params *SetUserStateV2Params, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RevokeInvite request
+	RevokeInvite(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ValidateUserBillingAccount request
 	ValidateUserBillingAccount(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -434,6 +442,30 @@ func (c *Client) CleanupGrantsResult(ctx context.Context, jobIdParam JobIdParam,
 
 func (c *Client) ListPodEnvironments(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPodEnvironmentsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MoveGroupWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMoveGroupRequestWithBody(c.Server, orgIdParam, groupNameParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MoveGroup(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMoveGroupRequest(c.Server, orgIdParam, groupNameParam, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1416,6 +1448,18 @@ func (c *Client) SetUserStateV2(ctx context.Context, orgIdParam OrgIdParam, emai
 	return c.Client.Do(req)
 }
 
+func (c *Client) RevokeInvite(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeInviteRequest(c.Server, orgIdParam, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ValidateUserBillingAccount(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewValidateUserBillingAccountRequest(c.Server, orgIdParam, billingAccountIdParam)
 	if err != nil {
@@ -1811,6 +1855,60 @@ func NewListPodEnvironmentsRequest(server string, params *ListPodEnvironmentsPar
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewMoveGroupRequest calls the generic MoveGroup builder with application/json body
+func NewMoveGroupRequest(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewMoveGroupRequestWithBody(server, orgIdParam, groupNameParam, "application/json", bodyReader)
+}
+
+// NewMoveGroupRequestWithBody generates requests for MoveGroup with any type of body
+func NewMoveGroupRequestWithBody(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "groupName", runtime.ParamLocationPath, groupNameParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/organizations/%s/groups/%s/moveOrg", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -4704,6 +4802,47 @@ func NewSetUserStateV2Request(server string, orgIdParam OrgIdParam, emailAddress
 	return req, nil
 }
 
+// NewRevokeInviteRequest generates requests for RevokeInvite
+func NewRevokeInviteRequest(server string, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "userEmail", runtime.ParamLocationPath, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/%s/users/%s/revoke-invite", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewValidateUserBillingAccountRequest generates requests for ValidateUserBillingAccount
 func NewValidateUserBillingAccountRequest(server string, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam) (*http.Request, error) {
 	var err error
@@ -5338,6 +5477,11 @@ type ClientWithResponsesInterface interface {
 	// ListPodEnvironmentsWithResponse request
 	ListPodEnvironmentsWithResponse(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*ListPodEnvironmentsResp, error)
 
+	// MoveGroupWithBodyWithResponse request with any body
+	MoveGroupWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveGroupResp, error)
+
+	MoveGroupWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveGroupResp, error)
+
 	// GetPodAsAdminWithResponse request
 	GetPodAsAdminWithResponse(ctx context.Context, orgIdParam OrgIdParam, podIdParam PodIdParam, reqEditors ...RequestEditorFn) (*GetPodAsAdminResp, error)
 
@@ -5558,6 +5702,9 @@ type ClientWithResponsesInterface interface {
 	// SetUserStateV2WithResponse request
 	SetUserStateV2WithResponse(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, params *SetUserStateV2Params, reqEditors ...RequestEditorFn) (*SetUserStateV2Resp, error)
 
+	// RevokeInviteWithResponse request
+	RevokeInviteWithResponse(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*RevokeInviteResp, error)
+
 	// ValidateUserBillingAccountWithResponse request
 	ValidateUserBillingAccountWithResponse(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*ValidateUserBillingAccountResp, error)
 
@@ -5701,6 +5848,32 @@ func (r ListPodEnvironmentsResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListPodEnvironmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MoveGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MoveGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MoveGroupResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7175,6 +7348,31 @@ func (r SetUserStateV2Resp) StatusCode() int {
 	return 0
 }
 
+type RevokeInviteResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeInviteResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeInviteResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ValidateUserBillingAccountResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7517,6 +7715,23 @@ func (c *ClientWithResponses) ListPodEnvironmentsWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseListPodEnvironmentsResp(rsp)
+}
+
+// MoveGroupWithBodyWithResponse request with arbitrary body returning *MoveGroupResp
+func (c *ClientWithResponses) MoveGroupWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveGroupResp, error) {
+	rsp, err := c.MoveGroupWithBody(ctx, orgIdParam, groupNameParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMoveGroupResp(rsp)
+}
+
+func (c *ClientWithResponses) MoveGroupWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveGroupResp, error) {
+	rsp, err := c.MoveGroup(ctx, orgIdParam, groupNameParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMoveGroupResp(rsp)
 }
 
 // GetPodAsAdminWithResponse request returning *GetPodAsAdminResp
@@ -8225,6 +8440,15 @@ func (c *ClientWithResponses) SetUserStateV2WithResponse(ctx context.Context, or
 	return ParseSetUserStateV2Resp(rsp)
 }
 
+// RevokeInviteWithResponse request returning *RevokeInviteResp
+func (c *ClientWithResponses) RevokeInviteWithResponse(ctx context.Context, orgIdParam OrgIdParam, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*RevokeInviteResp, error) {
+	rsp, err := c.RevokeInvite(ctx, orgIdParam, emailAddressPathParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeInviteResp(rsp)
+}
+
 // ValidateUserBillingAccountWithResponse request returning *ValidateUserBillingAccountResp
 func (c *ClientWithResponses) ValidateUserBillingAccountWithResponse(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*ValidateUserBillingAccountResp, error) {
 	rsp, err := c.ValidateUserBillingAccount(ctx, orgIdParam, billingAccountIdParam, reqEditors...)
@@ -8562,6 +8786,60 @@ func ParseListPodEnvironmentsResp(rsp *http.Response) (*ListPodEnvironmentsResp,
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMoveGroupResp parses an HTTP response from a MoveGroupWithResponse call
+func ParseMoveGroupResp(rsp *http.Response) (*MoveGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MoveGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError
@@ -11394,6 +11672,53 @@ func ParseSetUserStateV2Resp(rsp *http.Response) (*SetUserStateV2Resp, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeInviteResp parses an HTTP response from a RevokeInviteWithResponse call
+func ParseRevokeInviteResp(rsp *http.Response) (*RevokeInviteResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeInviteResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

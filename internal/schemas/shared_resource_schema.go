@@ -26,7 +26,7 @@ var PropertiesResourceSchema = schema.SetNestedAttribute{
 
 // WorkspaceResourceSchema defines the schema for the workspace resource.
 var WorkspaceResourceSchema = schema.StringAttribute{
-	MarkdownDescription: "Workspace workspace unique UUID",
+	MarkdownDescription: "Workbench workspace UUID",
 	Required:            true,
 	PlanModifiers: []planmodifier.String{
 		stringplanmodifier.RequiresReplace(),

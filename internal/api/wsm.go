@@ -257,10 +257,10 @@ func DeleteControlledGcsBucketAsync(ctx context.Context, cl *wsm.ClientWithRespo
 }
 
 // NewWSMClient creates a new WSM client with the given host and context.
-func NewWSMClient(ctx context.Context, host string, useIdToken bool) (*wsm.ClientWithResponses, error) {
+func NewWSMClient(ctx context.Context, host string, useIdToken bool, impersonateServiceAccount string) (*wsm.ClientWithResponses, error) {
 	wsmUrl := fmt.Sprintf("%s/api/wsm", host)
 
-	httpClient, err := createHttpClient(ctx, wsmUrl, useIdToken)
+	httpClient, err := createHttpClient(ctx, wsmUrl, useIdToken, impersonateServiceAccount)
 	if err != nil {
 		return nil, err
 	}

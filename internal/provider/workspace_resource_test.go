@@ -184,6 +184,12 @@ func TestAccWorkspaceResource(t *testing.T) {
 					),
 				},
 			},
+			// Import testing
+			{
+				ImportState:       true,
+				ResourceName:      "workbench_workspace.test",
+				ImportStateVerify: true,
+			},
 			// Deletion is handled automatically by the testing framework.
 		},
 	})

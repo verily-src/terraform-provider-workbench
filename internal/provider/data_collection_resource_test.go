@@ -212,6 +212,12 @@ func TestAccDataCollectionResource(t *testing.T) {
 					),
 				},
 			},
+			// Import Testing
+			{
+				ImportState:       true,
+				ResourceName:      "workbench_data_collection.test",
+				ImportStateVerify: true,
+			},
 			// Deletion is handled automatically by the testing framework.
 		},
 	})

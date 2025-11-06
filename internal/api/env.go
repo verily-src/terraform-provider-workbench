@@ -6,7 +6,11 @@ import (
 	"net/http"
 )
 
-func createHttpClient(ctx context.Context, host string, useIdtoken bool) (*http.Client, error) {
+func createHttpClient(ctx context.Context, host string, useIdtoken bool, impersonateServiceAccount string) (*http.Client, error) {
+	if impersonateServiceAccount != "" {
+		return client.OauthClientWithImpersonation(ctx, impersonateServiceAccount)
+	}
+
 	if useIdtoken {
 		return client.OauthClientFromWorkloadIdentity(ctx, host)
 	}
