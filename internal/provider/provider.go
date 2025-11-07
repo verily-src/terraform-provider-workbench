@@ -33,11 +33,15 @@ type ClientConfig struct {
 	// UseIdToken indicates whether to use an ID token for authentication.
 	// Local development should set this to false.
 	UseIdToken bool
+	// ImpersonateServiceAccount is the service account email to impersonate.
+	// If set, the provider will use the default credentials to impersonate this service account.
+	ImpersonateServiceAccount string
 }
 
 type workbenchProviderModel struct {
-	Host       types.String `tfsdk:"host"`
-	UseIdToken types.Bool   `tfsdk:"use_id_token"`
+	Host                      types.String `tfsdk:"host"`
+	UseIdToken                types.Bool   `tfsdk:"use_id_token"`
+	ImpersonateServiceAccount types.String `tfsdk:"impersonate_service_account"`
 }
 
 // Metadata returns the provider type name and version.
@@ -56,6 +60,10 @@ func (p *WorkbenchProvider) Schema(ctx context.Context, req provider.SchemaReque
 			},
 			"use_id_token": schema.BoolAttribute{
 				MarkdownDescription: "Set to true to use an ID token for authentication. Set to false for local development.",
+				Optional:            true,
+			},
+			"impersonate_service_account": schema.StringAttribute{
+				MarkdownDescription: "Service account email to impersonate using default credentials. When set, the provider will use application default credentials to impersonate this service account.",
 				Optional:            true,
 			},
 		},
@@ -100,13 +108,21 @@ func (p *WorkbenchProvider) Configure(ctx context.Context, req provider.Configur
 		useIdToken = data.UseIdToken.ValueBool()
 	}
 
+	// Handle ImpersonateServiceAccount
+	impersonateServiceAccount := ""
+	if !data.ImpersonateServiceAccount.IsNull() {
+		impersonateServiceAccount = data.ImpersonateServiceAccount.ValueString()
+	}
+
 	ctx = tflog.SetField(ctx, "host", host)
 	ctx = tflog.SetField(ctx, "use_id_token", useIdToken)
+	ctx = tflog.SetField(ctx, "impersonate_service_account", impersonateServiceAccount)
 	tflog.Debug(ctx, "Creating Workbench client")
 
 	client := &ClientConfig{
-		Host:       host,
-		UseIdToken: useIdToken,
+		Host:                      host,
+		UseIdToken:                useIdToken,
+		ImpersonateServiceAccount: impersonateServiceAccount,
 	}
 
 	resp.DataSourceData = client

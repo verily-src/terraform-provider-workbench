@@ -1,8 +1,3 @@
-import {
-  to = workbench_workspace_iam_policy.my_iam_policy
-  id = "workspaces/12345678-9012-3456-7890-123456789012/roles"
-}
-
 resource "workbench_workspace_iam_policy" "my_iam_policy" {
   workspace_id = data.workbench_workspace.my_workspace.id
   # Any members added or removed externally to any role will be overwritten

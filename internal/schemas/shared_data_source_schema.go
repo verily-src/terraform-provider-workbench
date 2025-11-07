@@ -6,7 +6,7 @@ import (
 
 // WorkspaceDataSourceSchema defines the schema for the workspace data source.
 var WorkspaceDataSourceSchema = schema.StringAttribute{
-	MarkdownDescription: "Workspace workspace unique UUID",
+	MarkdownDescription: "Workbench workspace UUID",
 	Required:            true,
 }
 

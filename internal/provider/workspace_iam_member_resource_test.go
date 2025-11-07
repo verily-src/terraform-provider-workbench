@@ -260,7 +260,7 @@ func getWorkspaceID(s *terraform.State, workspaceTFID string) (string, error) {
 }
 
 func wsmSetRole(ctx context.Context, host, workspaceID string, op wsm.SetAccessOperation, role wsm.IamRole, member string) error {
-	c, err := api.NewWSMClient(ctx, host, false)
+	c, err := api.NewWSMClient(ctx, host, false, "")
 	if err != nil {
 		return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 	}

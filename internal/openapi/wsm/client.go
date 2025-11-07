@@ -128,6 +128,9 @@ type ClientInterface interface {
 	// GetWorkspaceByUfid request
 	GetWorkspaceByUfid(ctx context.Context, workspaceUserFacingIdParam WorkspaceUserFacingIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BackfillResourceProperties request
+	BackfillResourceProperties(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SyncIamRoles request
 	SyncIamRoles(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -178,6 +181,9 @@ type ClientInterface interface {
 	UpdateWorkspaceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAccessRequirements request
+	ListAccessRequirements(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListWorkspaceApplications request
 	ListWorkspaceApplications(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -324,6 +330,9 @@ type ClientInterface interface {
 	// GetAwsS3ExternalBucketCredential request
 	GetAwsS3ExternalBucketCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAwsS3ExternalBucketIamPolicy request
+	GetAwsS3ExternalBucketIamPolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketIamPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateAwsEcrExternalRepositoryWithBody request with any body
 	CreateAwsEcrExternalRepositoryWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -347,6 +356,9 @@ type ClientInterface interface {
 
 	// GetAwsEcrExternalRepositoryCredential request
 	GetAwsEcrExternalRepositoryCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAwsEcrExternalRepositoryIamPolicy request
+	GetAwsEcrExternalRepositoryIamPolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryIamPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateAwsEc2InstanceWithBody request with any body
 	CreateAwsEc2InstanceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1088,6 +1100,18 @@ func (c *Client) GetWorkspaceByUfid(ctx context.Context, workspaceUserFacingIdPa
 	return c.Client.Do(req)
 }
 
+func (c *Client) BackfillResourceProperties(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillResourcePropertiesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) SyncIamRoles(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSyncIamRolesRequest(c.Server, params)
 	if err != nil {
@@ -1294,6 +1318,18 @@ func (c *Client) UpdateWorkspaceWithBody(ctx context.Context, workspaceIdParam W
 
 func (c *Client) UpdateWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateWorkspaceRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAccessRequirements(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAccessRequirementsRequest(c.Server, workspaceIdParam)
 	if err != nil {
 		return nil, err
 	}
@@ -1952,6 +1988,18 @@ func (c *Client) GetAwsS3ExternalBucketCredential(ctx context.Context, workspace
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetAwsS3ExternalBucketIamPolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketIamPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAwsS3ExternalBucketIamPolicyRequest(c.Server, workspaceIdParam, resourceIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateAwsEcrExternalRepositoryWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateAwsEcrExternalRepositoryRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -2050,6 +2098,18 @@ func (c *Client) CloneAwsEcrExternalRepository(ctx context.Context, workspaceIdP
 
 func (c *Client) GetAwsEcrExternalRepositoryCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAwsEcrExternalRepositoryCredentialRequest(c.Server, workspaceIdParam, resourceIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAwsEcrExternalRepositoryIamPolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryIamPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAwsEcrExternalRepositoryIamPolicyRequest(c.Server, workspaceIdParam, resourceIdParam, params)
 	if err != nil {
 		return nil, err
 	}
@@ -5087,6 +5147,55 @@ func NewGetWorkspaceByUfidRequest(server string, workspaceUserFacingIdParam Work
 	return req, nil
 }
 
+// NewBackfillResourcePropertiesRequest generates requests for BackfillResourceProperties
+func NewBackfillResourcePropertiesRequest(server string, params *BackfillResourcePropertiesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/cloudcontexts/backfillResourceProperties")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.WetRunParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "wetRun", runtime.ParamLocationQuery, *params.WetRunParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewSyncIamRolesRequest generates requests for SyncIamRoles
 func NewSyncIamRolesRequest(server string, params *SyncIamRolesParams) (*http.Request, error) {
 	var err error
@@ -6005,6 +6114,40 @@ func NewUpdateWorkspaceRequestWithBody(server string, workspaceIdParam Workspace
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAccessRequirementsRequest generates requests for ListAccessRequirements
+func NewListAccessRequirementsRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/access-requirements", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -7829,6 +7972,81 @@ func NewGetAwsS3ExternalBucketCredentialRequest(server string, workspaceIdParam 
 	return req, nil
 }
 
+// NewGetAwsS3ExternalBucketIamPolicyRequest generates requests for GetAwsS3ExternalBucketIamPolicy
+func NewGetAwsS3ExternalBucketIamPolicyRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketIamPolicyParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/externalBucket/%s/iamPolicy", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "accessScope", runtime.ParamLocationQuery, params.AwsCredentialAccessScopeParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.ExistingIamPolicyJsonParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "existingPolicy", runtime.ParamLocationQuery, *params.ExistingIamPolicyJsonParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateAwsEcrExternalRepositoryRequest calls the generic CreateAwsEcrExternalRepository builder with application/json body
 func NewCreateAwsEcrExternalRepositoryRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateAwsEcrExternalRepositoryJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -8124,6 +8342,97 @@ func NewGetAwsEcrExternalRepositoryCredentialRequest(server string, workspaceIdP
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAwsEcrExternalRepositoryIamPolicyRequest generates requests for GetAwsEcrExternalRepositoryIamPolicy
+func NewGetAwsEcrExternalRepositoryIamPolicyRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryIamPolicyParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/externalRepository/%s/iamPolicy", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "accessScope", runtime.ParamLocationQuery, params.AwsCredentialAccessScopeParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.ExistingIamPolicyJsonParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "existingPolicy", runtime.ParamLocationQuery, *params.ExistingIamPolicyJsonParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IncludeHealthOmicsServicePrincipalParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "includeHealthOmicsServicePrincipal", runtime.ParamLocationQuery, *params.IncludeHealthOmicsServicePrincipalParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
@@ -14810,6 +15119,9 @@ type ClientWithResponsesInterface interface {
 	// GetWorkspaceByUfidWithResponse request
 	GetWorkspaceByUfidWithResponse(ctx context.Context, workspaceUserFacingIdParam WorkspaceUserFacingIdParam, reqEditors ...RequestEditorFn) (*GetWorkspaceByUfidResp, error)
 
+	// BackfillResourcePropertiesWithResponse request
+	BackfillResourcePropertiesWithResponse(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*BackfillResourcePropertiesResp, error)
+
 	// SyncIamRolesWithResponse request
 	SyncIamRolesWithResponse(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*SyncIamRolesResp, error)
 
@@ -14860,6 +15172,9 @@ type ClientWithResponsesInterface interface {
 	UpdateWorkspaceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkspaceResp, error)
 
 	UpdateWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkspaceResp, error)
+
+	// ListAccessRequirementsWithResponse request
+	ListAccessRequirementsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*ListAccessRequirementsResp, error)
 
 	// ListWorkspaceApplicationsWithResponse request
 	ListWorkspaceApplicationsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*ListWorkspaceApplicationsResp, error)
@@ -15006,6 +15321,9 @@ type ClientWithResponsesInterface interface {
 	// GetAwsS3ExternalBucketCredentialWithResponse request
 	GetAwsS3ExternalBucketCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketCredentialParams, reqEditors ...RequestEditorFn) (*GetAwsS3ExternalBucketCredentialResp, error)
 
+	// GetAwsS3ExternalBucketIamPolicyWithResponse request
+	GetAwsS3ExternalBucketIamPolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketIamPolicyParams, reqEditors ...RequestEditorFn) (*GetAwsS3ExternalBucketIamPolicyResp, error)
+
 	// CreateAwsEcrExternalRepositoryWithBodyWithResponse request with any body
 	CreateAwsEcrExternalRepositoryWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsEcrExternalRepositoryResp, error)
 
@@ -15029,6 +15347,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetAwsEcrExternalRepositoryCredentialWithResponse request
 	GetAwsEcrExternalRepositoryCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryCredentialParams, reqEditors ...RequestEditorFn) (*GetAwsEcrExternalRepositoryCredentialResp, error)
+
+	// GetAwsEcrExternalRepositoryIamPolicyWithResponse request
+	GetAwsEcrExternalRepositoryIamPolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryIamPolicyParams, reqEditors ...RequestEditorFn) (*GetAwsEcrExternalRepositoryIamPolicyResp, error)
 
 	// CreateAwsEc2InstanceWithBodyWithResponse request with any body
 	CreateAwsEc2InstanceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsEc2InstanceResp, error)
@@ -15881,6 +16202,31 @@ func (r GetWorkspaceByUfidResp) StatusCode() int {
 	return 0
 }
 
+type BackfillResourcePropertiesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *JobResultResponse
+	JSON202      *JobResultResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillResourcePropertiesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillResourcePropertiesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type SyncIamRolesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16251,6 +16597,31 @@ func (r UpdateWorkspaceResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateWorkspaceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAccessRequirementsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AccessRequirementList
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAccessRequirementsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAccessRequirementsResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17195,6 +17566,32 @@ func (r GetAwsS3ExternalBucketCredentialResp) StatusCode() int {
 	return 0
 }
 
+type GetAwsS3ExternalBucketIamPolicyResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *string
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAwsS3ExternalBucketIamPolicyResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAwsS3ExternalBucketIamPolicyResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateAwsEcrExternalRepositoryResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -17343,6 +17740,32 @@ func (r GetAwsEcrExternalRepositoryCredentialResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetAwsEcrExternalRepositoryCredentialResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAwsEcrExternalRepositoryIamPolicyResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *string
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAwsEcrExternalRepositoryIamPolicyResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAwsEcrExternalRepositoryIamPolicyResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -21046,6 +21469,15 @@ func (c *ClientWithResponses) GetWorkspaceByUfidWithResponse(ctx context.Context
 	return ParseGetWorkspaceByUfidResp(rsp)
 }
 
+// BackfillResourcePropertiesWithResponse request returning *BackfillResourcePropertiesResp
+func (c *ClientWithResponses) BackfillResourcePropertiesWithResponse(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*BackfillResourcePropertiesResp, error) {
+	rsp, err := c.BackfillResourceProperties(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillResourcePropertiesResp(rsp)
+}
+
 // SyncIamRolesWithResponse request returning *SyncIamRolesResp
 func (c *ClientWithResponses) SyncIamRolesWithResponse(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*SyncIamRolesResp, error) {
 	rsp, err := c.SyncIamRoles(ctx, params, reqEditors...)
@@ -21203,6 +21635,15 @@ func (c *ClientWithResponses) UpdateWorkspaceWithResponse(ctx context.Context, w
 		return nil, err
 	}
 	return ParseUpdateWorkspaceResp(rsp)
+}
+
+// ListAccessRequirementsWithResponse request returning *ListAccessRequirementsResp
+func (c *ClientWithResponses) ListAccessRequirementsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*ListAccessRequirementsResp, error) {
+	rsp, err := c.ListAccessRequirements(ctx, workspaceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAccessRequirementsResp(rsp)
 }
 
 // ListWorkspaceApplicationsWithResponse request returning *ListWorkspaceApplicationsResp
@@ -21674,6 +22115,15 @@ func (c *ClientWithResponses) GetAwsS3ExternalBucketCredentialWithResponse(ctx c
 	return ParseGetAwsS3ExternalBucketCredentialResp(rsp)
 }
 
+// GetAwsS3ExternalBucketIamPolicyWithResponse request returning *GetAwsS3ExternalBucketIamPolicyResp
+func (c *ClientWithResponses) GetAwsS3ExternalBucketIamPolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsS3ExternalBucketIamPolicyParams, reqEditors ...RequestEditorFn) (*GetAwsS3ExternalBucketIamPolicyResp, error) {
+	rsp, err := c.GetAwsS3ExternalBucketIamPolicy(ctx, workspaceIdParam, resourceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAwsS3ExternalBucketIamPolicyResp(rsp)
+}
+
 // CreateAwsEcrExternalRepositoryWithBodyWithResponse request with arbitrary body returning *CreateAwsEcrExternalRepositoryResp
 func (c *ClientWithResponses) CreateAwsEcrExternalRepositoryWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsEcrExternalRepositoryResp, error) {
 	rsp, err := c.CreateAwsEcrExternalRepositoryWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -21750,6 +22200,15 @@ func (c *ClientWithResponses) GetAwsEcrExternalRepositoryCredentialWithResponse(
 		return nil, err
 	}
 	return ParseGetAwsEcrExternalRepositoryCredentialResp(rsp)
+}
+
+// GetAwsEcrExternalRepositoryIamPolicyWithResponse request returning *GetAwsEcrExternalRepositoryIamPolicyResp
+func (c *ClientWithResponses) GetAwsEcrExternalRepositoryIamPolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAwsEcrExternalRepositoryIamPolicyParams, reqEditors ...RequestEditorFn) (*GetAwsEcrExternalRepositoryIamPolicyResp, error) {
+	rsp, err := c.GetAwsEcrExternalRepositoryIamPolicy(ctx, workspaceIdParam, resourceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAwsEcrExternalRepositoryIamPolicyResp(rsp)
 }
 
 // CreateAwsEc2InstanceWithBodyWithResponse request with arbitrary body returning *CreateAwsEc2InstanceResp
@@ -24158,6 +24617,53 @@ func ParseGetWorkspaceByUfidResp(rsp *http.Response) (*GetWorkspaceByUfidResp, e
 	return response, nil
 }
 
+// ParseBackfillResourcePropertiesResp parses an HTTP response from a BackfillResourcePropertiesWithResponse call
+func ParseBackfillResourcePropertiesResp(rsp *http.Response) (*BackfillResourcePropertiesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillResourcePropertiesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseSyncIamRolesResp parses an HTTP response from a SyncIamRolesWithResponse call
 func ParseSyncIamRolesResp(rsp *http.Response) (*SyncIamRolesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24839,6 +25345,53 @@ func ParseUpdateWorkspaceResp(rsp *http.Response) (*UpdateWorkspaceResp, error) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest WorkspaceDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAccessRequirementsResp parses an HTTP response from a ListAccessRequirementsWithResponse call
+func ParseListAccessRequirementsResp(rsp *http.Response) (*ListAccessRequirementsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAccessRequirementsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AccessRequirementList
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -26700,6 +27253,60 @@ func ParseGetAwsS3ExternalBucketCredentialResp(rsp *http.Response) (*GetAwsS3Ext
 	return response, nil
 }
 
+// ParseGetAwsS3ExternalBucketIamPolicyResp parses an HTTP response from a GetAwsS3ExternalBucketIamPolicyWithResponse call
+func ParseGetAwsS3ExternalBucketIamPolicyResp(rsp *http.Response) (*GetAwsS3ExternalBucketIamPolicyResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAwsS3ExternalBucketIamPolicyResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateAwsEcrExternalRepositoryResp parses an HTTP response from a CreateAwsEcrExternalRepositoryWithResponse call
 func ParseCreateAwsEcrExternalRepositoryResp(rsp *http.Response) (*CreateAwsEcrExternalRepositoryResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -26972,6 +27579,60 @@ func ParseGetAwsEcrExternalRepositoryCredentialResp(rsp *http.Response) (*GetAws
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest GetControlledAwsResourceCredentialResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAwsEcrExternalRepositoryIamPolicyResp parses an HTTP response from a GetAwsEcrExternalRepositoryIamPolicyWithResponse call
+func ParseGetAwsEcrExternalRepositoryIamPolicyResp(rsp *http.Response) (*GetAwsEcrExternalRepositoryIamPolicyResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAwsEcrExternalRepositoryIamPolicyResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest string
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

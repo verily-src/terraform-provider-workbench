@@ -42,7 +42,7 @@ func TestAccGroupDataSource(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(desc)
+			_ = json.NewEncoder(w).Encode(desc)
 		}
 	}))
 	defer mockServer.Close()
@@ -94,7 +94,7 @@ func TestAccWorkspaceDataSource_noorg(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(desc)
+			_ = json.NewEncoder(w).Encode(desc)
 		}
 	}))
 	defer mockServer.Close()

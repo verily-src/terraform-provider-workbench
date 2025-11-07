@@ -1,8 +1,3 @@
-import {
-  to = workbench_group_iam_policy.my_iam_policy
-  id = "organizations/12345678-9012-3456-7890-123456789012/groups/mytestgroup/roles"
-}
-
 resource "workbench_group_iam_policy" "my_iam_policy" {
   group        = "mytestgroup"
   organization = "12345678-9012-3456-7890-123456789012"

@@ -20,6 +20,11 @@ const (
 	REVOKESUPPORT AccessOnDemandOperation = "REVOKE_SUPPORT"
 )
 
+// Defines values for AccessRequirementType.
+const (
+	USERAGREEMENT AccessRequirementType = "USER_AGREEMENT"
+)
+
 // Defines values for AccessScope.
 const (
 	PRIVATEACCESS AccessScope = "PRIVATE_ACCESS"
@@ -256,6 +261,42 @@ type AccessOnDemandRequest struct {
 	Reason string `json:"reason"`
 }
 
+// AccessRequirement defines model for AccessRequirement.
+type AccessRequirement struct {
+	// AccessRequirementId Id of a given access requirement. Unique and immutable.
+	AccessRequirementId AccessRequirementId `json:"accessRequirementId"`
+
+	// Attributes This object is a reference to a set of attributes which depends on requirement
+	// type. Exactly one will be populated based on the AccessRequirementType
+	// (currently only User Agreement is supported).
+	Attributes AccessRequirementAttributes `json:"attributes"`
+
+	// RequirementType Enum describing the type of Access Requirement
+	RequirementType AccessRequirementType `json:"requirementType"`
+
+	// WorkspaceId The UUID of the workspace
+	WorkspaceId WorkspaceId `json:"workspaceId"`
+}
+
+// AccessRequirementAttributes This object is a reference to a set of attributes which depends on requirement
+// type. Exactly one will be populated based on the AccessRequirementType
+// (currently only User Agreement is supported).
+type AccessRequirementAttributes struct {
+	// UserAgreementAttributes Attributes of a User Agreement File
+	UserAgreementAttributes *UserAgreementAttributes `json:"userAgreementAttributes,omitempty"`
+}
+
+// AccessRequirementId Id of a given access requirement. Unique and immutable.
+type AccessRequirementId = openapi_types.UUID
+
+// AccessRequirementList defines model for AccessRequirementList.
+type AccessRequirementList struct {
+	AccessRequirements []AccessRequirement `json:"accessRequirements"`
+}
+
+// AccessRequirementType Enum describing the type of Access Requirement
+type AccessRequirementType string
+
 // AccessScope Specifies the resource as shared or private
 type AccessScope string
 
@@ -370,14 +411,15 @@ type AwsEc2InstanceResource struct {
 
 // AwsEcrExternalRepositoryAttributes Attributes of an AWS ECR Repository external resource.
 type AwsEcrExternalRepositoryAttributes struct {
-	// Account AWS Account ID that the ECR Repository exists in.
+	// Account AWS ECR Registry (Account) ID that the ECR Repository exists in.
 	Account string `json:"account"`
 
 	// Region The AWS Region that the ECR Repository exists in.
 	Region string `json:"region"`
 
-	// RepositoryName The ECR Repository name.
-	RepositoryName string `json:"repositoryName"`
+	// RepositoryName The ECR Repository name. If not present, access is granted to all repositories in the region/registry
+	// (account) pair that grant access to this Workspace.
+	RepositoryName *string `json:"repositoryName,omitempty"`
 
 	// TagPrefix Prefix for Principal tag key to be used in external IAM policies.
 	TagPrefix string `json:"tagPrefix"`
@@ -385,14 +427,15 @@ type AwsEcrExternalRepositoryAttributes struct {
 
 // AwsEcrExternalRepositoryCreationParameters Properties of the externally managed ECR Repository that this resource will provide access to.
 type AwsEcrExternalRepositoryCreationParameters struct {
-	// AccountId Account number of AWS Account that the ECR Repository exists in.
+	// AccountId AWS account number of the ECR Registry that the ECR Repository exists in.
 	AccountId string `json:"accountId"`
 
 	// Region The AWS Region that the ECR Repository exists in.
 	Region string `json:"region"`
 
-	// RepositoryName An existing ECR Repository name to provide access to.
-	RepositoryName string `json:"repositoryName"`
+	// RepositoryName An existing ECR Repository name to provide access to. If not provided, access will be granted to all
+	// repositories in the region/registry (account) pair that grant access to this Workspace.
+	RepositoryName *string `json:"repositoryName,omitempty"`
 
 	// TagPrefix Prefix for Principal tag key to be used in external IAM policies.
 	TagPrefix *string `json:"tagPrefix,omitempty"`
@@ -2482,6 +2525,9 @@ type GcpGceInstanceCreationParameters struct {
 	// Metadata Custom metadata to apply to this instance. Some metadata keys are reserved by Terra and will throw a bad request error if specified: \'terra-workspace-id\', \'terra-cli-server\'.
 	Metadata *map[string]string `json:"metadata,omitempty"`
 
+	// ReservationUri uri for the VM to be created with using reservation name or reservation blocks. such as projects/RESERVATION_OWNER_PROJECT_ID/reservations/RESERVATION_NAME. If the VM is created in the same project as the reservation, projects/RESERVATION_OWNER_PROJECT_ID/reservations can be omitted. see https://cloud.google.com/compute/docs/gpus/create-gpu-vm-a3u-a4#rest_1 for more details.
+	ReservationUri *string `json:"reservationUri,omitempty"`
+
 	// VmImage Custom Compute Engine virtual machine image for starting the instance with the environment installed directly on the VM. Specify the image by its family name, or use a specific version of a public operating system image.
 	VmImage *string `json:"vmImage,omitempty"`
 
@@ -3817,6 +3863,12 @@ type UpdateWorkspacesByCrgRequest struct {
 	JobControl        JobControl `json:"jobControl"`
 }
 
+// UserAgreementAttributes Attributes of a User Agreement File
+type UserAgreementAttributes struct {
+	FileName string `json:"fileName"`
+	GsUri    string `json:"gsUri"`
+}
+
 // UserFacingId Human-settable, mutable id. Must have 3-63 characters, contain lowercase letters, numbers, dashes, or
 // underscores, and start with lowercase letter or number.
 type UserFacingId = string
@@ -4005,6 +4057,8 @@ type WsmGenerateIgnitionRequest struct {
 
 	// CloudPlatform Enum representing a cloud platform type.
 	CloudPlatform          *CloudPlatform `json:"cloud_platform,omitempty"`
+	DataDiskType           *string        `json:"data_disk_type,omitempty"`
+	MachineType            *string        `json:"machine_type,omitempty"`
 	ResourceId             *string        `json:"resource_id,omitempty"`
 	ShouldPreserveDataDisk *bool          `json:"should_preserve_data_disk,omitempty"`
 }
@@ -4233,8 +4287,14 @@ type CloudContextParam = CloudPlatform
 // CloudResourceGroupIdParam defines model for CloudResourceGroupId.
 type CloudResourceGroupIdParam = openapi_types.UUID
 
+// ExistingIamPolicyJsonParam defines model for ExistingIamPolicyJson.
+type ExistingIamPolicyJsonParam = string
+
 // FolderIdParam defines model for FolderId.
 type FolderIdParam = openapi_types.UUID
+
+// IncludeHealthOmicsServicePrincipalParam defines model for IncludeHealthOmicsServicePrincipal.
+type IncludeHealthOmicsServicePrincipalParam = bool
 
 // JobIdParam defines model for JobId.
 type JobIdParam = string
@@ -4548,6 +4608,12 @@ type BackfillWorkspaceRolesParams struct {
 	Email string `form:"email" json:"email"`
 }
 
+// BackfillResourcePropertiesParams defines parameters for BackfillResourceProperties.
+type BackfillResourcePropertiesParams struct {
+	// WetRun Whether this is a wet run.
+	WetRunParam *WetRunParam `form:"wetRun,omitempty" json:"wetRun,omitempty"`
+}
+
 // SyncIamRolesParams defines parameters for SyncIamRoles.
 type SyncIamRolesParams struct {
 	// WetRun Whether this is a wet run.
@@ -4691,6 +4757,17 @@ type GetAwsS3ExternalBucketCredentialParams struct {
 	AwsCredentialDurationSecondsParam AwsCredentialDurationSecondsParam `form:"durationSeconds" json:"durationSeconds"`
 }
 
+// GetAwsS3ExternalBucketIamPolicyParams defines parameters for GetAwsS3ExternalBucketIamPolicy.
+type GetAwsS3ExternalBucketIamPolicyParams struct {
+	// AccessScope Access to request for an AWS credential or Console URL.
+	AwsCredentialAccessScopeParam AwsCredentialAccessScopeParam `form:"accessScope" json:"accessScope"`
+
+	// ExistingPolicy Optional. An existing IAM policy document in JSON format. If provided, the new
+	// statements generated for this resource will be merged with the existing policy statements.
+	// The resulting policy will contain all statements from both policies.
+	ExistingIamPolicyJsonParam *ExistingIamPolicyJsonParam `form:"existingPolicy,omitempty" json:"existingPolicy,omitempty"`
+}
+
 // GetAwsEcrExternalRepositoryCredentialParams defines parameters for GetAwsEcrExternalRepositoryCredential.
 type GetAwsEcrExternalRepositoryCredentialParams struct {
 	// AccessScope Access to request for an AWS credential or Console URL.
@@ -4698,6 +4775,22 @@ type GetAwsEcrExternalRepositoryCredentialParams struct {
 
 	// DurationSeconds Duration for credential to access controlled AWS resource in seconds.
 	AwsCredentialDurationSecondsParam AwsCredentialDurationSecondsParam `form:"durationSeconds" json:"durationSeconds"`
+}
+
+// GetAwsEcrExternalRepositoryIamPolicyParams defines parameters for GetAwsEcrExternalRepositoryIamPolicy.
+type GetAwsEcrExternalRepositoryIamPolicyParams struct {
+	// AccessScope Access to request for an AWS credential or Console URL.
+	AwsCredentialAccessScopeParam AwsCredentialAccessScopeParam `form:"accessScope" json:"accessScope"`
+
+	// ExistingPolicy Optional. An existing IAM policy document in JSON format. If provided, the new
+	// statements generated for this resource will be merged with the existing policy statements.
+	// The resulting policy will contain all statements from both policies.
+	ExistingIamPolicyJsonParam *ExistingIamPolicyJsonParam `form:"existingPolicy,omitempty" json:"existingPolicy,omitempty"`
+
+	// IncludeHealthOmicsServicePrincipal Optional. Whether to include the AWS HealthOmics service principal (omics.amazonaws.com)
+	// in the generated policy statements. When set to true, the policy will allow the HealthOmics
+	// service to access the ECR repository for workflow execution. Defaults to false.
+	IncludeHealthOmicsServicePrincipalParam *IncludeHealthOmicsServicePrincipalParam `form:"includeHealthOmicsServicePrincipal,omitempty" json:"includeHealthOmicsServicePrincipal,omitempty"`
 }
 
 // GetAwsEc2InstanceCredentialParams defines parameters for GetAwsEc2InstanceCredential.

@@ -18,7 +18,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &ControlledGcsBucketDataSource{}
 )
 
-// NewControlledGcsBucketDataSource iniitializes a new ControlledGcsBucket data source.
+// NewControlledGcsBucketDataSource initializes a new ControlledGcsBucket data source.
 func NewControlledGcsBucketDataSource() datasource.DataSource {
 	return &ControlledGcsBucketDataSource{}
 }
@@ -174,7 +174,7 @@ func (d *ControlledGcsBucketDataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

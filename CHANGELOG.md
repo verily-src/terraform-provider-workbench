@@ -1,7 +1,11 @@
+## 0.0.3 (November 6, 2025)
+
+- Support impersonate_service_account for workbench provider configuration.
+- Minor docs update for resource import.
+
 ## 0.0.2 (August 13, 2025)
 
 Update provider config to support using ID token for authentication with workbench backend.
-
 
 ## 0.0.1 (July 23, 2025)
 
@@ -39,5 +43,4 @@ Initial Release
 
   - Added `workbench_gcs_bucket` resource for managing GCS buckets.
   - Added `workbench_gcs_bucket` data source for fetching existing buckets details.
-
 

@@ -164,7 +164,7 @@ func (r *GroupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user client",
@@ -216,7 +216,7 @@ func (r *GroupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	// Create a new client
-	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench user manager client, unexpected error: %s", err))
 		return
@@ -270,7 +270,7 @@ func (r *GroupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 	// Create a new client
-	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench user manager client, unexpected error: %s", err))
 		return
@@ -298,7 +298,7 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewUserClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user client",

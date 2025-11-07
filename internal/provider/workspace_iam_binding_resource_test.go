@@ -157,7 +157,7 @@ func testAccCheckWorkspaceRoles(host, workspaceTFID string, want *wsm.RoleBindin
 		}
 
 		ctx := context.Background()
-		c, err := api.NewWSMClient(ctx, host, false)
+		c, err := api.NewWSMClient(ctx, host, false, "")
 		if err != nil {
 			return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 		}

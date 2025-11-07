@@ -84,6 +84,11 @@ const (
 	INVITED  UserActiveState = "INVITED"
 )
 
+// Defines values for UserLicenseType.
+const (
+	FREE UserLicenseType = "FREE"
+)
+
 // Defines values for UserTosState.
 const (
 	TOSOK       UserTosState = "TOS_OK"
@@ -355,6 +360,13 @@ type LookupPath = string
 
 // MemberEmail defines model for MemberEmail.
 type MemberEmail = openapi_types.Email
+
+// MoveGroupRequest defines model for MoveGroupRequest.
+type MoveGroupRequest struct {
+	// TargetOrgId The globally unique organization identifier; either UUID or UFID.
+	// If it is a UFID, it must be prefixed with a tilde (~).
+	TargetOrgId OrgId `json:"targetOrgId"`
+}
 
 // MovePodRequest defines model for MovePodRequest.
 type MovePodRequest struct {
@@ -685,8 +697,12 @@ type PrincipalWorkbenchGroup struct {
 // SelfDescription The user's own details. Minimal version of UserDescription.
 type SelfDescription struct {
 	// ActiveState Enum of User Active States.
-	ActiveState     UserActiveState `json:"activeState"`
-	OrgUserFacingId string          `json:"orgUserFacingId"`
+	ActiveState UserActiveState `json:"activeState"`
+
+	// Licenses List of licenses assigned to the user. An empty list denotes that
+	// the user is a legacy enterprise user with unrestricted access.
+	Licenses        *[]UserLicense `json:"licenses,omitempty"`
+	OrgUserFacingId string         `json:"orgUserFacingId"`
 
 	// OrganizationId The organization the user belongs to.
 	OrganizationId openapi_types.UUID `json:"organizationId"`
@@ -804,7 +820,11 @@ type UserDescription struct {
 	LastUpdatedBy string `json:"lastUpdatedBy"`
 
 	// LastUpdatedDate Timestamp of last update
-	LastUpdatedDate time.Time          `json:"lastUpdatedDate"`
+	LastUpdatedDate time.Time `json:"lastUpdatedDate"`
+
+	// Licenses List of licenses assigned to the user. An empty list denotes that
+	// the user is a legacy enterprise user with unrestricted access.
+	Licenses        *[]UserLicense     `json:"licenses,omitempty"`
 	OrgUserFacingId string             `json:"orgUserFacingId"`
 	OrganizationId  openapi_types.UUID `json:"organizationId"`
 
@@ -819,6 +839,15 @@ type UserDescription struct {
 // lowercase letters, numbers, dashes, or underscores, and start with
 // lowercase letter or number.
 type UserFacingId = string
+
+// UserLicense A license that can be assigned to a user
+type UserLicense struct {
+	// LicenseType Enum of User License Types.
+	LicenseType UserLicenseType `json:"licenseType"`
+}
+
+// UserLicenseType Enum of User License Types.
+type UserLicenseType string
 
 // UserTosState Enum of User TOS States.
 type UserTosState string
@@ -1138,6 +1167,9 @@ type AddRoleJSONRequestBody = AdminAddRoleRequest
 
 // CleanupGrantsJSONRequestBody defines body for CleanupGrants for application/json ContentType.
 type CleanupGrantsJSONRequestBody = AdminCleanupGrantsRequest
+
+// MoveGroupJSONRequestBody defines body for MoveGroup for application/json ContentType.
+type MoveGroupJSONRequestBody = MoveGroupRequest
 
 // MovePodJSONRequestBody defines body for MovePod for application/json ContentType.
 type MovePodJSONRequestBody = MovePodRequest

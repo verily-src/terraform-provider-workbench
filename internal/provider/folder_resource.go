@@ -165,7 +165,7 @@ func (r *FolderResource) Create(ctx context.Context, req resource.CreateRequest,
 }
 
 func (r *FolderResource) createFolderWithResponse(ctx context.Context, workspaceID string, request *wsm.CreateFolderJSONRequestBody) (*wsm.Folder, error) {
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create Workbench client, unexpected error: %w", err)
 	}
@@ -195,7 +195,7 @@ func (r *FolderResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 
 	// Update metadata
 	r.updateMetadata(ctx, c, resp, &data, &state)
@@ -256,7 +256,7 @@ func (r *FolderResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -283,7 +283,7 @@ func (r *FolderResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

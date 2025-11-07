@@ -18,7 +18,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &DataCollectionDataSource{}
 )
 
-// NewDataCollectionDataSource iniitializes a new data collection data source.
+// NewDataCollectionDataSource initializes a new data collection data source.
 func NewDataCollectionDataSource() datasource.DataSource {
 	return &DataCollectionDataSource{}
 }
@@ -184,7 +184,7 @@ func (d *DataCollectionDataSource) Read(ctx context.Context, req datasource.Read
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken)
+	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
