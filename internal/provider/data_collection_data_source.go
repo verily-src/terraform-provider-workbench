@@ -148,6 +148,14 @@ func (d *DataCollectionDataSource) Schema(ctx context.Context, req datasource.Sc
 				MarkdownDescription: "Workbench data collection created by",
 				Computed:            true,
 			},
+			"gcp_project_id": schema.StringAttribute{
+				MarkdownDescription: "GCP project ID associated with the data collection (if GCP workspace)",
+				Computed:            true,
+			},
+			"aws_account_id": schema.StringAttribute{
+				MarkdownDescription: "AWS account ID associated with the data collection (if AWS workspace)",
+				Computed:            true,
+			},
 		},
 	}
 }

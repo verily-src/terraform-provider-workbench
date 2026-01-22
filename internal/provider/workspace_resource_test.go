@@ -112,6 +112,11 @@ func TestAccWorkspaceResource(t *testing.T) {
 							}),
 						}),
 					),
+					statecheck.ExpectKnownValue(
+						"workbench_workspace.test",
+						tfjsonpath.New("gcp_project_id"),
+						knownvalue.NotNull(),
+					),
 				},
 			},
 			// Update and Read testing
@@ -180,6 +185,11 @@ func TestAccWorkspaceResource(t *testing.T) {
 					statecheck.ExpectKnownValue(
 						"workbench_workspace.test",
 						tfjsonpath.New("last_updated_date"),
+						knownvalue.NotNull(),
+					),
+					statecheck.ExpectKnownValue(
+						"workbench_workspace.test",
+						tfjsonpath.New("gcp_project_id"),
 						knownvalue.NotNull(),
 					),
 				},

@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -113,9 +114,36 @@ func TestAccGroupResource(t *testing.T) {
 					),
 				},
 			},
+			// Import testing
+			{
+				ImportState: true,
+				ImportStateIdFunc: func(s *terraform.State) (string, error) {
+					orgUFID, err := getOrgUFID(s, "test")
+					if err != nil {
+						return "", err
+					}
+					groupName := "test-group"
+					return fmt.Sprintf("organizations/%s/groups/%s", orgUFID, groupName), nil
+				},
+				ResourceName:                         "workbench_group.test",
+				ImportStateVerify:                    true,
+				ImportStateVerifyIdentifierAttribute: "group_name",
+			},
 			// Deletion is handled automatically by the testing framework.
 		},
 	})
+}
+
+func getOrgUFID(s *terraform.State, groupTFID string) (string, error) {
+	rs, ok := s.RootModule().Resources[fmt.Sprintf("workbench_group.%s", groupTFID)]
+	if !ok {
+		return "", fmt.Errorf("group %s not found in state", groupTFID)
+	}
+	orgUFID, ok := rs.Primary.Attributes["organization_user_facing_id"]
+	if !ok {
+		return "", fmt.Errorf("organization_user_facing_id for group %s not found in state", groupTFID)
+	}
+	return orgUFID, nil
 }
 
 func testAccGroupResourceConfig(host string, expirationDays int, expirationNotification bool, syncGroup bool, requireGrantReason bool) string {

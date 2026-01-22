@@ -172,6 +172,9 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 				LastUpdatedBy:   "testuser",
 				OperationState:  &wsm.OperationState{State: wsm.CREATING},
 				Policies:        policies,
+				GcpContext: &wsm.GcpContext{
+					ProjectId: "test-gcp-project-" + req.Id.String()[:8],
+				},
 			},
 		})
 		jobID := uuid.New().String()

@@ -20,6 +20,15 @@ func GetWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID string)
 	return rsp.JSON200, nil
 }
 
+// GetWorkspaceByUserFacingId retrieves a workspace by its user-facing ID.
+func GetWorkspaceByUserFacingId(ctx context.Context, cl *wsm.ClientWithResponses, userFacingId string) (*wsm.WorkspaceDescription, error) {
+	rsp, err := client.ResponseError(cl.GetWorkspaceByUserFacingIdWithResponse(ctx, userFacingId, nil))
+	if err != nil {
+		return nil, fmt.Errorf("getting workspace by user facing id: %w", err)
+	}
+	return rsp.JSON200, nil
+}
+
 // CreateWorkspace starts a workspace creation flight. This is an asynchronous operation.
 // The caller must poll for the job status using the job ID returned in the response.
 func CreateWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, request wsm.CreateWorkspaceV2JSONRequestBody) (string, error) {

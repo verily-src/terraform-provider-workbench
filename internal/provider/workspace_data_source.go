@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/verily-src/terraform-provider-workbench/internal/api"
 	"github.com/verily-src/terraform-provider-workbench/internal/models"
-	"github.com/verily-src/terraform-provider-workbench/internal/schemas"
+	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -37,14 +37,17 @@ func (d *WorkspaceDataSource) Metadata(ctx context.Context, req datasource.Metad
 func (d *WorkspaceDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schemas.WorkspaceDataSourceSchema,
+			"id": schema.StringAttribute{
+				MarkdownDescription: "Workbench workspace UUID",
+				Optional:            true,
+			},
 			"display_name": schema.StringAttribute{
 				MarkdownDescription: "Workbench workspace display name",
 				Optional:            true,
 			},
 			"user_facing_id": schema.StringAttribute{
 				MarkdownDescription: "Workbench workspace user facing id",
-				Computed:            true,
+				Optional:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "Workbench workspace description",
@@ -128,6 +131,14 @@ func (d *WorkspaceDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				MarkdownDescription: "Workbench workspace created by",
 				Computed:            true,
 			},
+			"gcp_project_id": schema.StringAttribute{
+				MarkdownDescription: "GCP project ID associated with the workspace (if GCP workspace)",
+				Computed:            true,
+			},
+			"aws_account_id": schema.StringAttribute{
+				MarkdownDescription: "AWS account ID associated with the workspace (if AWS workspace)",
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -164,12 +175,32 @@ func (d *WorkspaceDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
+	// Validate that at least one identifier is provided
+	idValue := data.ID.ValueString()
+	userFacingIdValue := data.UserFacingId.ValueString()
+
+	if idValue == "" && userFacingIdValue == "" {
+		resp.Diagnostics.AddError(
+			"Missing Required Field",
+			"Either 'id' or 'user_facing_id' must be provided to query the workspace",
+		)
+		return
+	}
+
 	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
 	}
-	w, err := api.GetWorkspace(ctx, c, data.ID.ValueString())
+
+	var w *wsm.WorkspaceDescription
+	if idValue != "" {
+		// Query by UUID
+		w, err = api.GetWorkspace(ctx, c, idValue)
+	} else {
+		// Query by user-facing ID
+		w, err = api.GetWorkspaceByUserFacingId(ctx, c, userFacingIdValue)
+	}
 
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Reading workspace into data, got error: %s", err))

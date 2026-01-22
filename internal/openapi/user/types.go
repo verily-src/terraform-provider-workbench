@@ -40,6 +40,17 @@ const (
 	SUCCEEDED JobReportStatus = "SUCCEEDED"
 )
 
+// Defines values for MembershipRequestResponseRequestStatus.
+const (
+	GRANTED  MembershipRequestResponseRequestStatus = "GRANTED"
+	REJECTED MembershipRequestResponseRequestStatus = "REJECTED"
+)
+
+// Defines values for MembershipRequirementType.
+const (
+	USERAGREEMENT MembershipRequirementType = "USER_AGREEMENT"
+)
+
 // Defines values for OrganizationRole.
 const (
 	OrganizationRoleADMIN        OrganizationRole = "ADMIN"
@@ -77,16 +88,18 @@ const (
 
 // Defines values for UserActiveState.
 const (
-	ARCHIVED UserActiveState = "ARCHIVED"
-	DECLINED UserActiveState = "DECLINED"
-	DISABLED UserActiveState = "DISABLED"
-	ENABLED  UserActiveState = "ENABLED"
-	INVITED  UserActiveState = "INVITED"
+	UserActiveStateARCHIVED UserActiveState = "ARCHIVED"
+	UserActiveStateDECLINED UserActiveState = "DECLINED"
+	UserActiveStateDISABLED UserActiveState = "DISABLED"
+	UserActiveStateENABLED  UserActiveState = "ENABLED"
+	UserActiveStateINVITED  UserActiveState = "INVITED"
 )
 
 // Defines values for UserLicenseType.
 const (
-	FREE UserLicenseType = "FREE"
+	FREE         UserLicenseType = "FREE"
+	PROFESSIONAL UserLicenseType = "PROFESSIONAL"
+	ROBOT        UserLicenseType = "ROBOT"
 )
 
 // Defines values for UserTosState.
@@ -103,6 +116,26 @@ const (
 	WorkbenchRoleMANAGER    WorkbenchRole = "MANAGER"
 	WorkbenchRoleSUPERADMIN WorkbenchRole = "SUPERADMIN"
 	WorkbenchRoleSUPPORT    WorkbenchRole = "SUPPORT"
+)
+
+// Defines values for ListOrganizationMembersV2ParamsFilterStatus.
+const (
+	ListOrganizationMembersV2ParamsFilterStatusARCHIVED ListOrganizationMembersV2ParamsFilterStatus = "ARCHIVED"
+	ListOrganizationMembersV2ParamsFilterStatusDISABLED ListOrganizationMembersV2ParamsFilterStatus = "DISABLED"
+	ListOrganizationMembersV2ParamsFilterStatusENABLED  ListOrganizationMembersV2ParamsFilterStatus = "ENABLED"
+	ListOrganizationMembersV2ParamsFilterStatusINVITED  ListOrganizationMembersV2ParamsFilterStatus = "INVITED"
+)
+
+// Defines values for ListOrganizationMembersV2ParamsSortField.
+const (
+	EMAIL  ListOrganizationMembersV2ParamsSortField = "EMAIL"
+	STATUS ListOrganizationMembersV2ParamsSortField = "STATUS"
+)
+
+// Defines values for ListOrganizationMembersV2ParamsSortDirection.
+const (
+	ASC  ListOrganizationMembersV2ParamsSortDirection = "ASC"
+	DESC ListOrganizationMembersV2ParamsSortDirection = "DESC"
 )
 
 // AcceptTosState defines model for AcceptTosState.
@@ -160,6 +193,39 @@ type AdminCleanupGrantsResult struct {
 	JobReport     JobReport                 `json:"jobReport"`
 }
 
+// AdminSendEmailRequest defines model for AdminSendEmailRequest.
+type AdminSendEmailRequest struct {
+	// From Sender email address (e.g., "Name &lt;email@domain.com&gt;" or "email@domain.com"). If not provided, uses configured default.
+	From *string `json:"from,omitempty"`
+
+	// HtmlBody HTML email body (mutually exclusive with template)
+	HtmlBody *string `json:"htmlBody,omitempty"`
+
+	// Recipients List of email addresses to send to
+	Recipients []string `json:"recipients"`
+
+	// Subject Email subject line
+	Subject string `json:"subject"`
+
+	// Tags Tags to assign to the email
+	Tags *[]string `json:"tags,omitempty"`
+
+	// Template Name of Mailgun template to use (mutually exclusive with textBody/htmlBody)
+	Template *string `json:"template,omitempty"`
+
+	// TemplateVariables Variables to pass to the template
+	TemplateVariables *map[string]interface{} `json:"templateVariables,omitempty"`
+
+	// TextBody Plain text email body (mutually exclusive with template)
+	TextBody *string `json:"textBody,omitempty"`
+}
+
+// AdminSendEmailResponse defines model for AdminSendEmailResponse.
+type AdminSendEmailResponse struct {
+	// NotificationId Mailgun notification ID if email was sent successfully. Null if email was not sent.
+	NotificationId *string `json:"notificationId,omitempty"`
+}
+
 // AnyObject defines model for AnyObject.
 type AnyObject struct {
 	Value interface{} `json:"value"`
@@ -176,14 +242,17 @@ type CreateCommunityUserRequest struct {
 // CreateCommunityUserResponse Response to a createCommunityUser request
 type CreateCommunityUserResponse struct {
 	// JobResult The result of an async call that triggers a stairway job.
-	JobResult       JobResult       `json:"jobResult"`
-	UserDescription UserDescription `json:"userDescription"`
+	JobResult       JobResult        `json:"jobResult"`
+	UserDescription *UserDescription `json:"userDescription,omitempty"`
 }
 
 // CreateGroupRequest Request body for creating a workbench group
 type CreateGroupRequest struct {
 	// Description text describing the group
 	Description *string `json:"description,omitempty"`
+
+	// EnableSelfGrant true to enable users to request membership to a group for themselves and have their request approved by an automated process.
+	EnableSelfGrant *bool `json:"enableSelfGrant,omitempty"`
 
 	// ExpirationDays Specify the expiration time of a grant
 	ExpirationDays *ExpirationDays `json:"expirationDays,omitempty"`
@@ -254,6 +323,9 @@ type GroupDescription struct {
 	// CreatedDate Timestamp of creation
 	CreatedDate time.Time `json:"createdDate"`
 	Description *string   `json:"description,omitempty"`
+
+	// EnableSelfGrant true to enable users to request membership to a group for themselves and have their request approved by an automated process.
+	EnableSelfGrant *bool `json:"enableSelfGrant,omitempty"`
 
 	// ExpirationDays Specify the expiration time of a grant
 	ExpirationDays         ExpirationDays `json:"expirationDays"`
@@ -360,6 +432,71 @@ type LookupPath = string
 
 // MemberEmail defines model for MemberEmail.
 type MemberEmail = openapi_types.Email
+
+// MembershipRequest Request body for requesting membership to a group
+type MembershipRequest struct {
+	// MembershipRequestInputs List of user inputs in response to each of the group membership requirements.
+	MembershipRequestInputs []MembershipRequestInput `json:"membershipRequestInputs"`
+}
+
+// MembershipRequestInput User input for a single membership requirement when requesting membership.
+type MembershipRequestInput struct {
+	// Accepted If the requirement is a user agreement, true if the user has agreed to the terms
+	// of the user agreement, false or null otherwise.
+	Accepted *bool `json:"accepted,omitempty"`
+
+	// MembershipRequirementId The unique identifier of the membership requirement being fulfilled
+	MembershipRequirementId openapi_types.UUID `json:"membershipRequirementId"`
+}
+
+// MembershipRequestResponse Response to a self grant membership request to a group
+type MembershipRequestResponse struct {
+	// MissingRequirements UUID of membership requirements that have not been fulfilled, if any.
+	MissingRequirements *[]openapi_types.UUID                  `json:"missingRequirements,omitempty"`
+	RequestStatus       MembershipRequestResponseRequestStatus `json:"requestStatus"`
+}
+
+// MembershipRequestResponseRequestStatus defines model for MembershipRequestResponse.RequestStatus.
+type MembershipRequestResponseRequestStatus string
+
+// MembershipRequirement defines model for MembershipRequirement.
+type MembershipRequirement struct {
+	// Attributes This object is a reference to a set of attributes which depends on the requirement
+	// type. Exactly one set of attributes be populated based on the MembershipRequirementType
+	// (currently only User Agreements are supported).
+	Attributes MembershipRequirementAttributes `json:"attributes"`
+
+	// GroupName The name of the workbench group.
+	GroupName string `json:"groupName"`
+
+	// GroupOrgUfid The user facing id of the group org.
+	GroupOrgUfid string `json:"groupOrgUfid"`
+
+	// MembershipRequirementId Id of a given membership requirement. Unique and immutable.
+	MembershipRequirementId MembershipRequirementId `json:"membershipRequirementId"`
+
+	// RequirementType Enum describing the type of Membership Requirement
+	RequirementType MembershipRequirementType `json:"requirementType"`
+}
+
+// MembershipRequirementAttributes This object is a reference to a set of attributes which depends on the requirement
+// type. Exactly one set of attributes be populated based on the MembershipRequirementType
+// (currently only User Agreements are supported).
+type MembershipRequirementAttributes struct {
+	// UserAgreementAttributes Attributes of Membership Requirement of type USER_AGREEMENT
+	UserAgreementAttributes *UserAgreementAttributes `json:"userAgreementAttributes,omitempty"`
+}
+
+// MembershipRequirementId Id of a given membership requirement. Unique and immutable.
+type MembershipRequirementId = openapi_types.UUID
+
+// MembershipRequirementList defines model for MembershipRequirementList.
+type MembershipRequirementList struct {
+	MembershipRequirements []MembershipRequirement `json:"membershipRequirements"`
+}
+
+// MembershipRequirementType Enum describing the type of Membership Requirement
+type MembershipRequirementType string
 
 // MoveGroupRequest defines model for MoveGroupRequest.
 type MoveGroupRequest struct {
@@ -544,6 +681,7 @@ type PodDescription struct {
 
 	// LastUpdatedDate Timestamp of last update
 	LastUpdatedDate time.Time          `json:"lastUpdatedDate"`
+	MemberRoles     *PodRoleList       `json:"memberRoles,omitempty"`
 	OrgId           openapi_types.UUID `json:"orgId"`
 	OrgUserFacingId *string            `json:"orgUserFacingId,omitempty"`
 	PodId           openapi_types.UUID `json:"podId"`
@@ -554,6 +692,39 @@ type PodDescription struct {
 type PodDescriptionList struct {
 	// Results List of Pods
 	Results *[]PodDescription `json:"results,omitempty"`
+}
+
+// PodDescriptionListV3 defines model for PodDescriptionListV3.
+type PodDescriptionListV3 struct {
+	// Results List of Pods with role information
+	Results *[]PodDescriptionV3 `json:"results,omitempty"`
+}
+
+// PodDescriptionV3 defines model for PodDescriptionV3.
+type PodDescriptionV3 struct {
+	// CreatedBy User email of creator
+	CreatedBy string `json:"createdBy"`
+
+	// CreatedDate Timestamp of creation
+	CreatedDate time.Time `json:"createdDate"`
+	Description *string   `json:"description,omitempty"`
+
+	// EnvironmentData If the environment type is AWS, then environmentDataAws must be present. If the environment type
+	// is GCP, then environmentDataGcp must be present.
+	EnvironmentData PodEnvironment `json:"environmentData"`
+	GroupName       *string        `json:"groupName,omitempty"`
+	InheritedRoles  *PodRoleList   `json:"inheritedRoles,omitempty"`
+
+	// LastUpdatedBy User email of last update
+	LastUpdatedBy string `json:"lastUpdatedBy"`
+
+	// LastUpdatedDate Timestamp of last update
+	LastUpdatedDate time.Time          `json:"lastUpdatedDate"`
+	MemberRoles     *PodRoleList       `json:"memberRoles,omitempty"`
+	OrgId           openapi_types.UUID `json:"orgId"`
+	OrgUserFacingId *string            `json:"orgUserFacingId,omitempty"`
+	PodId           openapi_types.UUID `json:"podId"`
+	UserFacingId    string             `json:"userFacingId"`
 }
 
 // PodEnvironment If the environment type is AWS, then environmentDataAws must be present. If the environment type
@@ -768,13 +939,7 @@ type SetPodAccessRequest struct {
 type UpdateExpirationRequest struct {
 	// Expiration Specify the expiration time of a grant
 	Expiration *ExpirationDays `json:"expiration,omitempty"`
-
-	// Members We are enforcing expiration on group members as well as users. So we accept a list
-	// of principals instead of user principas. Leaving this members array for compatibility.
-	// TODO(BENCH-5344) remove this field
-	// Deprecated:
-	Members    []PrincipalUser `json:"members"`
-	Principals *[]Principal    `json:"principals,omitempty"`
+	Principals []Principal     `json:"principals"`
 }
 
 // UpdateGroupRequest Request an update on a group. You can set/unset the group expiration
@@ -782,6 +947,9 @@ type UpdateExpirationRequest struct {
 type UpdateGroupRequest struct {
 	// Description text describing the group
 	Description *string `json:"description,omitempty"`
+
+	// EnableSelfGrant true to enable users to request membership to a group for themselves and have their request approved by an automated process.
+	EnableSelfGrant *bool `json:"enableSelfGrant,omitempty"`
 
 	// Expiration Specify the expiration time of a grant
 	Expiration *ExpirationDays `json:"expiration,omitempty"`
@@ -795,6 +963,12 @@ type UpdateGroupRequest struct {
 
 // UserActiveState Enum of User Active States.
 type UserActiveState string
+
+// UserAgreementAttributes Attributes of Membership Requirement of type USER_AGREEMENT
+type UserAgreementAttributes struct {
+	FileName string `json:"fileName"`
+	GsUri    string `json:"gsUri"`
+}
 
 // UserCreateRequest Create user will automatically grant Org User role.
 type UserCreateRequest struct {
@@ -1073,6 +1247,12 @@ type ListOrganizationGroupsParams struct {
 	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// ListPodsParams defines parameters for ListPods.
+type ListPodsParams struct {
+	// Email When included, each pod result will include memberRoles for the specified user email
+	Email *openapi_types.Email `form:"email,omitempty" json:"email,omitempty"`
+}
+
 // GetPodParams defines parameters for GetPod.
 type GetPodParams struct {
 	Action *PodAction `form:"action,omitempty" json:"action,omitempty"`
@@ -1112,7 +1292,28 @@ type ListOrganizationMembersV2Params struct {
 
 	// Limit The maximum number of list items to return. Default 10
 	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// FilterStatus Filter users by active state
+	FilterStatus *ListOrganizationMembersV2ParamsFilterStatus `form:"filterStatus,omitempty" json:"filterStatus,omitempty"`
+
+	// SortField Field to sort by
+	SortField *ListOrganizationMembersV2ParamsSortField `form:"sortField,omitempty" json:"sortField,omitempty"`
+
+	// SortDirection Sort direction
+	SortDirection *ListOrganizationMembersV2ParamsSortDirection `form:"sortDirection,omitempty" json:"sortDirection,omitempty"`
+
+	// Search Search for users by email (partial match, case-insensitive)
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
 }
+
+// ListOrganizationMembersV2ParamsFilterStatus defines parameters for ListOrganizationMembersV2.
+type ListOrganizationMembersV2ParamsFilterStatus string
+
+// ListOrganizationMembersV2ParamsSortField defines parameters for ListOrganizationMembersV2.
+type ListOrganizationMembersV2ParamsSortField string
+
+// ListOrganizationMembersV2ParamsSortDirection defines parameters for ListOrganizationMembersV2.
+type ListOrganizationMembersV2ParamsSortDirection string
 
 // SetUserStateV2Params defines parameters for SetUserStateV2.
 type SetUserStateV2Params struct {
@@ -1168,11 +1369,17 @@ type AddRoleJSONRequestBody = AdminAddRoleRequest
 // CleanupGrantsJSONRequestBody defines body for CleanupGrants for application/json ContentType.
 type CleanupGrantsJSONRequestBody = AdminCleanupGrantsRequest
 
+// DeleteUnmanagedOrganizationJSONRequestBody defines body for DeleteUnmanagedOrganization for application/json ContentType.
+type DeleteUnmanagedOrganizationJSONRequestBody = DeleteOrganizationRequest
+
 // MoveGroupJSONRequestBody defines body for MoveGroup for application/json ContentType.
 type MoveGroupJSONRequestBody = MoveGroupRequest
 
 // MovePodJSONRequestBody defines body for MovePod for application/json ContentType.
 type MovePodJSONRequestBody = MovePodRequest
+
+// SendEmailJSONRequestBody defines body for SendEmail for application/json ContentType.
+type SendEmailJSONRequestBody = AdminSendEmailRequest
 
 // MoveUserJSONRequestBody defines body for MoveUser for application/json ContentType.
 type MoveUserJSONRequestBody = MoveUserRequest
@@ -1215,6 +1422,9 @@ type GroupAccessOnDemandJSONRequestBody = AccessOnDemandRequest
 
 // UpdateMemberExpirationJSONRequestBody defines body for UpdateMemberExpiration for application/json ContentType.
 type UpdateMemberExpirationJSONRequestBody = UpdateExpirationRequest
+
+// RequestMembershipJSONRequestBody defines body for RequestMembership for application/json ContentType.
+type RequestMembershipJSONRequestBody = MembershipRequest
 
 // CreatePodJSONRequestBody defines body for CreatePod for application/json ContentType.
 type CreatePodJSONRequestBody = PodCreateRequest
