@@ -3,8 +3,10 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -20,8 +22,9 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces.
 var (
-	_ resource.Resource              = &GroupResource{}
-	_ resource.ResourceWithConfigure = &GroupResource{}
+	_ resource.Resource                = &GroupResource{}
+	_ resource.ResourceWithConfigure   = &GroupResource{}
+	_ resource.ResourceWithImportState = &GroupResource{}
 )
 
 // NewGroupResource initializes a new workspace resource.
@@ -314,4 +317,49 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 	tflog.Trace(ctx, "Deleted a group")
+}
+
+var groupIDPattern = regexp.MustCompile("^(?:organizations/([^/]+)/)?groups/(.+)$")
+
+type groupID struct {
+	OrgUFID   string
+	GroupName string
+}
+
+func parseGroupID(id string) *groupID {
+	// Try full format: organizations/<org>/groups/<group>
+	parts := groupIDPattern.FindStringSubmatch(id)
+	if parts != nil {
+		return &groupID{
+			OrgUFID:   parts[1],
+			GroupName: parts[2],
+		}
+	}
+
+	// Try simple format: just the group name
+	// If the ID doesn't contain slashes, assume it's just the group name
+	if !regexp.MustCompile("/").MatchString(id) {
+		return &groupID{
+			GroupName: id,
+		}
+	}
+
+	return nil
+}
+
+// ImportState imports a group resource.
+func (r *GroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	groupID := parseGroupID(req.ID)
+	if groupID == nil {
+		resp.Diagnostics.AddError(
+			"Invalid Group ID",
+			fmt.Sprintf("Unable to parse Group ID %q. Expected format: 'organizations/<org>/groups/<group>' or '<group>'", req.ID),
+		)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("group_name"), groupID.GroupName)...)
+	if groupID.OrgUFID != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("organization_user_facing_id"), groupID.OrgUFID)...)
+	}
 }

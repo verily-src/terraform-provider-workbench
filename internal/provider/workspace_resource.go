@@ -140,6 +140,14 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"gcp_project_id": schema.StringAttribute{
+				MarkdownDescription: "GCP project ID associated with the workspace (if GCP workspace)",
+				Computed:            true,
+			},
+			"aws_account_id": schema.StringAttribute{
+				MarkdownDescription: "AWS account ID associated with the workspace (if AWS workspace)",
+				Computed:            true,
+			},
 		},
 	}
 }

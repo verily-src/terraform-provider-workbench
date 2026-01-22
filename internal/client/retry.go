@@ -13,7 +13,7 @@ const (
 	// MAX_ELAPSED_TIME is the maximum total time for retries.
 	MAX_ELAPSED_TIME = 2 * time.Minute
 	// MAX_INTERVAL is the maximum interval between retries.
-	MAX_INTERVAL = 250 * time.Millisecond
+	MAX_INTERVAL = 30 * time.Second
 	// MULTIPLIER is the multiplier for increasing the interval after each retry.
 	MULTIPLIER = 1.5
 )

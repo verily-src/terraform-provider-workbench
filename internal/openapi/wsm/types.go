@@ -112,6 +112,12 @@ const (
 	IamRoleWRITER       IamRole = "WRITER"
 )
 
+// Defines values for InstanceStateEvent.
+const (
+	DEVCONTAINEREND   InstanceStateEvent = "DEVCONTAINER_END"
+	DEVCONTAINERSTART InstanceStateEvent = "DEVCONTAINER_START"
+)
+
 // Defines values for JobReportStatus.
 const (
 	JobReportStatusFAILED    JobReportStatus = "FAILED"
@@ -166,6 +172,8 @@ const (
 // Defines values for ResourceType.
 const (
 	AINOTEBOOK                        ResourceType = "AI_NOTEBOOK"
+	AWSAURORADATABASE                 ResourceType = "AWS_AURORA_DATABASE"
+	AWSAURORADATABASEREFERENCE        ResourceType = "AWS_AURORA_DATABASE_REFERENCE"
 	AWSEC2INSTANCE                    ResourceType = "AWS_EC2_INSTANCE"
 	AWSECREXTERNALREPOSITORY          ResourceType = "AWS_ECR_EXTERNAL_REPOSITORY"
 	AWSECREXTERNALREPOSITORYREFERENCE ResourceType = "AWS_ECR_EXTERNAL_REPOSITORY_REFERENCE"
@@ -329,6 +337,71 @@ type AppAttributes struct {
 // ApplicationState State of an application in the system
 type ApplicationState string
 
+// AwsAuroraDatabaseAttributes AWS Aurora Database resource properties included in post-creation get.
+type AwsAuroraDatabaseAttributes struct {
+	// ClusterIdentifier The identifier of the Aurora Serverless v2 cluster containing this database.
+	ClusterIdentifier string `json:"clusterIdentifier"`
+
+	// DatabaseName The name of the database within the Aurora Serverless v2 cluster.
+	DatabaseName string `json:"databaseName"`
+
+	// Engine Database engine type.
+	Engine *string `json:"engine,omitempty"`
+
+	// EngineVersion Database engine version.
+	EngineVersion *string `json:"engineVersion,omitempty"`
+
+	// Port Port number for the Aurora cluster.
+	Port *int `json:"port,omitempty"`
+
+	// Region AWS region where the Aurora cluster is located.
+	Region string `json:"region"`
+
+	// RoEndpoint Read-only endpoint for the Aurora cluster.
+	RoEndpoint *string `json:"roEndpoint,omitempty"`
+
+	// RoUser Read-only database user name.
+	RoUser *string `json:"roUser,omitempty"`
+
+	// RwEndpoint Read-write endpoint for the Aurora cluster.
+	RwEndpoint *string `json:"rwEndpoint,omitempty"`
+
+	// RwUser Read-write database user name.
+	RwUser *string `json:"rwUser,omitempty"`
+}
+
+// AwsAuroraDatabaseCreationParameters Aurora Database specific properties to be set on creation.
+type AwsAuroraDatabaseCreationParameters struct {
+	// DatabaseName The name of the database to create.
+	DatabaseName string `json:"databaseName"`
+
+	// Region AWS region to create the database in.
+	Region *string `json:"region,omitempty"`
+}
+
+// AwsAuroraDatabaseReferenceAttributes AWS Aurora Database reference resource properties.
+type AwsAuroraDatabaseReferenceAttributes struct {
+	// SourceResourceId The UUID of the controlled Aurora Database resource being referenced.
+	SourceResourceId openapi_types.UUID `json:"sourceResourceId"`
+
+	// SourceWorkspaceId The UUID of the workspace containing the controlled Aurora Database resource being referenced.
+	SourceWorkspaceId openapi_types.UUID `json:"sourceWorkspaceId"`
+}
+
+// AwsAuroraDatabaseReferenceResource Description of an AWS Aurora Database reference resource.
+type AwsAuroraDatabaseReferenceResource struct {
+	// Attributes AWS Aurora Database reference resource properties.
+	Attributes AwsAuroraDatabaseReferenceAttributes `json:"attributes"`
+	Metadata   ResourceMetadata                     `json:"metadata"`
+}
+
+// AwsAuroraDatabaseResource Description of an AWS Aurora Database resource.
+type AwsAuroraDatabaseResource struct {
+	// Attributes AWS Aurora Database resource properties included in post-creation get.
+	Attributes AwsAuroraDatabaseAttributes `json:"attributes"`
+	Metadata   ResourceMetadata            `json:"metadata"`
+}
+
 // AwsContext The AWS cloud context associated with a workspace.
 type AwsContext struct {
 	// AccountId The ID of the AWS account associated with the workspace.
@@ -369,6 +442,18 @@ type AwsCredentialAccessScope string
 // AwsCredentialDurationSeconds defines model for AwsCredentialDurationSeconds.
 type AwsCredentialDurationSeconds = int
 
+// AwsEbsVolumeDescription Description of an AWS EBS Volume. Contains a subset of fields from the AWS Volume object that are used by the Workbench frontend.
+type AwsEbsVolumeDescription struct {
+	// Attachments Information about volume attachments
+	Attachments *[]struct {
+		// Device Device name (e.g., "/dev/sdh", "/dev/xvda")
+		Device *string `json:"device,omitempty"`
+	} `json:"attachments,omitempty"`
+
+	// Size Size of the volume in GiB
+	Size *int `json:"size,omitempty"`
+}
+
 // AwsEc2InstanceAttributes AWS EC2 Virtual Machine instance resource properties included in post-creation get.
 type AwsEc2InstanceAttributes struct {
 	// InstanceId The ID of the EC2 Virtual Machine instance
@@ -377,6 +462,9 @@ type AwsEc2InstanceAttributes struct {
 
 // AwsEc2InstanceCreationParameters EC2 Virtual Machine specific properties to be set on creation. These are a subset of the values accepted by the AWS EC2 Virtual Machine API.
 type AwsEc2InstanceCreationParameters struct {
+	// AvailabilityZone Optional AWS availability zone within the region (e.g., 'us-east-1a', 'us-east-1b'). If not specified, uses the default subnet for the region.
+	AvailabilityZone *string `json:"availabilityZone,omitempty"`
+
 	// DiskDeviceName Device filename to map to the data volume
 	DiskDeviceName *string `json:"diskDeviceName,omitempty"`
 
@@ -402,11 +490,36 @@ type AwsEc2InstanceCreationParameters struct {
 	UserData *string `json:"userData,omitempty"`
 }
 
+// AwsEc2InstanceDescription Description of an AWS EC2 Instance. Contains a subset of fields from the AWS EC2 Instance object that are used by the Workbench frontend.
+type AwsEc2InstanceDescription struct {
+	// InstanceId The EC2 instance ID
+	InstanceId string `json:"instanceId"`
+
+	// InstanceType The instance type (e.g., "t3.medium")
+	InstanceType string `json:"instanceType"`
+
+	// State The current state of the instance (e.g., "running", "stopped", "pending")
+	State string `json:"state"`
+
+	// Tags Tags associated with the instance
+	Tags []struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	} `json:"tags"`
+}
+
 // AwsEc2InstanceResource Description of an AWS EC2 Virtual Machine instance resource.
 type AwsEc2InstanceResource struct {
 	// Attributes AWS EC2 Virtual Machine instance resource properties included in post-creation get.
 	Attributes AwsEc2InstanceAttributes `json:"attributes"`
 	Metadata   ResourceMetadata         `json:"metadata"`
+}
+
+// AwsEc2InstanceWithVolumesDescription Combined description of an AWS EC2 Instance and its attached EBS volumes.
+type AwsEc2InstanceWithVolumesDescription struct {
+	// Instance Description of an AWS EC2 Instance. Contains a subset of fields from the AWS EC2 Instance object that are used by the Workbench frontend.
+	Instance AwsEc2InstanceDescription `json:"instance"`
+	Volumes  []AwsEbsVolumeDescription `json:"volumes"`
 }
 
 // AwsEcrExternalRepositoryAttributes Attributes of an AWS ECR Repository external resource.
@@ -468,6 +581,15 @@ type AwsEcrExternalRepositoryResource struct {
 type AwsEcrExternalRepositoryUpdateParameters struct {
 	// TagPrefix Optional. Updated prefix for Principal tag key to be used in external IAM policies. Field will not be updated if this is omitted.
 	TagPrefix *string `json:"tagPrefix,omitempty"`
+}
+
+// AwsReferencedAuroraDatabaseCreationParameters Identifiers for a Controlled Aurora Database resource to reference.
+type AwsReferencedAuroraDatabaseCreationParameters struct {
+	// SourceResourceId The UUID of the resource.
+	SourceResourceId ResourceId `json:"sourceResourceId"`
+
+	// SourceWorkspaceId The UUID of the workspace
+	SourceWorkspaceId WorkspaceId `json:"sourceWorkspaceId"`
 }
 
 // AwsReferencedEcrExternalRepositoryCreationParameters Identifiers for a Controlled ECR External Repository resource to reference.
@@ -637,6 +759,64 @@ type BackfillApplicationsRequestApplicationAble string
 // BqDatasetCloudId defines model for BqDatasetCloudId.
 type BqDatasetCloudId struct {
 	GeneratedDatasetCloudId string `json:"generatedDatasetCloudId"`
+}
+
+// CloneControlledAwsAuroraDatabaseRequestBody Values to be assigned to the cloned Aurora Database resource for a given source Aurora Database controlled resource. Supports COPY_REFERENCE and LINK_REFERENCE (creates referenced resource) and COPY_NOTHING. Set name, displayName, and description null to maintain the original values.
+type CloneControlledAwsAuroraDatabaseRequestBody struct {
+	// CloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	CloningInstructions *CloningInstructionsEnum `json:"cloningInstructions,omitempty"`
+	Description         *string                  `json:"description,omitempty"`
+
+	// DestinationFolderId Id of a given folder. Unique and immutable within a workspace.
+	DestinationFolderId *FolderId `json:"destinationFolderId,omitempty"`
+
+	// DestinationWorkspaceId The UUID of the workspace
+	DestinationWorkspaceId WorkspaceId  `json:"destinationWorkspaceId"`
+	DisplayName            *DisplayName `json:"displayName,omitempty"`
+	Name                   *Name        `json:"name,omitempty"`
+}
+
+// CloneControlledAwsAuroraDatabaseResult Result of successful Aurora Database resource clone.
+type CloneControlledAwsAuroraDatabaseResult struct {
+	// EffectiveCloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	EffectiveCloningInstructions CloningInstructionsEnum `json:"effectiveCloningInstructions"`
+
+	// Resource Description of an AWS Aurora Database reference resource.
+	Resource AwsAuroraDatabaseReferenceResource `json:"resource"`
+
+	// SourceResourceId The UUID of the resource.
+	SourceResourceId ResourceId `json:"sourceResourceId"`
+
+	// SourceWorkspaceId The UUID of the workspace
+	SourceWorkspaceId WorkspaceId `json:"sourceWorkspaceId"`
 }
 
 // CloneControlledAwsEcrExternalRepositoryRequestBody Values to be assigned with the cloned ECR External Repository Reference resource for a given source ECR External Repository controlled resource. Only COPY_REFERENCE and LINK_REFERENCE cloning instructions are defined for External ECR Repository resources. Set name, displayName, and description null to maintain the original values.
@@ -1001,6 +1181,35 @@ type CloneControlledGcpGcsBucketResult struct {
 	Bucket      *ClonedControlledGcpGcsBucket `json:"bucket,omitempty"`
 	ErrorReport *ErrorReport                  `json:"errorReport,omitempty"`
 	JobReport   *JobReport                    `json:"jobReport,omitempty"`
+}
+
+// CloneReferencedAwsAuroraDatabaseReferencedResourceResult API result class for cloning a referenced AWS Aurora Database resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
+type CloneReferencedAwsAuroraDatabaseReferencedResourceResult struct {
+	// EffectiveCloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	EffectiveCloningInstructions CloningInstructionsEnum `json:"effectiveCloningInstructions"`
+
+	// Resource Description of an AWS Aurora Database reference resource.
+	Resource AwsAuroraDatabaseReferenceResource `json:"resource"`
+
+	// SourceResourceId The UUID of the resource.
+	SourceResourceId ResourceId `json:"sourceResourceId"`
+
+	// SourceWorkspaceId The UUID of the workspace
+	SourceWorkspaceId WorkspaceId `json:"sourceWorkspaceId"`
 }
 
 // CloneReferencedAwsEcrExternalRepositoryReferencedResourceResult API result class for cloning a referenced AWS ECR repository resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
@@ -1555,6 +1764,15 @@ type ControlledResourceMetadata struct {
 	Region *string `json:"region,omitempty"`
 }
 
+// CreateAwsAuroraDatabaseReferenceRequestBody A request to create a reference to an AWS Aurora Database.
+type CreateAwsAuroraDatabaseReferenceRequestBody struct {
+	// AuroraDatabase Identifiers for a Controlled Aurora Database resource to reference.
+	AuroraDatabase AwsReferencedAuroraDatabaseCreationParameters `json:"auroraDatabase"`
+
+	// Metadata Common information used in all create referenced resource requests. Either displayName or name must be provided.
+	Metadata ReferenceResourceCommonFields `json:"metadata"`
+}
+
 // CreateAwsEcrExternalRepositoryReferenceRequestBody A request to create a reference to an AWS ECR External Repository.
 type CreateAwsEcrExternalRepositoryReferenceRequestBody struct {
 	// EcrExternalRepository Identifiers for a Controlled ECR External Repository resource to reference.
@@ -1603,6 +1821,24 @@ type CreateCloudContextResult struct {
 	// GcpContext The GCP cloud context associated with a workspace.
 	GcpContext *GcpContext `json:"gcpContext,omitempty"`
 	JobReport  JobReport   `json:"jobReport"`
+}
+
+// CreateControlledAwsAuroraDatabaseRequestBody Payload for requesting a new controlled AWS Aurora Database resource.
+type CreateControlledAwsAuroraDatabaseRequestBody struct {
+	// AuroraDatabase Aurora Database specific properties to be set on creation.
+	AuroraDatabase AwsAuroraDatabaseCreationParameters `json:"auroraDatabase"`
+
+	// Common Common information used in all create controlled resource requests. Either displayName or name must be provided.
+	Common     ControlledResourceCommonFields `json:"common"`
+	JobControl JobControl                     `json:"jobControl"`
+}
+
+// CreateControlledAwsAuroraDatabaseResult Response Payload for requesting a new controlled AWS Aurora Database resource.
+type CreateControlledAwsAuroraDatabaseResult struct {
+	// AuroraDatabase Description of an AWS Aurora Database resource.
+	AuroraDatabase *AwsAuroraDatabaseResource `json:"auroraDatabase,omitempty"`
+	ErrorReport    *ErrorReport               `json:"errorReport,omitempty"`
+	JobReport      *JobReport                 `json:"jobReport,omitempty"`
 }
 
 // CreateControlledAwsEc2InstanceRequestBody Payload for requesting a new controlled AWS EC2 Virtual Machine instance resource.
@@ -2747,6 +2983,18 @@ type GrantRoleRequestBody struct {
 // IamRole Enum containing all valid IAM roles on a Workspace
 type IamRole string
 
+// InstanceState GCP or AWS Instance Status
+type InstanceState struct {
+	// Event Enum containing VM state
+	Event InstanceStateEvent `json:"event"`
+
+	// IsSuccess Boolean indicating whether the state was completed successfully
+	IsSuccess bool `json:"isSuccess"`
+}
+
+// InstanceStateEvent Enum containing VM state
+type InstanceStateEvent string
+
 // JobControl defines model for JobControl.
 type JobControl struct {
 	// Id Unique identifier for the job. Best practice is for job identifier to be a UUID, a ShortUUID, or other globally unique identifier.
@@ -2962,6 +3210,9 @@ type ResolvedAwsS3ExternalBucketAttributes struct {
 	// Prefix Optional prefix path within the bucket.
 	Prefix *string `json:"prefix,omitempty"`
 
+	// Region The AWS Region that the S3 bucket exists in.
+	Region string `json:"region"`
+
 	// Tags IAM tags needed for this resource
 	Tags map[string]string `json:"tags"`
 }
@@ -2986,6 +3237,9 @@ type ResolvedResourceAccessLevel string
 
 // ResolvedResourceAttributesUnion Union of resolved resource attributes.
 type ResolvedResourceAttributesUnion struct {
+	// AwsAuroraDatabase AWS Aurora Database resource properties included in post-creation get.
+	AwsAuroraDatabase *AwsAuroraDatabaseAttributes `json:"awsAuroraDatabase,omitempty"`
+
 	// AwsEcrExternalRepository Resolved attributes of an AWS ECR External Repository reference.
 	AwsEcrExternalRepository *ResolvedAwsEcrExternalRepositoryAttributes `json:"awsEcrExternalRepository,omitempty"`
 
@@ -2997,6 +3251,12 @@ type ResolvedResourceAttributesUnion struct {
 // Exactly one will be populated based on the ResourceType in the
 // ResourceDescription. The value of the other references is undefined.
 type ResourceAttributesUnion struct {
+	// AwsAuroraDatabase AWS Aurora Database resource properties included in post-creation get.
+	AwsAuroraDatabase *AwsAuroraDatabaseAttributes `json:"awsAuroraDatabase,omitempty"`
+
+	// AwsAuroraDatabaseReference AWS Aurora Database reference resource properties.
+	AwsAuroraDatabaseReference *AwsAuroraDatabaseReferenceAttributes `json:"awsAuroraDatabaseReference,omitempty"`
+
 	// AwsEc2Instance AWS EC2 Virtual Machine instance resource properties included in post-creation get.
 	AwsEc2Instance *AwsEc2InstanceAttributes `json:"awsEc2Instance,omitempty"`
 
@@ -3312,6 +3572,33 @@ type UnlinkBillingForCrgRequest struct {
 	JobControl JobControl `json:"jobControl"`
 }
 
+// UpdateAwsAuroraDatabaseReferenceRequestBody Fields updatable on an Aurora Database reference. Leave properties null to keep them the same.
+type UpdateAwsAuroraDatabaseReferenceRequestBody struct {
+	// CloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	CloningInstructions *CloningInstructionsEnum `json:"cloningInstructions,omitempty"`
+	Description         *string                  `json:"description,omitempty"`
+	DisplayName         *DisplayName             `json:"displayName,omitempty"`
+	Name                *Name                    `json:"name,omitempty"`
+
+	// UpdateFolderId Whether to update the folderId. If omitted, the folderId will not be updated,
+	// if defined but child property folderId is not provided, then the request is to unset the folderId.
+	UpdateFolderId *UpdateFolderId `json:"updateFolderId,omitempty"`
+}
+
 // UpdateBigQueryDataTableReferenceRequestBody defines model for UpdateBigQueryDataTableReferenceRequestBody.
 type UpdateBigQueryDataTableReferenceRequestBody struct {
 	// CloningInstructions How to clone resource:
@@ -3404,6 +3691,32 @@ type UpdateCommonResourceMetadataBody struct {
 
 	// UpdateProperties Optional list of key-value pairs of strings
 	UpdateProperties *Properties `json:"updateProperties,omitempty"`
+}
+
+// UpdateControlledAwsAuroraDatabaseRequestBody Payload for updating a controlled AWS Aurora Database resource.
+type UpdateControlledAwsAuroraDatabaseRequestBody struct {
+	// CloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	CloningInstructions *CloningInstructionsEnum `json:"cloningInstructions,omitempty"`
+
+	// Description Optional. New description.
+	Description *string `json:"description,omitempty"`
+
+	// Name Optional. New name; must be unique within the workspace.
+	Name *string `json:"name,omitempty"`
 }
 
 // UpdateControlledAwsEc2InstanceRequestBody Update an AWS EC2 Virtual Machine resource's metadata.
@@ -4365,6 +4678,9 @@ type WsmPolicyDepthParam = WsmPolicyDepth
 // WsmPolicyLocationParam defines model for WsmPolicyLocation.
 type WsmPolicyLocationParam = string
 
+// AwsAuroraDatabaseReferenceResponse Description of an AWS Aurora Database reference resource.
+type AwsAuroraDatabaseReferenceResponse = AwsAuroraDatabaseReferenceResource
+
 // AwsEcrExternalRepositoryReferenceResponse Description of a reference to an externally managed AWS ECR Repository resource.
 type AwsEcrExternalRepositoryReferenceResponse = AwsEcrExternalRepositoryReferenceResource
 
@@ -4383,6 +4699,9 @@ type BadRequest = ErrorReport
 // BqDatasetCloudIdResponse defines model for BqDatasetCloudIdResponse.
 type BqDatasetCloudIdResponse = BqDatasetCloudId
 
+// CloneControlledAwsAuroraDatabaseResponse Result of successful Aurora Database resource clone.
+type CloneControlledAwsAuroraDatabaseResponse = CloneControlledAwsAuroraDatabaseResult
+
 // CloneControlledAwsEcrExternalRepositoryResponse Result of successful ECR External Repository resource clone.
 type CloneControlledAwsEcrExternalRepositoryResponse = CloneControlledAwsEcrExternalRepositoryResult
 
@@ -4400,6 +4719,9 @@ type CloneControlledFlexibleResourceResponse = CloneControlledFlexibleResourceRe
 
 // CloneControlledGcpBigQueryDatasetResponse Result of successful BigQuery dataset clone
 type CloneControlledGcpBigQueryDatasetResponse = CloneControlledGcpBigQueryDatasetResult
+
+// CloneReferencedAwsAuroraDatabaseResourceResponse API result class for cloning a referenced AWS Aurora Database resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
+type CloneReferencedAwsAuroraDatabaseResourceResponse = CloneReferencedAwsAuroraDatabaseReferencedResourceResult
 
 // CloneReferencedAwsEcrExternalRepositoryResourceResponse API result class for cloning a referenced AWS ECR repository resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
 type CloneReferencedAwsEcrExternalRepositoryResourceResponse = CloneReferencedAwsEcrExternalRepositoryReferencedResourceResult
@@ -4447,6 +4769,9 @@ type ControlledGcpBigQueryDatasetResponse = GcpBigQueryDatasetResource
 // a JobReport detailing the async operation, and either a GcpContext or AwsContext (if operation complete)
 // or an ErrorReport detailing an error.
 type CreateCloudContextResultResponse = CreateCloudContextResult
+
+// CreateControlledAwsAuroraDatabaseResponse Response Payload for requesting a new controlled AWS Aurora Database resource.
+type CreateControlledAwsAuroraDatabaseResponse = CreateControlledAwsAuroraDatabaseResult
 
 // CreateControlledAwsEc2InstanceResponse Response Payload for requesting a new controlled AWS EC2 Virtual Machine instance resource.
 type CreateControlledAwsEc2InstanceResponse = CreateControlledAwsEc2InstanceResult
@@ -4520,6 +4845,9 @@ type GcsBucketCloudNameResponse = GcsBucketCloudName
 
 // GenerateAwsResourceCloudNameResponse A valid cloud name for resource.
 type GenerateAwsResourceCloudNameResponse = AwsResourceCloudName
+
+// GetControlledAwsAuroraDatabaseResponse Description of an AWS Aurora Database resource.
+type GetControlledAwsAuroraDatabaseResponse = AwsAuroraDatabaseResource
 
 // GetControlledAwsEc2InstanceResponse Description of an AWS EC2 Virtual Machine instance resource.
 type GetControlledAwsEc2InstanceResponse = AwsEc2InstanceResource
@@ -4748,6 +5076,15 @@ type EnumerateResourcesParams struct {
 	ResolveReferenceParam *ResolveReferenceParam `form:"resolveReference,omitempty" json:"resolveReference,omitempty"`
 }
 
+// GetControlledAwsAuroraDatabaseCredentialParams defines parameters for GetControlledAwsAuroraDatabaseCredential.
+type GetControlledAwsAuroraDatabaseCredentialParams struct {
+	// AccessScope Access to request for an AWS credential or Console URL.
+	AwsCredentialAccessScopeParam AwsCredentialAccessScopeParam `form:"accessScope" json:"accessScope"`
+
+	// DurationSeconds Duration for credential to access controlled AWS resource in seconds.
+	AwsCredentialDurationSecondsParam AwsCredentialDurationSecondsParam `form:"durationSeconds" json:"durationSeconds"`
+}
+
 // GetAwsS3ExternalBucketCredentialParams defines parameters for GetAwsS3ExternalBucketCredential.
 type GetAwsS3ExternalBucketCredentialParams struct {
 	// AccessScope Access to request for an AWS credential or Console URL.
@@ -4895,6 +5232,21 @@ type UpdateFlexibleResourceJSONRequestBody = UpdateControlledFlexibleResourceReq
 // CloneFlexibleResourceJSONRequestBody defines body for CloneFlexibleResource for application/json ContentType.
 type CloneFlexibleResourceJSONRequestBody = CloneControlledFlexibleResourceRequest
 
+// CreateControlledAwsAuroraDatabaseJSONRequestBody defines body for CreateControlledAwsAuroraDatabase for application/json ContentType.
+type CreateControlledAwsAuroraDatabaseJSONRequestBody = CreateControlledAwsAuroraDatabaseRequestBody
+
+// GenerateAwsAuroraDatabaseCloudNameJSONRequestBody defines body for GenerateAwsAuroraDatabaseCloudName for application/json ContentType.
+type GenerateAwsAuroraDatabaseCloudNameJSONRequestBody = GenerateAwsResourceCloudNameRequestBody
+
+// UpdateControlledAwsAuroraDatabaseJSONRequestBody defines body for UpdateControlledAwsAuroraDatabase for application/json ContentType.
+type UpdateControlledAwsAuroraDatabaseJSONRequestBody = UpdateControlledAwsAuroraDatabaseRequestBody
+
+// DeleteControlledAwsAuroraDatabaseJSONRequestBody defines body for DeleteControlledAwsAuroraDatabase for application/json ContentType.
+type DeleteControlledAwsAuroraDatabaseJSONRequestBody = DeleteControlledAwsResourceRequestBody
+
+// CloneControlledAwsAuroraDatabaseJSONRequestBody defines body for CloneControlledAwsAuroraDatabase for application/json ContentType.
+type CloneControlledAwsAuroraDatabaseJSONRequestBody = CloneControlledAwsAuroraDatabaseRequestBody
+
 // CreateAwsS3ExternalBucketJSONRequestBody defines body for CreateAwsS3ExternalBucket for application/json ContentType.
 type CreateAwsS3ExternalBucketJSONRequestBody = CreateControlledAwsS3ExternalBucketRequestBody
 
@@ -5021,6 +5373,15 @@ type UpdateGceInstanceJSONRequestBody = UpdateControlledGcpGceInstanceRequestBod
 // DeleteGceInstanceJSONRequestBody defines body for DeleteGceInstance for application/json ContentType.
 type DeleteGceInstanceJSONRequestBody = DeleteControlledGcpGceInstanceRequest
 
+// CreateAuroraDatabaseReferenceJSONRequestBody defines body for CreateAuroraDatabaseReference for application/json ContentType.
+type CreateAuroraDatabaseReferenceJSONRequestBody = CreateAwsAuroraDatabaseReferenceRequestBody
+
+// UpdateAuroraDatabaseReferenceResourceJSONRequestBody defines body for UpdateAuroraDatabaseReferenceResource for application/json ContentType.
+type UpdateAuroraDatabaseReferenceResourceJSONRequestBody = UpdateAwsAuroraDatabaseReferenceRequestBody
+
+// CloneAwsAuroraDatabaseReferenceJSONRequestBody defines body for CloneAwsAuroraDatabaseReference for application/json ContentType.
+type CloneAwsAuroraDatabaseReferenceJSONRequestBody = CloneReferencedResourceRequestBody
+
 // CreateS3ExternalBucketReferenceJSONRequestBody defines body for CreateS3ExternalBucketReference for application/json ContentType.
 type CreateS3ExternalBucketReferenceJSONRequestBody = CreateAwsS3ExternalBucketReferenceRequestBody
 
@@ -5098,6 +5459,9 @@ type CreateTerraWorkspaceReferenceJSONRequestBody = CreateTerraWorkspaceReferenc
 
 // UpdateResourceJSONRequestBody defines body for UpdateResource for application/json ContentType.
 type UpdateResourceJSONRequestBody = UpdateCommonResourceMetadataBody
+
+// RecordInstanceStateJSONRequestBody defines body for RecordInstanceState for application/json ContentType.
+type RecordInstanceStateJSONRequestBody = InstanceState
 
 // DeleteResourcePropertiesJSONRequestBody defines body for DeleteResourceProperties for application/json ContentType.
 type DeleteResourcePropertiesJSONRequestBody = PropertyKeys

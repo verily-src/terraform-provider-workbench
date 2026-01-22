@@ -105,6 +105,11 @@ type ClientInterface interface {
 	// ListPodEnvironments request
 	ListPodEnvironments(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteUnmanagedOrganizationWithBody request with any body
+	DeleteUnmanagedOrganizationWithBody(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeleteUnmanagedOrganization(ctx context.Context, orgIdParam OrgIdParam, body DeleteUnmanagedOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// MoveGroupWithBody request with any body
 	MoveGroupWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -121,8 +126,16 @@ type ClientInterface interface {
 	// PopulateAllUsers request
 	PopulateAllUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SendEmailWithBody request with any body
+	SendEmailWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendEmail(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteUser request
 	DeleteUser(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetUserByEmail request
+	GetUserByEmail(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// MoveUserWithBody request with any body
 	MoveUserWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -242,6 +255,14 @@ type ClientInterface interface {
 
 	UpdateMemberExpiration(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body UpdateMemberExpirationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RequestMembershipWithBody request with any body
+	RequestMembershipWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RequestMembership(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body RequestMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListMembershipRequirements request
+	ListMembershipRequirements(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// MigrateGroup request
 	MigrateGroup(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -249,7 +270,7 @@ type ClientInterface interface {
 	SyncGroup(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPods request
-	ListPods(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListPods(ctx context.Context, orgIdParam OrgIdParam, params *ListPodsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreatePodWithBody request with any body
 	CreatePodWithBody(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -335,6 +356,9 @@ type ClientInterface interface {
 
 	// ValidateUserBillingAccount request
 	ValidateUserBillingAccount(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListUserPodsV3 request
+	ListUserPodsV3(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUserProfile request
 	GetUserProfile(ctx context.Context, params *GetUserProfileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -452,6 +476,30 @@ func (c *Client) ListPodEnvironments(ctx context.Context, params *ListPodEnviron
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteUnmanagedOrganizationWithBody(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteUnmanagedOrganizationRequestWithBody(c.Server, orgIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteUnmanagedOrganization(ctx context.Context, orgIdParam OrgIdParam, body DeleteUnmanagedOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteUnmanagedOrganizationRequest(c.Server, orgIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) MoveGroupWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMoveGroupRequestWithBody(c.Server, orgIdParam, groupNameParam, contentType, body)
 	if err != nil {
@@ -524,8 +572,44 @@ func (c *Client) PopulateAllUsers(ctx context.Context, reqEditors ...RequestEdit
 	return c.Client.Do(req)
 }
 
+func (c *Client) SendEmailWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendEmailRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendEmail(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendEmailRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeleteUser(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteUserRequest(c.Server, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetUserByEmail(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUserByEmailRequest(c.Server, emailAddressPathParam)
 	if err != nil {
 		return nil, err
 	}
@@ -1064,6 +1148,42 @@ func (c *Client) UpdateMemberExpiration(ctx context.Context, orgIdParam OrgIdPar
 	return c.Client.Do(req)
 }
 
+func (c *Client) RequestMembershipWithBody(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestMembershipRequestWithBody(c.Server, orgIdParam, groupNameParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestMembership(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body RequestMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestMembershipRequest(c.Server, orgIdParam, groupNameParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListMembershipRequirements(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMembershipRequirementsRequest(c.Server, orgIdParam, groupNameParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) MigrateGroup(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMigrateGroupRequest(c.Server, orgIdParam, groupNameParam)
 	if err != nil {
@@ -1088,8 +1208,8 @@ func (c *Client) SyncGroup(ctx context.Context, orgIdParam OrgIdParam, groupName
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListPods(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListPodsRequest(c.Server, orgIdParam)
+func (c *Client) ListPods(ctx context.Context, orgIdParam OrgIdParam, params *ListPodsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPodsRequest(c.Server, orgIdParam, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1462,6 +1582,18 @@ func (c *Client) RevokeInvite(ctx context.Context, orgIdParam OrgIdParam, emailA
 
 func (c *Client) ValidateUserBillingAccount(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewValidateUserBillingAccountRequest(c.Server, orgIdParam, billingAccountIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListUserPodsV3(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListUserPodsV3Request(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1859,6 +1991,53 @@ func NewListPodEnvironmentsRequest(server string, params *ListPodEnvironmentsPar
 	return req, nil
 }
 
+// NewDeleteUnmanagedOrganizationRequest calls the generic DeleteUnmanagedOrganization builder with application/json body
+func NewDeleteUnmanagedOrganizationRequest(server string, orgIdParam OrgIdParam, body DeleteUnmanagedOrganizationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteUnmanagedOrganizationRequestWithBody(server, orgIdParam, "application/json", bodyReader)
+}
+
+// NewDeleteUnmanagedOrganizationRequestWithBody generates requests for DeleteUnmanagedOrganization with any type of body
+func NewDeleteUnmanagedOrganizationRequestWithBody(server string, orgIdParam OrgIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/organizations/unmanaged/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewMoveGroupRequest calls the generic MoveGroup builder with application/json body
 func NewMoveGroupRequest(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body MoveGroupJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -2028,6 +2207,46 @@ func NewPopulateAllUsersRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewSendEmailRequest calls the generic SendEmail builder with application/json body
+func NewSendEmailRequest(server string, body SendEmailJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendEmailRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendEmailRequestWithBody generates requests for SendEmail with any type of body
+func NewSendEmailRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/send-email")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteUserRequest generates requests for DeleteUser
 func NewDeleteUserRequest(server string, emailAddressPathParam EmailAddressPathParam) (*http.Request, error) {
 	var err error
@@ -2055,6 +2274,40 @@ func NewDeleteUserRequest(server string, emailAddressPathParam EmailAddressPathP
 	}
 
 	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetUserByEmailRequest generates requests for GetUserByEmail
+func NewGetUserByEmailRequest(server string, emailAddressPathParam EmailAddressPathParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userEmail", runtime.ParamLocationPath, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/users/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -3559,6 +3812,101 @@ func NewUpdateMemberExpirationRequestWithBody(server string, orgIdParam OrgIdPar
 	return req, nil
 }
 
+// NewRequestMembershipRequest calls the generic RequestMembership builder with application/json body
+func NewRequestMembershipRequest(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body RequestMembershipJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRequestMembershipRequestWithBody(server, orgIdParam, groupNameParam, "application/json", bodyReader)
+}
+
+// NewRequestMembershipRequestWithBody generates requests for RequestMembership with any type of body
+func NewRequestMembershipRequestWithBody(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "groupName", runtime.ParamLocationPath, groupNameParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/%s/groups/%s/membership-request", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListMembershipRequirementsRequest generates requests for ListMembershipRequirements
+func NewListMembershipRequirementsRequest(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "groupName", runtime.ParamLocationPath, groupNameParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/%s/groups/%s/membership-requirements", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewMigrateGroupRequest generates requests for MigrateGroup
 func NewMigrateGroupRequest(server string, orgIdParam OrgIdParam, groupNameParam GroupNameParam) (*http.Request, error) {
 	var err error
@@ -3642,7 +3990,7 @@ func NewSyncGroupRequest(server string, orgIdParam OrgIdParam, groupNameParam Gr
 }
 
 // NewListPodsRequest generates requests for ListPods
-func NewListPodsRequest(server string, orgIdParam OrgIdParam) (*http.Request, error) {
+func NewListPodsRequest(server string, orgIdParam OrgIdParam, params *ListPodsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3665,6 +4013,28 @@ func NewListPodsRequest(server string, orgIdParam OrgIdParam) (*http.Request, er
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Email != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "email", runtime.ParamLocationQuery, *params.Email); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -4644,6 +5014,70 @@ func NewListOrganizationMembersV2Request(server string, orgIdParam OrgIdParam, p
 
 		}
 
+		if params.FilterStatus != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "filterStatus", runtime.ParamLocationQuery, *params.FilterStatus); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.SortField != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sortField", runtime.ParamLocationQuery, *params.SortField); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.SortDirection != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sortDirection", runtime.ParamLocationQuery, *params.SortDirection); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "search", runtime.ParamLocationQuery, *params.Search); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -4867,6 +5301,33 @@ func NewValidateUserBillingAccountRequest(server string, orgIdParam OrgIdParam, 
 	}
 
 	operationPath := fmt.Sprintf("/api/organizations/v2/%s/validate-billing-account/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListUserPodsV3Request generates requests for ListUserPodsV3
+func NewListUserPodsV3Request(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v3/users/pods")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -5477,6 +5938,11 @@ type ClientWithResponsesInterface interface {
 	// ListPodEnvironmentsWithResponse request
 	ListPodEnvironmentsWithResponse(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*ListPodEnvironmentsResp, error)
 
+	// DeleteUnmanagedOrganizationWithBodyWithResponse request with any body
+	DeleteUnmanagedOrganizationWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteUnmanagedOrganizationResp, error)
+
+	DeleteUnmanagedOrganizationWithResponse(ctx context.Context, orgIdParam OrgIdParam, body DeleteUnmanagedOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteUnmanagedOrganizationResp, error)
+
 	// MoveGroupWithBodyWithResponse request with any body
 	MoveGroupWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveGroupResp, error)
 
@@ -5493,8 +5959,16 @@ type ClientWithResponsesInterface interface {
 	// PopulateAllUsersWithResponse request
 	PopulateAllUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PopulateAllUsersResp, error)
 
+	// SendEmailWithBodyWithResponse request with any body
+	SendEmailWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendEmailResp, error)
+
+	SendEmailWithResponse(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*SendEmailResp, error)
+
 	// DeleteUserWithResponse request
 	DeleteUserWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*DeleteUserResp, error)
+
+	// GetUserByEmailWithResponse request
+	GetUserByEmailWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*GetUserByEmailResp, error)
 
 	// MoveUserWithBodyWithResponse request with any body
 	MoveUserWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveUserResp, error)
@@ -5614,6 +6088,14 @@ type ClientWithResponsesInterface interface {
 
 	UpdateMemberExpirationWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body UpdateMemberExpirationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMemberExpirationResp, error)
 
+	// RequestMembershipWithBodyWithResponse request with any body
+	RequestMembershipWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestMembershipResp, error)
+
+	RequestMembershipWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body RequestMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestMembershipResp, error)
+
+	// ListMembershipRequirementsWithResponse request
+	ListMembershipRequirementsWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*ListMembershipRequirementsResp, error)
+
 	// MigrateGroupWithResponse request
 	MigrateGroupWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*MigrateGroupResp, error)
 
@@ -5621,7 +6103,7 @@ type ClientWithResponsesInterface interface {
 	SyncGroupWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*SyncGroupResp, error)
 
 	// ListPodsWithResponse request
-	ListPodsWithResponse(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*ListPodsResp, error)
+	ListPodsWithResponse(ctx context.Context, orgIdParam OrgIdParam, params *ListPodsParams, reqEditors ...RequestEditorFn) (*ListPodsResp, error)
 
 	// CreatePodWithBodyWithResponse request with any body
 	CreatePodWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePodResp, error)
@@ -5707,6 +6189,9 @@ type ClientWithResponsesInterface interface {
 
 	// ValidateUserBillingAccountWithResponse request
 	ValidateUserBillingAccountWithResponse(ctx context.Context, orgIdParam OrgIdParam, billingAccountIdParam BillingAccountIdParam, reqEditors ...RequestEditorFn) (*ValidateUserBillingAccountResp, error)
+
+	// ListUserPodsV3WithResponse request
+	ListUserPodsV3WithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPodsV3Resp, error)
 
 	// GetUserProfileWithResponse request
 	GetUserProfileWithResponse(ctx context.Context, params *GetUserProfileParams, reqEditors ...RequestEditorFn) (*GetUserProfileResp, error)
@@ -5854,6 +6339,31 @@ func (r ListPodEnvironmentsResp) StatusCode() int {
 	return 0
 }
 
+type DeleteUnmanagedOrganizationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteUnmanagedOrganizationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteUnmanagedOrganizationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type MoveGroupResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -5955,6 +6465,31 @@ func (r PopulateAllUsersResp) StatusCode() int {
 	return 0
 }
 
+type SendEmailResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AdminSendEmailResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r SendEmailResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendEmailResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -5974,6 +6509,32 @@ func (r DeleteUserResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetUserByEmailResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetUserByEmailResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetUserByEmailResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6732,6 +7293,57 @@ func (r UpdateMemberExpirationResp) StatusCode() int {
 	return 0
 }
 
+type RequestMembershipResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *MembershipRequestResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r RequestMembershipResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RequestMembershipResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListMembershipRequirementsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *MembershipRequirementList
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMembershipRequirementsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMembershipRequirementsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type MigrateGroupResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7397,6 +8009,29 @@ func (r ValidateUserBillingAccountResp) StatusCode() int {
 	return 0
 }
 
+type ListUserPodsV3Resp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PodDescriptionListV3
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListUserPodsV3Resp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListUserPodsV3Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetUserProfileResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7717,6 +8352,23 @@ func (c *ClientWithResponses) ListPodEnvironmentsWithResponse(ctx context.Contex
 	return ParseListPodEnvironmentsResp(rsp)
 }
 
+// DeleteUnmanagedOrganizationWithBodyWithResponse request with arbitrary body returning *DeleteUnmanagedOrganizationResp
+func (c *ClientWithResponses) DeleteUnmanagedOrganizationWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteUnmanagedOrganizationResp, error) {
+	rsp, err := c.DeleteUnmanagedOrganizationWithBody(ctx, orgIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteUnmanagedOrganizationResp(rsp)
+}
+
+func (c *ClientWithResponses) DeleteUnmanagedOrganizationWithResponse(ctx context.Context, orgIdParam OrgIdParam, body DeleteUnmanagedOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteUnmanagedOrganizationResp, error) {
+	rsp, err := c.DeleteUnmanagedOrganization(ctx, orgIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteUnmanagedOrganizationResp(rsp)
+}
+
 // MoveGroupWithBodyWithResponse request with arbitrary body returning *MoveGroupResp
 func (c *ClientWithResponses) MoveGroupWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveGroupResp, error) {
 	rsp, err := c.MoveGroupWithBody(ctx, orgIdParam, groupNameParam, contentType, body, reqEditors...)
@@ -7769,6 +8421,23 @@ func (c *ClientWithResponses) PopulateAllUsersWithResponse(ctx context.Context, 
 	return ParsePopulateAllUsersResp(rsp)
 }
 
+// SendEmailWithBodyWithResponse request with arbitrary body returning *SendEmailResp
+func (c *ClientWithResponses) SendEmailWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendEmailResp, error) {
+	rsp, err := c.SendEmailWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendEmailResp(rsp)
+}
+
+func (c *ClientWithResponses) SendEmailWithResponse(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*SendEmailResp, error) {
+	rsp, err := c.SendEmail(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendEmailResp(rsp)
+}
+
 // DeleteUserWithResponse request returning *DeleteUserResp
 func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*DeleteUserResp, error) {
 	rsp, err := c.DeleteUser(ctx, emailAddressPathParam, reqEditors...)
@@ -7776,6 +8445,15 @@ func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, emailA
 		return nil, err
 	}
 	return ParseDeleteUserResp(rsp)
+}
+
+// GetUserByEmailWithResponse request returning *GetUserByEmailResp
+func (c *ClientWithResponses) GetUserByEmailWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*GetUserByEmailResp, error) {
+	rsp, err := c.GetUserByEmail(ctx, emailAddressPathParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetUserByEmailResp(rsp)
 }
 
 // MoveUserWithBodyWithResponse request with arbitrary body returning *MoveUserResp
@@ -8160,6 +8838,32 @@ func (c *ClientWithResponses) UpdateMemberExpirationWithResponse(ctx context.Con
 	return ParseUpdateMemberExpirationResp(rsp)
 }
 
+// RequestMembershipWithBodyWithResponse request with arbitrary body returning *RequestMembershipResp
+func (c *ClientWithResponses) RequestMembershipWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestMembershipResp, error) {
+	rsp, err := c.RequestMembershipWithBody(ctx, orgIdParam, groupNameParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestMembershipResp(rsp)
+}
+
+func (c *ClientWithResponses) RequestMembershipWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, body RequestMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestMembershipResp, error) {
+	rsp, err := c.RequestMembership(ctx, orgIdParam, groupNameParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestMembershipResp(rsp)
+}
+
+// ListMembershipRequirementsWithResponse request returning *ListMembershipRequirementsResp
+func (c *ClientWithResponses) ListMembershipRequirementsWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*ListMembershipRequirementsResp, error) {
+	rsp, err := c.ListMembershipRequirements(ctx, orgIdParam, groupNameParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMembershipRequirementsResp(rsp)
+}
+
 // MigrateGroupWithResponse request returning *MigrateGroupResp
 func (c *ClientWithResponses) MigrateGroupWithResponse(ctx context.Context, orgIdParam OrgIdParam, groupNameParam GroupNameParam, reqEditors ...RequestEditorFn) (*MigrateGroupResp, error) {
 	rsp, err := c.MigrateGroup(ctx, orgIdParam, groupNameParam, reqEditors...)
@@ -8179,8 +8883,8 @@ func (c *ClientWithResponses) SyncGroupWithResponse(ctx context.Context, orgIdPa
 }
 
 // ListPodsWithResponse request returning *ListPodsResp
-func (c *ClientWithResponses) ListPodsWithResponse(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*ListPodsResp, error) {
-	rsp, err := c.ListPods(ctx, orgIdParam, reqEditors...)
+func (c *ClientWithResponses) ListPodsWithResponse(ctx context.Context, orgIdParam OrgIdParam, params *ListPodsParams, reqEditors ...RequestEditorFn) (*ListPodsResp, error) {
+	rsp, err := c.ListPods(ctx, orgIdParam, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -8456,6 +9160,15 @@ func (c *ClientWithResponses) ValidateUserBillingAccountWithResponse(ctx context
 		return nil, err
 	}
 	return ParseValidateUserBillingAccountResp(rsp)
+}
+
+// ListUserPodsV3WithResponse request returning *ListUserPodsV3Resp
+func (c *ClientWithResponses) ListUserPodsV3WithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPodsV3Resp, error) {
+	rsp, err := c.ListUserPodsV3(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListUserPodsV3Resp(rsp)
 }
 
 // GetUserProfileWithResponse request returning *GetUserProfileResp
@@ -8799,6 +9512,53 @@ func ParseListPodEnvironmentsResp(rsp *http.Response) (*ListPodEnvironmentsResp,
 	return response, nil
 }
 
+// ParseDeleteUnmanagedOrganizationResp parses an HTTP response from a DeleteUnmanagedOrganizationWithResponse call
+func ParseDeleteUnmanagedOrganizationResp(rsp *http.Response) (*DeleteUnmanagedOrganizationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteUnmanagedOrganizationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseMoveGroupResp parses an HTTP response from a MoveGroupWithResponse call
 func ParseMoveGroupResp(rsp *http.Response) (*MoveGroupResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8994,6 +9754,53 @@ func ParsePopulateAllUsersResp(rsp *http.Response) (*PopulateAllUsersResp, error
 	return response, nil
 }
 
+// ParseSendEmailResp parses an HTTP response from a SendEmailWithResponse call
+func ParseSendEmailResp(rsp *http.Response) (*SendEmailResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendEmailResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdminSendEmailResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteUserResp parses an HTTP response from a DeleteUserWithResponse call
 func ParseDeleteUserResp(rsp *http.Response) (*DeleteUserResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9008,6 +9815,60 @@ func ParseDeleteUserResp(rsp *http.Response) (*DeleteUserResp, error) {
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetUserByEmailResp parses an HTTP response from a GetUserByEmailWithResponse call
+func ParseGetUserByEmailResp(rsp *http.Response) (*GetUserByEmailResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetUserByEmailResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -10465,6 +11326,107 @@ func ParseUpdateMemberExpirationResp(rsp *http.Response) (*UpdateMemberExpiratio
 	return response, nil
 }
 
+// ParseRequestMembershipResp parses an HTTP response from a RequestMembershipWithResponse call
+func ParseRequestMembershipResp(rsp *http.Response) (*RequestMembershipResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RequestMembershipResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MembershipRequestResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMembershipRequirementsResp parses an HTTP response from a ListMembershipRequirementsWithResponse call
+func ParseListMembershipRequirementsResp(rsp *http.Response) (*ListMembershipRequirementsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMembershipRequirementsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MembershipRequirementList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseMigrateGroupResp parses an HTTP response from a MigrateGroupWithResponse call
 func ParseMigrateGroupResp(rsp *http.Response) (*MigrateGroupResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -11779,6 +12741,39 @@ func ParseValidateUserBillingAccountResp(rsp *http.Response) (*ValidateUserBilli
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListUserPodsV3Resp parses an HTTP response from a ListUserPodsV3WithResponse call
+func ParseListUserPodsV3Resp(rsp *http.Response) (*ListUserPodsV3Resp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListUserPodsV3Resp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PodDescriptionListV3
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError

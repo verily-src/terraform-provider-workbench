@@ -160,6 +160,14 @@ func (r *DataCollectionResource) Schema(ctx context.Context, req resource.Schema
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"gcp_project_id": schema.StringAttribute{
+				MarkdownDescription: "GCP project ID associated with the data collection (if GCP workspace)",
+				Computed:            true,
+			},
+			"aws_account_id": schema.StringAttribute{
+				MarkdownDescription: "AWS account ID associated with the data collection (if AWS workspace)",
+				Computed:            true,
+			},
 		},
 	}
 }

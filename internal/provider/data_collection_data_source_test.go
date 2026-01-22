@@ -34,6 +34,9 @@ func TestAccDataCollectionDataSource(t *testing.T) {
 				CreatedDate:     now,
 				LastUpdatedBy:   "test-user",
 				LastUpdatedDate: now,
+				GcpContext: &wsm.GcpContext{
+					ProjectId: "test-data-collection-project",
+				},
 			}
 
 			w.Header().Set("Content-Type", "application/json")
@@ -64,6 +67,8 @@ func TestAccDataCollectionDataSource(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr("data.workbench_data_collection.test", "therapeutic_tags.*", "cardiology"),
 					resource.TestCheckTypeSetElemAttr("data.workbench_data_collection.test", "therapeutic_tags.*", "dermatology"),
 					resource.TestCheckResourceAttr("data.workbench_data_collection.test", "update_frequency", "weekly"),
+					resource.TestCheckResourceAttr("data.workbench_data_collection.test", "gcp_project_id", "test-data-collection-project"),
+					resource.TestCheckNoResourceAttr("data.workbench_data_collection.test", "aws_account_id"),
 				),
 			},
 		},

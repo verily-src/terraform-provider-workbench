@@ -132,6 +132,11 @@ func TestAccDataCollectionResource(t *testing.T) {
 						tfjsonpath.New("update_frequency"),
 						knownvalue.StringExact("weekly"),
 					),
+					statecheck.ExpectKnownValue(
+						"workbench_data_collection.test",
+						tfjsonpath.New("gcp_project_id"),
+						knownvalue.NotNull(),
+					),
 				},
 			},
 			// Update and Read testing
@@ -209,6 +214,11 @@ func TestAccDataCollectionResource(t *testing.T) {
 							knownvalue.StringExact("cardiology"),
 							knownvalue.StringExact("oncology"),
 						}),
+					),
+					statecheck.ExpectKnownValue(
+						"workbench_data_collection.test",
+						tfjsonpath.New("gcp_project_id"),
+						knownvalue.NotNull(),
 					),
 				},
 			},

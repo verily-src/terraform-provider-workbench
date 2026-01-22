@@ -116,11 +116,20 @@ type ClientInterface interface {
 
 	BackfillWorkspaceApplications(ctx context.Context, body BackfillWorkspaceApplicationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BackfillCromwellRunsForAllWorkspaces request
+	BackfillCromwellRunsForAllWorkspaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BackfillWorkspaceLabels request
 	BackfillWorkspaceLabels(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BackfillPolicyLinks request
 	BackfillPolicyLinks(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BackfillRegions request
+	BackfillRegions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BackfillRegionsSingle request
+	BackfillRegionsSingle(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BackfillWorkspaceRoles request
 	BackfillWorkspaceRoles(ctx context.Context, params *BackfillWorkspaceRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -305,6 +314,43 @@ type ClientInterface interface {
 	CloneFlexibleResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CloneFlexibleResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateControlledAwsAuroraDatabaseWithBody request with any body
+	CreateControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCreateControlledAwsAuroraDatabaseResult request
+	GetCreateControlledAwsAuroraDatabaseResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDeleteControlledAwsAuroraDatabaseResult request
+	GetDeleteControlledAwsAuroraDatabaseResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GenerateAwsAuroraDatabaseCloudNameWithBody request with any body
+	GenerateAwsAuroraDatabaseCloudNameWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GenerateAwsAuroraDatabaseCloudName(ctx context.Context, workspaceIdParam WorkspaceIdParam, body GenerateAwsAuroraDatabaseCloudNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetControlledAwsAuroraDatabase request
+	GetControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateControlledAwsAuroraDatabaseWithBody request with any body
+	UpdateControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteControlledAwsAuroraDatabaseWithBody request with any body
+	DeleteControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeleteControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CloneControlledAwsAuroraDatabaseWithBody request with any body
+	CloneControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CloneControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetControlledAwsAuroraDatabaseCredential request
+	GetControlledAwsAuroraDatabaseCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetControlledAwsAuroraDatabaseCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateAwsS3ExternalBucketWithBody request with any body
 	CreateAwsS3ExternalBucketWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -627,6 +673,27 @@ type ClientInterface interface {
 
 	DeleteGceInstance(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteGceInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateAuroraDatabaseReferenceWithBody request with any body
+	CreateAuroraDatabaseReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAuroraDatabaseReference request
+	DeleteAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAuroraDatabaseReference request
+	GetAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAuroraDatabaseReferenceResourceWithBody request with any body
+	UpdateAuroraDatabaseReferenceResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAuroraDatabaseReferenceResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateAuroraDatabaseReferenceResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CloneAwsAuroraDatabaseReferenceWithBody request with any body
+	CloneAwsAuroraDatabaseReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CloneAwsAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateS3ExternalBucketReferenceWithBody request with any body
 	CreateS3ExternalBucketReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -838,6 +905,11 @@ type ClientInterface interface {
 
 	UpdateResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RecordInstanceStateWithBody request with any body
+	RecordInstanceStateWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RecordInstanceState(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body RecordInstanceStateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteResourcePropertiesWithBody request with any body
 	DeleteResourcePropertiesWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -919,6 +991,9 @@ type ClientInterface interface {
 
 	// GetDeleteWorkspaceV2Result request
 	GetDeleteWorkspaceV2Result(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DescribeAwsEc2InstanceV2 request
+	DescribeAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateGceInstanceV2WithBody request with any body
 	CreateGceInstanceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1052,6 +1127,18 @@ func (c *Client) BackfillWorkspaceApplications(ctx context.Context, body Backfil
 	return c.Client.Do(req)
 }
 
+func (c *Client) BackfillCromwellRunsForAllWorkspaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillCromwellRunsForAllWorkspacesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) BackfillWorkspaceLabels(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBackfillWorkspaceLabelsRequest(c.Server)
 	if err != nil {
@@ -1066,6 +1153,30 @@ func (c *Client) BackfillWorkspaceLabels(ctx context.Context, reqEditors ...Requ
 
 func (c *Client) BackfillPolicyLinks(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBackfillPolicyLinksRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BackfillRegions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillRegionsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BackfillRegionsSingle(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillRegionsSingleRequest(c.Server, workspaceIdParam)
 	if err != nil {
 		return nil, err
 	}
@@ -1870,6 +1981,174 @@ func (c *Client) CloneFlexibleResourceWithBody(ctx context.Context, workspaceIdP
 
 func (c *Client) CloneFlexibleResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCloneFlexibleResourceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateControlledAwsAuroraDatabaseRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateControlledAwsAuroraDatabaseRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetCreateControlledAwsAuroraDatabaseResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCreateControlledAwsAuroraDatabaseResultRequest(c.Server, workspaceIdParam, jobIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDeleteControlledAwsAuroraDatabaseResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDeleteControlledAwsAuroraDatabaseResultRequest(c.Server, workspaceIdParam, jobIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GenerateAwsAuroraDatabaseCloudNameWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGenerateAwsAuroraDatabaseCloudNameRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GenerateAwsAuroraDatabaseCloudName(ctx context.Context, workspaceIdParam WorkspaceIdParam, body GenerateAwsAuroraDatabaseCloudNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGenerateAwsAuroraDatabaseCloudNameRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetControlledAwsAuroraDatabaseRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateControlledAwsAuroraDatabaseRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateControlledAwsAuroraDatabaseRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteControlledAwsAuroraDatabaseRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteControlledAwsAuroraDatabaseRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneControlledAwsAuroraDatabaseRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneControlledAwsAuroraDatabase(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneControlledAwsAuroraDatabaseRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetControlledAwsAuroraDatabaseCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetControlledAwsAuroraDatabaseCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetControlledAwsAuroraDatabaseCredentialRequest(c.Server, workspaceIdParam, resourceIdParam, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3332,6 +3611,102 @@ func (c *Client) DeleteGceInstance(ctx context.Context, workspaceIdParam Workspa
 	return c.Client.Do(req)
 }
 
+func (c *Client) CreateAuroraDatabaseReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAuroraDatabaseReferenceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAuroraDatabaseReferenceRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAuroraDatabaseReferenceRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAuroraDatabaseReferenceRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAuroraDatabaseReferenceResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAuroraDatabaseReferenceResourceRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAuroraDatabaseReferenceResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateAuroraDatabaseReferenceResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAuroraDatabaseReferenceResourceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneAwsAuroraDatabaseReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneAwsAuroraDatabaseReferenceRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneAwsAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneAwsAuroraDatabaseReferenceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateS3ExternalBucketReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateS3ExternalBucketReferenceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -4280,6 +4655,30 @@ func (c *Client) UpdateResource(ctx context.Context, workspaceIdParam WorkspaceI
 	return c.Client.Do(req)
 }
 
+func (c *Client) RecordInstanceStateWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRecordInstanceStateRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RecordInstanceState(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body RecordInstanceStateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRecordInstanceStateRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeleteResourcePropertiesWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteResourcePropertiesRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
 	if err != nil {
@@ -4652,6 +5051,18 @@ func (c *Client) GetDeleteWorkspaceV2Result(ctx context.Context, workspaceIdPara
 	return c.Client.Do(req)
 }
 
+func (c *Client) DescribeAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDescribeAwsEc2InstanceV2Request(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateGceInstanceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateGceInstanceV2RequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -5014,6 +5425,33 @@ func NewBackfillWorkspaceApplicationsRequestWithBody(server string, contentType 
 	return req, nil
 }
 
+// NewBackfillCromwellRunsForAllWorkspacesRequest generates requests for BackfillCromwellRunsForAllWorkspaces
+func NewBackfillCromwellRunsForAllWorkspacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/backfillCromwellRunsForAllWorkspaces")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewBackfillWorkspaceLabelsRequest generates requests for BackfillWorkspaceLabels
 func NewBackfillWorkspaceLabelsRequest(server string) (*http.Request, error) {
 	var err error
@@ -5051,6 +5489,67 @@ func NewBackfillPolicyLinksRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/backfillPolicyLinks")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBackfillRegionsRequest generates requests for BackfillRegions
+func NewBackfillRegionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/backfillRegions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBackfillRegionsSingleRequest generates requests for BackfillRegionsSingle
+func NewBackfillRegionsSingleRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/backfillRegionsSingle/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -7660,6 +8159,456 @@ func NewCloneFlexibleResourceRequestWithBody(server string, workspaceIdParam Wor
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateControlledAwsAuroraDatabaseRequest calls the generic CreateControlledAwsAuroraDatabase builder with application/json body
+func NewCreateControlledAwsAuroraDatabaseRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateControlledAwsAuroraDatabaseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateControlledAwsAuroraDatabaseRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewCreateControlledAwsAuroraDatabaseRequestWithBody generates requests for CreateControlledAwsAuroraDatabase with any type of body
+func NewCreateControlledAwsAuroraDatabaseRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetCreateControlledAwsAuroraDatabaseResultRequest generates requests for GetCreateControlledAwsAuroraDatabaseResult
+func NewGetCreateControlledAwsAuroraDatabaseResultRequest(server string, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/create-result/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDeleteControlledAwsAuroraDatabaseResultRequest generates requests for GetDeleteControlledAwsAuroraDatabaseResult
+func NewGetDeleteControlledAwsAuroraDatabaseResultRequest(server string, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/delete-result/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGenerateAwsAuroraDatabaseCloudNameRequest calls the generic GenerateAwsAuroraDatabaseCloudName builder with application/json body
+func NewGenerateAwsAuroraDatabaseCloudNameRequest(server string, workspaceIdParam WorkspaceIdParam, body GenerateAwsAuroraDatabaseCloudNameJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGenerateAwsAuroraDatabaseCloudNameRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewGenerateAwsAuroraDatabaseCloudNameRequestWithBody generates requests for GenerateAwsAuroraDatabaseCloudName with any type of body
+func NewGenerateAwsAuroraDatabaseCloudNameRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/generateName", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetControlledAwsAuroraDatabaseRequest generates requests for GetControlledAwsAuroraDatabase
+func NewGetControlledAwsAuroraDatabaseRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateControlledAwsAuroraDatabaseRequest calls the generic UpdateControlledAwsAuroraDatabase builder with application/json body
+func NewUpdateControlledAwsAuroraDatabaseRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateControlledAwsAuroraDatabaseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateControlledAwsAuroraDatabaseRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewUpdateControlledAwsAuroraDatabaseRequestWithBody generates requests for UpdateControlledAwsAuroraDatabase with any type of body
+func NewUpdateControlledAwsAuroraDatabaseRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteControlledAwsAuroraDatabaseRequest calls the generic DeleteControlledAwsAuroraDatabase builder with application/json body
+func NewDeleteControlledAwsAuroraDatabaseRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteControlledAwsAuroraDatabaseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteControlledAwsAuroraDatabaseRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewDeleteControlledAwsAuroraDatabaseRequestWithBody generates requests for DeleteControlledAwsAuroraDatabase with any type of body
+func NewDeleteControlledAwsAuroraDatabaseRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCloneControlledAwsAuroraDatabaseRequest calls the generic CloneControlledAwsAuroraDatabase builder with application/json body
+func NewCloneControlledAwsAuroraDatabaseRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneControlledAwsAuroraDatabaseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCloneControlledAwsAuroraDatabaseRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewCloneControlledAwsAuroraDatabaseRequestWithBody generates requests for CloneControlledAwsAuroraDatabase with any type of body
+func NewCloneControlledAwsAuroraDatabaseRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/%s/clone", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetControlledAwsAuroraDatabaseCredentialRequest generates requests for GetControlledAwsAuroraDatabaseCredential
+func NewGetControlledAwsAuroraDatabaseCredentialRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetControlledAwsAuroraDatabaseCredentialParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/aws/auroradatabases/%s/credential", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "accessScope", runtime.ParamLocationQuery, params.AwsCredentialAccessScopeParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "durationSeconds", runtime.ParamLocationQuery, params.AwsCredentialDurationSecondsParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -11564,6 +12513,243 @@ func NewDeleteGceInstanceRequestWithBody(server string, workspaceIdParam Workspa
 	return req, nil
 }
 
+// NewCreateAuroraDatabaseReferenceRequest calls the generic CreateAuroraDatabaseReference builder with application/json body
+func NewCreateAuroraDatabaseReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateAuroraDatabaseReferenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateAuroraDatabaseReferenceRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewCreateAuroraDatabaseReferenceRequestWithBody generates requests for CreateAuroraDatabaseReference with any type of body
+func NewCreateAuroraDatabaseReferenceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteAuroraDatabaseReferenceRequest generates requests for DeleteAuroraDatabaseReference
+func NewDeleteAuroraDatabaseReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAuroraDatabaseReferenceRequest generates requests for GetAuroraDatabaseReference
+func NewGetAuroraDatabaseReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAuroraDatabaseReferenceResourceRequest calls the generic UpdateAuroraDatabaseReferenceResource builder with application/json body
+func NewUpdateAuroraDatabaseReferenceResourceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateAuroraDatabaseReferenceResourceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAuroraDatabaseReferenceResourceRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewUpdateAuroraDatabaseReferenceResourceRequestWithBody generates requests for UpdateAuroraDatabaseReferenceResource with any type of body
+func NewUpdateAuroraDatabaseReferenceResourceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCloneAwsAuroraDatabaseReferenceRequest calls the generic CloneAwsAuroraDatabaseReference builder with application/json body
+func NewCloneAwsAuroraDatabaseReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCloneAwsAuroraDatabaseReferenceRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewCloneAwsAuroraDatabaseReferenceRequestWithBody generates requests for CloneAwsAuroraDatabaseReference with any type of body
+func NewCloneAwsAuroraDatabaseReferenceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase/%s/clone", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateS3ExternalBucketReferenceRequest calls the generic CreateS3ExternalBucketReference builder with application/json body
 func NewCreateS3ExternalBucketReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateS3ExternalBucketReferenceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -14064,6 +15250,60 @@ func NewUpdateResourceRequestWithBody(server string, workspaceIdParam WorkspaceI
 	return req, nil
 }
 
+// NewRecordInstanceStateRequest calls the generic RecordInstanceState builder with application/json body
+func NewRecordInstanceStateRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body RecordInstanceStateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRecordInstanceStateRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewRecordInstanceStateRequestWithBody generates requests for RecordInstanceState with any type of body
+func NewRecordInstanceStateRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/%s/instance-state", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteResourcePropertiesRequest calls the generic DeleteResourceProperties builder with application/json body
 func NewDeleteResourcePropertiesRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteResourcePropertiesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -14936,6 +16176,47 @@ func NewGetDeleteWorkspaceV2ResultRequest(server string, workspaceIdParam Worksp
 	return req, nil
 }
 
+// NewDescribeAwsEc2InstanceV2Request generates requests for DescribeAwsEc2InstanceV2
+func NewDescribeAwsEc2InstanceV2Request(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/resources/controlled/aws/instances/%s/describe", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateGceInstanceV2Request calls the generic CreateGceInstanceV2 builder with application/json body
 func NewCreateGceInstanceV2Request(server string, workspaceIdParam WorkspaceIdParam, body CreateGceInstanceV2JSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -15107,11 +16388,20 @@ type ClientWithResponsesInterface interface {
 
 	BackfillWorkspaceApplicationsWithResponse(ctx context.Context, body BackfillWorkspaceApplicationsJSONRequestBody, reqEditors ...RequestEditorFn) (*BackfillWorkspaceApplicationsResp, error)
 
+	// BackfillCromwellRunsForAllWorkspacesWithResponse request
+	BackfillCromwellRunsForAllWorkspacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillCromwellRunsForAllWorkspacesResp, error)
+
 	// BackfillWorkspaceLabelsWithResponse request
 	BackfillWorkspaceLabelsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillWorkspaceLabelsResp, error)
 
 	// BackfillPolicyLinksWithResponse request
 	BackfillPolicyLinksWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillPolicyLinksResp, error)
+
+	// BackfillRegionsWithResponse request
+	BackfillRegionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillRegionsResp, error)
+
+	// BackfillRegionsSingleWithResponse request
+	BackfillRegionsSingleWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*BackfillRegionsSingleResp, error)
 
 	// BackfillWorkspaceRolesWithResponse request
 	BackfillWorkspaceRolesWithResponse(ctx context.Context, params *BackfillWorkspaceRolesParams, reqEditors ...RequestEditorFn) (*BackfillWorkspaceRolesResp, error)
@@ -15296,6 +16586,43 @@ type ClientWithResponsesInterface interface {
 	CloneFlexibleResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneFlexibleResourceResp, error)
 
 	CloneFlexibleResourceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneFlexibleResourceResp, error)
+
+	// CreateControlledAwsAuroraDatabaseWithBodyWithResponse request with any body
+	CreateControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateControlledAwsAuroraDatabaseResp, error)
+
+	CreateControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateControlledAwsAuroraDatabaseResp, error)
+
+	// GetCreateControlledAwsAuroraDatabaseResultWithResponse request
+	GetCreateControlledAwsAuroraDatabaseResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCreateControlledAwsAuroraDatabaseResultResp, error)
+
+	// GetDeleteControlledAwsAuroraDatabaseResultWithResponse request
+	GetDeleteControlledAwsAuroraDatabaseResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteControlledAwsAuroraDatabaseResultResp, error)
+
+	// GenerateAwsAuroraDatabaseCloudNameWithBodyWithResponse request with any body
+	GenerateAwsAuroraDatabaseCloudNameWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GenerateAwsAuroraDatabaseCloudNameResp, error)
+
+	GenerateAwsAuroraDatabaseCloudNameWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body GenerateAwsAuroraDatabaseCloudNameJSONRequestBody, reqEditors ...RequestEditorFn) (*GenerateAwsAuroraDatabaseCloudNameResp, error)
+
+	// GetControlledAwsAuroraDatabaseWithResponse request
+	GetControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetControlledAwsAuroraDatabaseResp, error)
+
+	// UpdateControlledAwsAuroraDatabaseWithBodyWithResponse request with any body
+	UpdateControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateControlledAwsAuroraDatabaseResp, error)
+
+	UpdateControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateControlledAwsAuroraDatabaseResp, error)
+
+	// DeleteControlledAwsAuroraDatabaseWithBodyWithResponse request with any body
+	DeleteControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteControlledAwsAuroraDatabaseResp, error)
+
+	DeleteControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteControlledAwsAuroraDatabaseResp, error)
+
+	// CloneControlledAwsAuroraDatabaseWithBodyWithResponse request with any body
+	CloneControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneControlledAwsAuroraDatabaseResp, error)
+
+	CloneControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneControlledAwsAuroraDatabaseResp, error)
+
+	// GetControlledAwsAuroraDatabaseCredentialWithResponse request
+	GetControlledAwsAuroraDatabaseCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetControlledAwsAuroraDatabaseCredentialParams, reqEditors ...RequestEditorFn) (*GetControlledAwsAuroraDatabaseCredentialResp, error)
 
 	// CreateAwsS3ExternalBucketWithBodyWithResponse request with any body
 	CreateAwsS3ExternalBucketWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsS3ExternalBucketResp, error)
@@ -15618,6 +16945,27 @@ type ClientWithResponsesInterface interface {
 
 	DeleteGceInstanceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteGceInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteGceInstanceResp, error)
 
+	// CreateAuroraDatabaseReferenceWithBodyWithResponse request with any body
+	CreateAuroraDatabaseReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAuroraDatabaseReferenceResp, error)
+
+	CreateAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAuroraDatabaseReferenceResp, error)
+
+	// DeleteAuroraDatabaseReferenceWithResponse request
+	DeleteAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteAuroraDatabaseReferenceResp, error)
+
+	// GetAuroraDatabaseReferenceWithResponse request
+	GetAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetAuroraDatabaseReferenceResp, error)
+
+	// UpdateAuroraDatabaseReferenceResourceWithBodyWithResponse request with any body
+	UpdateAuroraDatabaseReferenceResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAuroraDatabaseReferenceResourceResp, error)
+
+	UpdateAuroraDatabaseReferenceResourceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateAuroraDatabaseReferenceResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAuroraDatabaseReferenceResourceResp, error)
+
+	// CloneAwsAuroraDatabaseReferenceWithBodyWithResponse request with any body
+	CloneAwsAuroraDatabaseReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneAwsAuroraDatabaseReferenceResp, error)
+
+	CloneAwsAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneAwsAuroraDatabaseReferenceResp, error)
+
 	// CreateS3ExternalBucketReferenceWithBodyWithResponse request with any body
 	CreateS3ExternalBucketReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateS3ExternalBucketReferenceResp, error)
 
@@ -15829,6 +17177,11 @@ type ClientWithResponsesInterface interface {
 
 	UpdateResourceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResp, error)
 
+	// RecordInstanceStateWithBodyWithResponse request with any body
+	RecordInstanceStateWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RecordInstanceStateResp, error)
+
+	RecordInstanceStateWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body RecordInstanceStateJSONRequestBody, reqEditors ...RequestEditorFn) (*RecordInstanceStateResp, error)
+
 	// DeleteResourcePropertiesWithBodyWithResponse request with any body
 	DeleteResourcePropertiesWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteResourcePropertiesResp, error)
 
@@ -15910,6 +17263,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetDeleteWorkspaceV2ResultWithResponse request
 	GetDeleteWorkspaceV2ResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteWorkspaceV2ResultResp, error)
+
+	// DescribeAwsEc2InstanceV2WithResponse request
+	DescribeAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DescribeAwsEc2InstanceV2Resp, error)
 
 	// CreateGceInstanceV2WithBodyWithResponse request with any body
 	CreateGceInstanceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGceInstanceV2Resp, error)
@@ -16103,6 +17459,31 @@ func (r BackfillWorkspaceApplicationsResp) StatusCode() int {
 	return 0
 }
 
+type BackfillCromwellRunsForAllWorkspacesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *JobResultResponse
+	JSON202      *JobResultResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillCromwellRunsForAllWorkspacesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillCromwellRunsForAllWorkspacesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type BackfillWorkspaceLabelsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16147,6 +17528,54 @@ func (r BackfillPolicyLinksResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BackfillPolicyLinksResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BackfillRegionsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *JobResultResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillRegionsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillRegionsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BackfillRegionsSingleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *JobResultResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillRegionsSingleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillRegionsSingleResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17406,6 +18835,240 @@ func (r CloneFlexibleResourceResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CloneFlexibleResourceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateControlledAwsAuroraDatabaseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreateControlledAwsAuroraDatabaseResponse
+	JSON202      *CreateControlledAwsAuroraDatabaseResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateControlledAwsAuroraDatabaseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateControlledAwsAuroraDatabaseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCreateControlledAwsAuroraDatabaseResultResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreateControlledAwsAuroraDatabaseResponse
+	JSON202      *CreateControlledAwsAuroraDatabaseResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCreateControlledAwsAuroraDatabaseResultResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCreateControlledAwsAuroraDatabaseResultResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDeleteControlledAwsAuroraDatabaseResultResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeleteControlledAwsResourceResponse
+	JSON202      *DeleteControlledAwsResourceResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDeleteControlledAwsAuroraDatabaseResultResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDeleteControlledAwsAuroraDatabaseResultResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GenerateAwsAuroraDatabaseCloudNameResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GenerateAwsResourceCloudNameResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GenerateAwsAuroraDatabaseCloudNameResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GenerateAwsAuroraDatabaseCloudNameResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetControlledAwsAuroraDatabaseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetControlledAwsAuroraDatabaseResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetControlledAwsAuroraDatabaseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetControlledAwsAuroraDatabaseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateControlledAwsAuroraDatabaseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AwsAuroraDatabaseResource
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateControlledAwsAuroraDatabaseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateControlledAwsAuroraDatabaseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteControlledAwsAuroraDatabaseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeleteControlledAwsResourceResponse
+	JSON202      *DeleteControlledAwsResourceResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteControlledAwsAuroraDatabaseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteControlledAwsAuroraDatabaseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CloneControlledAwsAuroraDatabaseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CloneControlledAwsAuroraDatabaseResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CloneControlledAwsAuroraDatabaseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CloneControlledAwsAuroraDatabaseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetControlledAwsAuroraDatabaseCredentialResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetControlledAwsResourceCredentialResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetControlledAwsAuroraDatabaseCredentialResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetControlledAwsAuroraDatabaseCredentialResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -19425,6 +21088,132 @@ func (r DeleteGceInstanceResp) StatusCode() int {
 	return 0
 }
 
+type CreateAuroraDatabaseReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AwsAuroraDatabaseReferenceResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateAuroraDatabaseReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateAuroraDatabaseReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteAuroraDatabaseReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAuroraDatabaseReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAuroraDatabaseReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAuroraDatabaseReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AwsAuroraDatabaseReferenceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAuroraDatabaseReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAuroraDatabaseReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAuroraDatabaseReferenceResourceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AwsAuroraDatabaseReferenceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAuroraDatabaseReferenceResourceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAuroraDatabaseReferenceResourceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CloneAwsAuroraDatabaseReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CloneReferencedAwsAuroraDatabaseResourceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CloneAwsAuroraDatabaseReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CloneAwsAuroraDatabaseReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateS3ExternalBucketReferenceResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -20767,6 +22556,31 @@ func (r UpdateResourceResp) StatusCode() int {
 	return 0
 }
 
+type RecordInstanceStateResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r RecordInstanceStateResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RecordInstanceStateResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteResourcePropertiesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -21277,6 +23091,32 @@ func (r GetDeleteWorkspaceV2ResultResp) StatusCode() int {
 	return 0
 }
 
+type DescribeAwsEc2InstanceV2Resp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AwsEc2InstanceWithVolumesDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DescribeAwsEc2InstanceV2Resp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DescribeAwsEc2InstanceV2Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateGceInstanceV2Resp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -21433,6 +23273,15 @@ func (c *ClientWithResponses) BackfillWorkspaceApplicationsWithResponse(ctx cont
 	return ParseBackfillWorkspaceApplicationsResp(rsp)
 }
 
+// BackfillCromwellRunsForAllWorkspacesWithResponse request returning *BackfillCromwellRunsForAllWorkspacesResp
+func (c *ClientWithResponses) BackfillCromwellRunsForAllWorkspacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillCromwellRunsForAllWorkspacesResp, error) {
+	rsp, err := c.BackfillCromwellRunsForAllWorkspaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillCromwellRunsForAllWorkspacesResp(rsp)
+}
+
 // BackfillWorkspaceLabelsWithResponse request returning *BackfillWorkspaceLabelsResp
 func (c *ClientWithResponses) BackfillWorkspaceLabelsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillWorkspaceLabelsResp, error) {
 	rsp, err := c.BackfillWorkspaceLabels(ctx, reqEditors...)
@@ -21449,6 +23298,24 @@ func (c *ClientWithResponses) BackfillPolicyLinksWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseBackfillPolicyLinksResp(rsp)
+}
+
+// BackfillRegionsWithResponse request returning *BackfillRegionsResp
+func (c *ClientWithResponses) BackfillRegionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillRegionsResp, error) {
+	rsp, err := c.BackfillRegions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillRegionsResp(rsp)
+}
+
+// BackfillRegionsSingleWithResponse request returning *BackfillRegionsSingleResp
+func (c *ClientWithResponses) BackfillRegionsSingleWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*BackfillRegionsSingleResp, error) {
+	rsp, err := c.BackfillRegionsSingle(ctx, workspaceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillRegionsSingleResp(rsp)
 }
 
 // BackfillWorkspaceRolesWithResponse request returning *BackfillWorkspaceRolesResp
@@ -22035,6 +23902,127 @@ func (c *ClientWithResponses) CloneFlexibleResourceWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseCloneFlexibleResourceResp(rsp)
+}
+
+// CreateControlledAwsAuroraDatabaseWithBodyWithResponse request with arbitrary body returning *CreateControlledAwsAuroraDatabaseResp
+func (c *ClientWithResponses) CreateControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.CreateControlledAwsAuroraDatabaseWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateControlledAwsAuroraDatabaseResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.CreateControlledAwsAuroraDatabase(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateControlledAwsAuroraDatabaseResp(rsp)
+}
+
+// GetCreateControlledAwsAuroraDatabaseResultWithResponse request returning *GetCreateControlledAwsAuroraDatabaseResultResp
+func (c *ClientWithResponses) GetCreateControlledAwsAuroraDatabaseResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCreateControlledAwsAuroraDatabaseResultResp, error) {
+	rsp, err := c.GetCreateControlledAwsAuroraDatabaseResult(ctx, workspaceIdParam, jobIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCreateControlledAwsAuroraDatabaseResultResp(rsp)
+}
+
+// GetDeleteControlledAwsAuroraDatabaseResultWithResponse request returning *GetDeleteControlledAwsAuroraDatabaseResultResp
+func (c *ClientWithResponses) GetDeleteControlledAwsAuroraDatabaseResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteControlledAwsAuroraDatabaseResultResp, error) {
+	rsp, err := c.GetDeleteControlledAwsAuroraDatabaseResult(ctx, workspaceIdParam, jobIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDeleteControlledAwsAuroraDatabaseResultResp(rsp)
+}
+
+// GenerateAwsAuroraDatabaseCloudNameWithBodyWithResponse request with arbitrary body returning *GenerateAwsAuroraDatabaseCloudNameResp
+func (c *ClientWithResponses) GenerateAwsAuroraDatabaseCloudNameWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GenerateAwsAuroraDatabaseCloudNameResp, error) {
+	rsp, err := c.GenerateAwsAuroraDatabaseCloudNameWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGenerateAwsAuroraDatabaseCloudNameResp(rsp)
+}
+
+func (c *ClientWithResponses) GenerateAwsAuroraDatabaseCloudNameWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body GenerateAwsAuroraDatabaseCloudNameJSONRequestBody, reqEditors ...RequestEditorFn) (*GenerateAwsAuroraDatabaseCloudNameResp, error) {
+	rsp, err := c.GenerateAwsAuroraDatabaseCloudName(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGenerateAwsAuroraDatabaseCloudNameResp(rsp)
+}
+
+// GetControlledAwsAuroraDatabaseWithResponse request returning *GetControlledAwsAuroraDatabaseResp
+func (c *ClientWithResponses) GetControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.GetControlledAwsAuroraDatabase(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetControlledAwsAuroraDatabaseResp(rsp)
+}
+
+// UpdateControlledAwsAuroraDatabaseWithBodyWithResponse request with arbitrary body returning *UpdateControlledAwsAuroraDatabaseResp
+func (c *ClientWithResponses) UpdateControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.UpdateControlledAwsAuroraDatabaseWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateControlledAwsAuroraDatabaseResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.UpdateControlledAwsAuroraDatabase(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateControlledAwsAuroraDatabaseResp(rsp)
+}
+
+// DeleteControlledAwsAuroraDatabaseWithBodyWithResponse request with arbitrary body returning *DeleteControlledAwsAuroraDatabaseResp
+func (c *ClientWithResponses) DeleteControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.DeleteControlledAwsAuroraDatabaseWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteControlledAwsAuroraDatabaseResp(rsp)
+}
+
+func (c *ClientWithResponses) DeleteControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body DeleteControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.DeleteControlledAwsAuroraDatabase(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteControlledAwsAuroraDatabaseResp(rsp)
+}
+
+// CloneControlledAwsAuroraDatabaseWithBodyWithResponse request with arbitrary body returning *CloneControlledAwsAuroraDatabaseResp
+func (c *ClientWithResponses) CloneControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.CloneControlledAwsAuroraDatabaseWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneControlledAwsAuroraDatabaseResp(rsp)
+}
+
+func (c *ClientWithResponses) CloneControlledAwsAuroraDatabaseWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneControlledAwsAuroraDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneControlledAwsAuroraDatabaseResp, error) {
+	rsp, err := c.CloneControlledAwsAuroraDatabase(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneControlledAwsAuroraDatabaseResp(rsp)
+}
+
+// GetControlledAwsAuroraDatabaseCredentialWithResponse request returning *GetControlledAwsAuroraDatabaseCredentialResp
+func (c *ClientWithResponses) GetControlledAwsAuroraDatabaseCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetControlledAwsAuroraDatabaseCredentialParams, reqEditors ...RequestEditorFn) (*GetControlledAwsAuroraDatabaseCredentialResp, error) {
+	rsp, err := c.GetControlledAwsAuroraDatabaseCredential(ctx, workspaceIdParam, resourceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetControlledAwsAuroraDatabaseCredentialResp(rsp)
 }
 
 // CreateAwsS3ExternalBucketWithBodyWithResponse request with arbitrary body returning *CreateAwsS3ExternalBucketResp
@@ -23084,6 +25072,75 @@ func (c *ClientWithResponses) DeleteGceInstanceWithResponse(ctx context.Context,
 	return ParseDeleteGceInstanceResp(rsp)
 }
 
+// CreateAuroraDatabaseReferenceWithBodyWithResponse request with arbitrary body returning *CreateAuroraDatabaseReferenceResp
+func (c *ClientWithResponses) CreateAuroraDatabaseReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.CreateAuroraDatabaseReferenceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAuroraDatabaseReferenceResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.CreateAuroraDatabaseReference(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAuroraDatabaseReferenceResp(rsp)
+}
+
+// DeleteAuroraDatabaseReferenceWithResponse request returning *DeleteAuroraDatabaseReferenceResp
+func (c *ClientWithResponses) DeleteAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.DeleteAuroraDatabaseReference(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAuroraDatabaseReferenceResp(rsp)
+}
+
+// GetAuroraDatabaseReferenceWithResponse request returning *GetAuroraDatabaseReferenceResp
+func (c *ClientWithResponses) GetAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.GetAuroraDatabaseReference(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAuroraDatabaseReferenceResp(rsp)
+}
+
+// UpdateAuroraDatabaseReferenceResourceWithBodyWithResponse request with arbitrary body returning *UpdateAuroraDatabaseReferenceResourceResp
+func (c *ClientWithResponses) UpdateAuroraDatabaseReferenceResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAuroraDatabaseReferenceResourceResp, error) {
+	rsp, err := c.UpdateAuroraDatabaseReferenceResourceWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAuroraDatabaseReferenceResourceResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAuroraDatabaseReferenceResourceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateAuroraDatabaseReferenceResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAuroraDatabaseReferenceResourceResp, error) {
+	rsp, err := c.UpdateAuroraDatabaseReferenceResource(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAuroraDatabaseReferenceResourceResp(rsp)
+}
+
+// CloneAwsAuroraDatabaseReferenceWithBodyWithResponse request with arbitrary body returning *CloneAwsAuroraDatabaseReferenceResp
+func (c *ClientWithResponses) CloneAwsAuroraDatabaseReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneAwsAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.CloneAwsAuroraDatabaseReferenceWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneAwsAuroraDatabaseReferenceResp(rsp)
+}
+
+func (c *ClientWithResponses) CloneAwsAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneAwsAuroraDatabaseReferenceResp, error) {
+	rsp, err := c.CloneAwsAuroraDatabaseReference(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneAwsAuroraDatabaseReferenceResp(rsp)
+}
+
 // CreateS3ExternalBucketReferenceWithBodyWithResponse request with arbitrary body returning *CreateS3ExternalBucketReferenceResp
 func (c *ClientWithResponses) CreateS3ExternalBucketReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateS3ExternalBucketReferenceResp, error) {
 	rsp, err := c.CreateS3ExternalBucketReferenceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -23769,6 +25826,23 @@ func (c *ClientWithResponses) UpdateResourceWithResponse(ctx context.Context, wo
 	return ParseUpdateResourceResp(rsp)
 }
 
+// RecordInstanceStateWithBodyWithResponse request with arbitrary body returning *RecordInstanceStateResp
+func (c *ClientWithResponses) RecordInstanceStateWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RecordInstanceStateResp, error) {
+	rsp, err := c.RecordInstanceStateWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRecordInstanceStateResp(rsp)
+}
+
+func (c *ClientWithResponses) RecordInstanceStateWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body RecordInstanceStateJSONRequestBody, reqEditors ...RequestEditorFn) (*RecordInstanceStateResp, error) {
+	rsp, err := c.RecordInstanceState(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRecordInstanceStateResp(rsp)
+}
+
 // DeleteResourcePropertiesWithBodyWithResponse request with arbitrary body returning *DeleteResourcePropertiesResp
 func (c *ClientWithResponses) DeleteResourcePropertiesWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteResourcePropertiesResp, error) {
 	rsp, err := c.DeleteResourcePropertiesWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
@@ -24035,6 +26109,15 @@ func (c *ClientWithResponses) GetDeleteWorkspaceV2ResultWithResponse(ctx context
 		return nil, err
 	}
 	return ParseGetDeleteWorkspaceV2ResultResp(rsp)
+}
+
+// DescribeAwsEc2InstanceV2WithResponse request returning *DescribeAwsEc2InstanceV2Resp
+func (c *ClientWithResponses) DescribeAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DescribeAwsEc2InstanceV2Resp, error) {
+	rsp, err := c.DescribeAwsEc2InstanceV2(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDescribeAwsEc2InstanceV2Resp(rsp)
 }
 
 // CreateGceInstanceV2WithBodyWithResponse request with arbitrary body returning *CreateGceInstanceV2Resp
@@ -24436,6 +26519,53 @@ func ParseBackfillWorkspaceApplicationsResp(rsp *http.Response) (*BackfillWorksp
 	return response, nil
 }
 
+// ParseBackfillCromwellRunsForAllWorkspacesResp parses an HTTP response from a BackfillCromwellRunsForAllWorkspacesWithResponse call
+func ParseBackfillCromwellRunsForAllWorkspacesResp(rsp *http.Response) (*BackfillCromwellRunsForAllWorkspacesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillCromwellRunsForAllWorkspacesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBackfillWorkspaceLabelsResp parses an HTTP response from a BackfillWorkspaceLabelsWithResponse call
 func ParseBackfillWorkspaceLabelsResp(rsp *http.Response) (*BackfillWorkspaceLabelsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24504,6 +26634,86 @@ func ParseBackfillPolicyLinksResp(rsp *http.Response) (*BackfillPolicyLinksResp,
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBackfillRegionsResp parses an HTTP response from a BackfillRegionsWithResponse call
+func ParseBackfillRegionsResp(rsp *http.Response) (*BackfillRegionsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillRegionsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBackfillRegionsSingleResp parses an HTTP response from a BackfillRegionsSingleWithResponse call
+func ParseBackfillRegionsSingleResp(rsp *http.Response) (*BackfillRegionsSingleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillRegionsSingleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
 		var dest JobResultResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -26916,6 +29126,492 @@ func ParseCloneFlexibleResourceResp(rsp *http.Response) (*CloneFlexibleResourceR
 			return nil, err
 		}
 		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateControlledAwsAuroraDatabaseResp parses an HTTP response from a CreateControlledAwsAuroraDatabaseWithResponse call
+func ParseCreateControlledAwsAuroraDatabaseResp(rsp *http.Response) (*CreateControlledAwsAuroraDatabaseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateControlledAwsAuroraDatabaseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreateControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest CreateControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCreateControlledAwsAuroraDatabaseResultResp parses an HTTP response from a GetCreateControlledAwsAuroraDatabaseResultWithResponse call
+func ParseGetCreateControlledAwsAuroraDatabaseResultResp(rsp *http.Response) (*GetCreateControlledAwsAuroraDatabaseResultResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCreateControlledAwsAuroraDatabaseResultResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreateControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest CreateControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDeleteControlledAwsAuroraDatabaseResultResp parses an HTTP response from a GetDeleteControlledAwsAuroraDatabaseResultWithResponse call
+func ParseGetDeleteControlledAwsAuroraDatabaseResultResp(rsp *http.Response) (*GetDeleteControlledAwsAuroraDatabaseResultResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDeleteControlledAwsAuroraDatabaseResultResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeleteControlledAwsResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest DeleteControlledAwsResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGenerateAwsAuroraDatabaseCloudNameResp parses an HTTP response from a GenerateAwsAuroraDatabaseCloudNameWithResponse call
+func ParseGenerateAwsAuroraDatabaseCloudNameResp(rsp *http.Response) (*GenerateAwsAuroraDatabaseCloudNameResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GenerateAwsAuroraDatabaseCloudNameResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GenerateAwsResourceCloudNameResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetControlledAwsAuroraDatabaseResp parses an HTTP response from a GetControlledAwsAuroraDatabaseWithResponse call
+func ParseGetControlledAwsAuroraDatabaseResp(rsp *http.Response) (*GetControlledAwsAuroraDatabaseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetControlledAwsAuroraDatabaseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateControlledAwsAuroraDatabaseResp parses an HTTP response from a UpdateControlledAwsAuroraDatabaseWithResponse call
+func ParseUpdateControlledAwsAuroraDatabaseResp(rsp *http.Response) (*UpdateControlledAwsAuroraDatabaseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateControlledAwsAuroraDatabaseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AwsAuroraDatabaseResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteControlledAwsAuroraDatabaseResp parses an HTTP response from a DeleteControlledAwsAuroraDatabaseWithResponse call
+func ParseDeleteControlledAwsAuroraDatabaseResp(rsp *http.Response) (*DeleteControlledAwsAuroraDatabaseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteControlledAwsAuroraDatabaseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeleteControlledAwsResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest DeleteControlledAwsResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCloneControlledAwsAuroraDatabaseResp parses an HTTP response from a CloneControlledAwsAuroraDatabaseWithResponse call
+func ParseCloneControlledAwsAuroraDatabaseResp(rsp *http.Response) (*CloneControlledAwsAuroraDatabaseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CloneControlledAwsAuroraDatabaseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CloneControlledAwsAuroraDatabaseResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetControlledAwsAuroraDatabaseCredentialResp parses an HTTP response from a GetControlledAwsAuroraDatabaseCredentialWithResponse call
+func ParseGetControlledAwsAuroraDatabaseCredentialResp(rsp *http.Response) (*GetControlledAwsAuroraDatabaseCredentialResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetControlledAwsAuroraDatabaseCredentialResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetControlledAwsResourceCredentialResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest PermissionDenied
@@ -30922,6 +33618,248 @@ func ParseDeleteGceInstanceResp(rsp *http.Response) (*DeleteGceInstanceResp, err
 	return response, nil
 }
 
+// ParseCreateAuroraDatabaseReferenceResp parses an HTTP response from a CreateAuroraDatabaseReferenceWithResponse call
+func ParseCreateAuroraDatabaseReferenceResp(rsp *http.Response) (*CreateAuroraDatabaseReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateAuroraDatabaseReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AwsAuroraDatabaseReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAuroraDatabaseReferenceResp parses an HTTP response from a DeleteAuroraDatabaseReferenceWithResponse call
+func ParseDeleteAuroraDatabaseReferenceResp(rsp *http.Response) (*DeleteAuroraDatabaseReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAuroraDatabaseReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAuroraDatabaseReferenceResp parses an HTTP response from a GetAuroraDatabaseReferenceWithResponse call
+func ParseGetAuroraDatabaseReferenceResp(rsp *http.Response) (*GetAuroraDatabaseReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAuroraDatabaseReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AwsAuroraDatabaseReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAuroraDatabaseReferenceResourceResp parses an HTTP response from a UpdateAuroraDatabaseReferenceResourceWithResponse call
+func ParseUpdateAuroraDatabaseReferenceResourceResp(rsp *http.Response) (*UpdateAuroraDatabaseReferenceResourceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAuroraDatabaseReferenceResourceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AwsAuroraDatabaseReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCloneAwsAuroraDatabaseReferenceResp parses an HTTP response from a CloneAwsAuroraDatabaseReferenceWithResponse call
+func ParseCloneAwsAuroraDatabaseReferenceResp(rsp *http.Response) (*CloneAwsAuroraDatabaseReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CloneAwsAuroraDatabaseReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CloneReferencedAwsAuroraDatabaseResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateS3ExternalBucketReferenceResp parses an HTTP response from a CreateS3ExternalBucketReferenceWithResponse call
 func ParseCreateS3ExternalBucketReferenceResp(rsp *http.Response) (*CreateS3ExternalBucketReferenceResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -33532,6 +36470,53 @@ func ParseUpdateResourceResp(rsp *http.Response) (*UpdateResourceResp, error) {
 	return response, nil
 }
 
+// ParseRecordInstanceStateResp parses an HTTP response from a RecordInstanceStateWithResponse call
+func ParseRecordInstanceStateResp(rsp *http.Response) (*RecordInstanceStateResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RecordInstanceStateResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteResourcePropertiesResp parses an HTTP response from a DeleteResourcePropertiesWithResponse call
 func ParseDeleteResourcePropertiesResp(rsp *http.Response) (*DeleteResourcePropertiesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -34515,6 +37500,60 @@ func ParseGetDeleteWorkspaceV2ResultResp(rsp *http.Response) (*GetDeleteWorkspac
 			return nil, err
 		}
 		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDescribeAwsEc2InstanceV2Resp parses an HTTP response from a DescribeAwsEc2InstanceV2WithResponse call
+func ParseDescribeAwsEc2InstanceV2Resp(rsp *http.Response) (*DescribeAwsEc2InstanceV2Resp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DescribeAwsEc2InstanceV2Resp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AwsEc2InstanceWithVolumesDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest PermissionDenied

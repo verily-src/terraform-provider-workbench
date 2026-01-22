@@ -41,10 +41,30 @@ type WorkspaceModel struct {
 	CreatedDate timetypes.RFC3339 `tfsdk:"created_date"`
 	// CreatedBy is the user who created the workspace.
 	CreatedBy types.String `tfsdk:"created_by"`
+	// GcpProjectId is the GCP project ID associated with the workspace (if GCP workspace).
+	GcpProjectId types.String `tfsdk:"gcp_project_id"`
+	// AwsAccountId is the AWS account ID associated with the workspace (if AWS workspace).
+	AwsAccountId types.String `tfsdk:"aws_account_id"`
 }
 
 // NewWorkspaceModel creates a new WorkspaceModel with a given description.
 func NewWorkspaceModel(workspace *wsm.WorkspaceDescription) *WorkspaceModel {
+	var gcpProjectId types.String
+	var awsAccountId types.String
+
+	// Extract GCP project ID if GCP context is present
+	if workspace.GcpContext != nil {
+		gcpProjectId = types.StringValue(workspace.GcpContext.ProjectId)
+	} else {
+		gcpProjectId = types.StringNull()
+	}
+
+	// Extract AWS account ID if AWS context is present
+	if workspace.AwsContext != nil && workspace.AwsContext.AccountId != nil {
+		awsAccountId = types.StringPointerValue(workspace.AwsContext.AccountId)
+	} else {
+		awsAccountId = types.StringNull()
+	}
 
 	return &WorkspaceModel{
 		ID:              types.StringValue(workspace.Id.String()),
@@ -60,6 +80,8 @@ func NewWorkspaceModel(workspace *wsm.WorkspaceDescription) *WorkspaceModel {
 		Policies:        convertPolicies(workspace.Policies),
 		Properties:      convertProperties(workspace.Properties),
 		Location:        types.StringPointerValue(getDefaultLocation(workspace.Properties)),
+		GcpProjectId:    gcpProjectId,
+		AwsAccountId:    awsAccountId,
 	}
 }
 
