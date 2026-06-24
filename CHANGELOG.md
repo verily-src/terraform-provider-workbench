@@ -1,3 +1,7 @@
+## 0.0.5 (June 24, 2026)
+
+- Added support for `workbench_perimeter`
+
 ## 0.0.4 (January 22, 2026)
 
 - Added import functionality to `workbench_group` resource.
