@@ -146,6 +146,7 @@ func (p *WorkbenchProvider) Resources(ctx context.Context) []func() resource.Res
 		NewFolderResource,
 		NewVersionResource,
 		NewControlledGcsBucketResource,
+		NewPerimeterResource,
 	}
 }
 

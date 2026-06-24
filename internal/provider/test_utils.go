@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/verily-src/terraform-provider-workbench/internal/fakes"
+	samfake "github.com/verily-src/terraform-provider-workbench/internal/fakes/sam"
 	userfake "github.com/verily-src/terraform-provider-workbench/internal/fakes/user"
 	wsmfake "github.com/verily-src/terraform-provider-workbench/internal/fakes/wsm"
 )
@@ -75,7 +76,8 @@ func groupOrgByReference(terraformID string) string {
 func setupFakes(t *testing.T) string {
 	addr := fakes.Use(t,
 		wsmfake.New(),
-		userfake.New())
+		userfake.New(),
+		samfake.New())
 
 	return fmt.Sprintf("http://%s", addr)
 }

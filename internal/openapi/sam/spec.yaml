@@ -1,0 +1,275 @@
+openapi: 3.0.1
+info:
+  title: Sam Perimeter API
+  description: Minimal spec for Sam perimeter resource CRUD and Google Group sync.
+  version: "1.0"
+
+paths:
+  /api/resources/v2/perimeter:
+    post:
+      operationId: createPerimeter
+      summary: Create a new perimeter resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateResourceRequestV2'
+      responses:
+        '204':
+          description: Successfully created resource
+        '409':
+          description: Resource already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+
+  /api/resources/v2/perimeter/{resourceId}:
+    delete:
+      operationId: deletePerimeter
+      summary: Delete a perimeter resource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully deleted resource
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+
+  /api/resources/v2/perimeter/{resourceId}/policies:
+    get:
+      operationId: getPerimeterPolicies
+      summary: Get all policies for a perimeter
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccessPolicyResponseEntryV2'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+
+  /api/resources/v2/perimeter/{resourceId}/policies/{policyName}:
+    put:
+      operationId: overwritePerimeterPolicy
+      summary: Overwrite a perimeter policy
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: policyName
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessPolicyMembershipRequest'
+      responses:
+        '201':
+          description: Successfully overwrote policy
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+
+  /api/google/v1/resource/perimeter/{resourceId}/user/sync:
+    post:
+      operationId: syncPerimeterGoogleGroup
+      summary: Synchronize the user policy with a Google Group
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successfully synchronized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncReport'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+    get:
+      operationId: getPerimeterSyncStatus
+      summary: Get synchronization status for the user policy
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group is synchronized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+        '204':
+          description: Group is not synchronized
+
+components:
+  schemas:
+    CreateResourceRequestV2:
+      required:
+        - resourceId
+        - policies
+      type: object
+      properties:
+        resourceId:
+          type: string
+        policies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AccessPolicyMembershipRequest'
+        authDomain:
+          type: array
+          items:
+            type: string
+        returnResource:
+          type: boolean
+          default: false
+
+    AccessPolicyMembershipRequest:
+      required:
+        - memberEmails
+        - roles
+        - actions
+      type: object
+      properties:
+        memberEmails:
+          type: array
+          items:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        actions:
+          type: array
+          items:
+            type: string
+
+    AccessPolicyResponseEntryV2:
+      required:
+        - policyName
+        - policy
+        - email
+      type: object
+      properties:
+        policyName:
+          type: string
+        policy:
+          $ref: '#/components/schemas/AccessPolicyMembershipV2'
+        email:
+          type: string
+
+    AccessPolicyMembershipV2:
+      required:
+        - memberEmails
+        - roles
+        - actions
+      type: object
+      properties:
+        memberEmails:
+          type: array
+          items:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        actions:
+          type: array
+          items:
+            type: string
+
+    SyncStatus:
+      required:
+        - lastSyncDate
+        - email
+      type: object
+      properties:
+        lastSyncDate:
+          type: string
+        email:
+          type: string
+
+    SyncReport:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/SyncReportEntry'
+
+    SyncReportEntry:
+      required:
+        - operation
+        - email
+      type: object
+      properties:
+        operation:
+          type: string
+        email:
+          type: string
+
+    ErrorReport:
+      type: object
+      properties:
+        source:
+          type: string
+        message:
+          type: string
+        statusCode:
+          type: integer
+        causes:
+          type: array
+          items:
+            type: object
