@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccWorkspaceIamBindingDataSource(t *testing.T) {
@@ -20,11 +20,11 @@ func TestAccWorkspaceIamBindingDataSource(t *testing.T) {
 		if r.URL.Path == fmt.Sprintf("/api/wsm/api/workspaces/v1/%s/roles", workspaceID.String()) {
 			desc := &wsm.RoleBindingList{
 				{
-					Members: client.Ptr([]string{"test-owner"}),
+					Members: wsmclient.Ptr([]string{"test-owner"}),
 					Role:    wsm.IamRoleOWNER,
 				},
 				{
-					Members: client.Ptr([]string{"test-user1", "test-user2"}),
+					Members: wsmclient.Ptr([]string{"test-user1", "test-user2"}),
 					Role:    wsm.IamRoleWRITER,
 				},
 			}

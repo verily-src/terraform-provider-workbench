@@ -37,6 +37,7 @@ resource "workbench_data_collection" "tf_datacollection_in_vpc" {
   support_email     = "support@example.com"
   organization_name = "my-org"
   therapeutic_tags  = ["dermatology", "immunology"]
+  program_name      = "my-program"
 }
 
 output "my_datacollection" {
@@ -63,6 +64,7 @@ output "my_datacollection" {
 - `location` (String) Workbench datacollection default resource location
 - `policies` (Attributes Set) Workbench datacollection policies (see
   [below for nested schema](#nestedatt--policies))
+- `program_name` (String) Program this Data Collection belongs to
 - `properties` (Attributes Set) Workbench properties in key-value pair (see
   [below for nested schema](#nestedatt--properties))
 - `therapeutic_tags` (Set of String) Therapeutic tags for this Data Collection

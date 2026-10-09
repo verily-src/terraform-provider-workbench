@@ -33,6 +33,9 @@ type ClientConfig struct {
 	// UseIdToken indicates whether to use an ID token for authentication.
 	// Local development should set this to false.
 	UseIdToken bool
+	// UseCLICredentials indicates whether to use credentials from the Workbench CLI.
+	// When true, the provider will call `wb auth print-access-token` to get the user's token.
+	UseCLICredentials bool
 	// ImpersonateServiceAccount is the service account email to impersonate.
 	// If set, the provider will use the default credentials to impersonate this service account.
 	ImpersonateServiceAccount string
@@ -41,6 +44,7 @@ type ClientConfig struct {
 type workbenchProviderModel struct {
 	Host                      types.String `tfsdk:"host"`
 	UseIdToken                types.Bool   `tfsdk:"use_id_token"`
+	UseCLICredentials         types.Bool   `tfsdk:"use_cli_credentials"`
 	ImpersonateServiceAccount types.String `tfsdk:"impersonate_service_account"`
 }
 
@@ -60,6 +64,10 @@ func (p *WorkbenchProvider) Schema(ctx context.Context, req provider.SchemaReque
 			},
 			"use_id_token": schema.BoolAttribute{
 				MarkdownDescription: "Set to true to use an ID token for authentication. Set to false for local development.",
+				Optional:            true,
+			},
+			"use_cli_credentials": schema.BoolAttribute{
+				MarkdownDescription: "Set to true to use credentials from the Workbench CLI (`wb auth print-access-token`). Requires the CLI to be installed and authenticated via `wb auth login`. Recommended for local development.",
 				Optional:            true,
 			},
 			"impersonate_service_account": schema.StringAttribute{
@@ -108,6 +116,12 @@ func (p *WorkbenchProvider) Configure(ctx context.Context, req provider.Configur
 		useIdToken = data.UseIdToken.ValueBool()
 	}
 
+	// Handle UseCLICredentials with default value of false
+	useCLICredentials := false
+	if !data.UseCLICredentials.IsNull() {
+		useCLICredentials = data.UseCLICredentials.ValueBool()
+	}
+
 	// Handle ImpersonateServiceAccount
 	impersonateServiceAccount := ""
 	if !data.ImpersonateServiceAccount.IsNull() {
@@ -116,12 +130,14 @@ func (p *WorkbenchProvider) Configure(ctx context.Context, req provider.Configur
 
 	ctx = tflog.SetField(ctx, "host", host)
 	ctx = tflog.SetField(ctx, "use_id_token", useIdToken)
+	ctx = tflog.SetField(ctx, "use_cli_credentials", useCLICredentials)
 	ctx = tflog.SetField(ctx, "impersonate_service_account", impersonateServiceAccount)
 	tflog.Debug(ctx, "Creating Workbench client")
 
 	client := &ClientConfig{
 		Host:                      host,
 		UseIdToken:                useIdToken,
+		UseCLICredentials:         useCLICredentials,
 		ImpersonateServiceAccount: impersonateServiceAccount,
 	}
 

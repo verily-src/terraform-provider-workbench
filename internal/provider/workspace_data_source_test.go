@@ -12,8 +12,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccWorkspaceDataSource(t *testing.T) {
@@ -26,8 +26,8 @@ func TestAccWorkspaceDataSource(t *testing.T) {
 			desc := &wsm.WorkspaceDescription{
 				Id:              ID,
 				UserFacingId:    "test-workspace",
-				Description:     client.Ptr("This is a test workspace"),
-				DisplayName:     client.Ptr("Test Workspace"),
+				Description:     wsmclient.Ptr("This is a test workspace"),
+				DisplayName:     wsmclient.Ptr("Test Workspace"),
 				OrgId:           &orgID,
 				CrgId:           &podID,
 				CreatedBy:       "test-user",
@@ -81,8 +81,8 @@ func TestAccWorkspaceDataSourceByUserFacingId(t *testing.T) {
 			desc := &wsm.WorkspaceDescription{
 				Id:              ID,
 				UserFacingId:    userFacingId,
-				Description:     client.Ptr("This is a test workspace by user facing id"),
-				DisplayName:     client.Ptr("Test Workspace Ufid"),
+				Description:     wsmclient.Ptr("This is a test workspace by user facing id"),
+				DisplayName:     wsmclient.Ptr("Test Workspace Ufid"),
 				OrgId:           &orgID,
 				CrgId:           &podID,
 				CreatedBy:       "test-user",

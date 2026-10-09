@@ -7,13 +7,13 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 // GetWorkspace retrieves a workspace by its UUID.
 func GetWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID string) (*wsm.WorkspaceDescription, error) {
-	rsp, err := client.ResponseError(cl.GetWorkspaceWithResponse(ctx, UUID, nil))
+	rsp, err := wsmClient.ResponseError(cl.GetWorkspaceWithResponse(ctx, UUID, nil))
 	if err != nil {
 		return nil, fmt.Errorf("getting workspace by uuid: %w", err)
 	}
@@ -22,7 +22,7 @@ func GetWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID string)
 
 // GetWorkspaceByUserFacingId retrieves a workspace by its user-facing ID.
 func GetWorkspaceByUserFacingId(ctx context.Context, cl *wsm.ClientWithResponses, userFacingId string) (*wsm.WorkspaceDescription, error) {
-	rsp, err := client.ResponseError(cl.GetWorkspaceByUserFacingIdWithResponse(ctx, userFacingId, nil))
+	rsp, err := wsmClient.ResponseError(cl.GetWorkspaceByUserFacingIdWithResponse(ctx, userFacingId, nil))
 	if err != nil {
 		return nil, fmt.Errorf("getting workspace by user facing id: %w", err)
 	}
@@ -32,7 +32,7 @@ func GetWorkspaceByUserFacingId(ctx context.Context, cl *wsm.ClientWithResponses
 // CreateWorkspace starts a workspace creation flight. This is an asynchronous operation.
 // The caller must poll for the job status using the job ID returned in the response.
 func CreateWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, request wsm.CreateWorkspaceV2JSONRequestBody) (string, error) {
-	rsp, err := client.ResponseError(cl.CreateWorkspaceV2WithResponse(ctx, request))
+	rsp, err := wsmClient.ResponseError(cl.CreateWorkspaceV2WithResponse(ctx, request))
 	if err != nil {
 		return "", fmt.Errorf("creating workspace: %w", err)
 	}
@@ -50,7 +50,7 @@ func CreateWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, request w
 
 // UpdateWorkspace updates a workspace with the given UUID.
 func UpdateWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.UpdateWorkspaceJSONRequestBody) (*wsm.WorkspaceDescription, error) {
-	rsp, err := client.ResponseError(cl.UpdateWorkspaceWithResponse(ctx, UUID, request))
+	rsp, err := wsmClient.ResponseError(cl.UpdateWorkspaceWithResponse(ctx, UUID, request))
 	if err != nil {
 		return nil, fmt.Errorf("updating workspace: %v", err)
 	}
@@ -59,7 +59,7 @@ func UpdateWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID stri
 
 // UpdateWorkspaceProperties updates the properties of a workspace with the given UUID.
 func UpdateWorkspaceProperties(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.UpdateWorkspacePropertiesJSONRequestBody) error {
-	if _, err := client.ResponseError(cl.UpdateWorkspacePropertiesWithResponse(ctx, UUID, request)); err != nil {
+	if _, err := wsmClient.ResponseError(cl.UpdateWorkspacePropertiesWithResponse(ctx, UUID, request)); err != nil {
 		return fmt.Errorf("updating workspace properties: %s", err)
 	}
 	return nil
@@ -67,7 +67,7 @@ func UpdateWorkspaceProperties(ctx context.Context, cl *wsm.ClientWithResponses,
 
 // DeleteWorkspaceProperties deletes the properties of a workspace with the given UUID.
 func DeleteWorkspaceProperties(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.DeleteWorkspacePropertiesJSONRequestBody) error {
-	if _, err := client.ResponseError(cl.DeleteWorkspacePropertiesWithResponse(ctx, UUID, request)); err != nil {
+	if _, err := wsmClient.ResponseError(cl.DeleteWorkspacePropertiesWithResponse(ctx, UUID, request)); err != nil {
 		return fmt.Errorf("deleting workspace properties: %s", err)
 	}
 	return nil
@@ -75,7 +75,7 @@ func DeleteWorkspaceProperties(ctx context.Context, cl *wsm.ClientWithResponses,
 
 // UpdateWorkspacePolicies updates the policies of a workspace with the given UUID.
 func UpdateWorkspacePolicies(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.UpdatePoliciesJSONRequestBody) error {
-	rsp, err := client.ResponseError(cl.UpdatePoliciesWithResponse(ctx, UUID, request))
+	rsp, err := wsmClient.ResponseError(cl.UpdatePoliciesWithResponse(ctx, UUID, request))
 	if err != nil {
 		return fmt.Errorf("updating workspace policies: %s", err)
 	}
@@ -88,16 +88,16 @@ func UpdateWorkspacePolicies(ctx context.Context, cl *wsm.ClientWithResponses, U
 // DeleteWorkspace deletes a workspace with the given UUID. It starts a flight to delete the workspace and returns the job ID.
 // The caller must poll for the job status using the job ID returned in the response.
 func DeleteWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID string) (*string, error) {
-	rsp, err := client.ResponseError(cl.DeleteWorkspaceV2WithResponse(ctx, UUID, wsm.DeleteWorkspaceV2JSONRequestBody{
+	rsp, err := wsmClient.ResponseError(cl.DeleteWorkspaceV2WithResponse(ctx, UUID, wsm.DeleteWorkspaceV2JSONRequestBody{
 		JobControl: wsm.JobControl{
 			Id: uuid.New().String(),
 		},
 	}))
 	if rsp.JSON200 != nil {
-		return client.Ptr(rsp.JSON200.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON200.JobReport.Id), nil
 	}
 	if rsp.JSON202 != nil {
-		return client.Ptr(rsp.JSON202.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON202.JobReport.Id), nil
 	}
 	if rsp.JSON404 != nil {
 		// Workspace not found
@@ -110,14 +110,14 @@ func DeleteWorkspace(ctx context.Context, cl *wsm.ClientWithResponses, UUID stri
 }
 
 func SetRole(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.SetRoleJSONRequestBody) error {
-	if _, err := client.ResponseError(cl.SetRoleWithResponse(ctx, UUID, request)); err != nil {
+	if _, err := wsmClient.ResponseError(cl.SetRoleWithResponse(ctx, UUID, request)); err != nil {
 		return fmt.Errorf("setting role for workspace %s: %v", UUID, err)
 	}
 	return nil
 }
 
 func GetRoles(ctx context.Context, cl *wsm.ClientWithResponses, UUID string) (*wsm.RoleBindingList, error) {
-	rsp, err := client.ResponseError(cl.GetRolesWithResponse(ctx, UUID))
+	rsp, err := wsmClient.ResponseError(cl.GetRolesWithResponse(ctx, UUID))
 	if err != nil {
 		return nil, fmt.Errorf("getting roles for workspace %s: %v", UUID, err)
 	}
@@ -126,7 +126,7 @@ func GetRoles(ctx context.Context, cl *wsm.ClientWithResponses, UUID string) (*w
 
 // CreateFolder creates a folder in the workspace.
 func CreateFolder(ctx context.Context, cl *wsm.ClientWithResponses, UUID string, request wsm.CreateFolderJSONRequestBody) (*wsm.Folder, error) {
-	rsp, err := client.ResponseError(cl.CreateFolderWithResponse(ctx, UUID, request))
+	rsp, err := wsmClient.ResponseError(cl.CreateFolderWithResponse(ctx, UUID, request))
 	if err != nil || rsp.JSON200 == nil {
 		return nil, fmt.Errorf("creating folder in workspace %s: %v", UUID, err)
 	}
@@ -140,7 +140,7 @@ func GetFolder(ctx context.Context, cl *wsm.ClientWithResponses, workspaceId, fo
 		return nil, fmt.Errorf("invalid folder ID %s: %v", folderId, err)
 	}
 	// DO NOT pass nil as reqEditors - will panic
-	rsp, err := client.ResponseError(cl.GetFolderWithResponse(ctx, workspaceId, fId))
+	rsp, err := wsmClient.ResponseError(cl.GetFolderWithResponse(ctx, workspaceId, fId))
 	if err != nil {
 		return nil, fmt.Errorf("getting folder %s in workspace %s: %v", folderId, workspaceId, err)
 	}
@@ -153,7 +153,7 @@ func UpdateFolder(ctx context.Context, cl *wsm.ClientWithResponses, workspaceId,
 	if err != nil {
 		return nil, fmt.Errorf("invalid folder ID %s: %v", folderId, err)
 	}
-	rsp, err := client.ResponseError(cl.UpdateFolderWithResponse(ctx, workspaceId, fId, request))
+	rsp, err := wsmClient.ResponseError(cl.UpdateFolderWithResponse(ctx, workspaceId, fId, request))
 	if err != nil {
 		return nil, fmt.Errorf("updating folder %s in workspace %s: %v", folderId, workspaceId, err)
 	}
@@ -169,7 +169,7 @@ func UpdateFolderProperties(ctx context.Context, cl *wsm.ClientWithResponses, wo
 	if err != nil {
 		return fmt.Errorf("invalid folder ID %s: %v", folderId, err)
 	}
-	if _, err := client.ResponseError(cl.UpdateFolderPropertiesWithResponse(ctx, workspaceId, fId, request)); err != nil {
+	if _, err := wsmClient.ResponseError(cl.UpdateFolderPropertiesWithResponse(ctx, workspaceId, fId, request)); err != nil {
 		return fmt.Errorf("updating folder properties %s in workspace %s: %v", folderId, workspaceId, err)
 	}
 	return nil
@@ -181,7 +181,7 @@ func DeleteFolderProperties(ctx context.Context, cl *wsm.ClientWithResponses, wo
 	if err != nil {
 		return fmt.Errorf("invalid folder ID %s: %v", folderId, err)
 	}
-	if _, err := client.ResponseError(cl.DeleteFolderPropertiesWithResponse(ctx, workspaceId, fId, request)); err != nil {
+	if _, err := wsmClient.ResponseError(cl.DeleteFolderPropertiesWithResponse(ctx, workspaceId, fId, request)); err != nil {
 		return fmt.Errorf("deleting folder properties %s in workspace %s: %v", folderId, workspaceId, err)
 	}
 	return nil
@@ -193,15 +193,15 @@ func DeleteFolderAsync(ctx context.Context, cl *wsm.ClientWithResponses, workspa
 	if err != nil {
 		return nil, fmt.Errorf("invalid folder ID %s: %v", folderId, err)
 	}
-	rsp, err := client.ResponseError(cl.DeleteFolderAsyncWithResponse(ctx, workspaceId, fId))
+	rsp, err := wsmClient.ResponseError(cl.DeleteFolderAsyncWithResponse(ctx, workspaceId, fId))
 	if err != nil {
 		return nil, fmt.Errorf("deleting folder: %w", err)
 	}
 	if rsp.JSON200 != nil {
-		return client.Ptr(rsp.JSON200.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON200.JobReport.Id), nil
 	}
 	if rsp.JSON202 != nil {
-		return client.Ptr(rsp.JSON202.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON202.JobReport.Id), nil
 	}
 	return nil, fmt.Errorf("deleting folder, unexpected response: %v", rsp.StatusCode())
 }
@@ -212,7 +212,7 @@ func GetControlledGcsBucket(ctx context.Context, cl *wsm.ClientWithResponses, wo
 	if err != nil {
 		return nil, fmt.Errorf("invalid resource ID %s: %v", resourceId, err)
 	}
-	rsp, err := client.ResponseError(cl.GetBucketWithResponse(ctx, workspaceId, rId))
+	rsp, err := wsmClient.ResponseError(cl.GetBucketWithResponse(ctx, workspaceId, rId))
 	if err != nil {
 		return nil, fmt.Errorf("getting controlled GCS bucket: %w", err)
 	}
@@ -221,7 +221,7 @@ func GetControlledGcsBucket(ctx context.Context, cl *wsm.ClientWithResponses, wo
 
 // CreateControlledGcsBucket creates a controlled GCS bucket in the specified workspace.
 func CreateControlledGcsBucket(ctx context.Context, cl *wsm.ClientWithResponses, workspaceId string, request wsm.CreateControlledGcpGcsBucketRequestBody) (*wsm.CreatedControlledGcpGcsBucketResponse, error) {
-	rsp, err := client.ResponseError(cl.CreateBucketWithResponse(ctx, workspaceId, request))
+	rsp, err := wsmClient.ResponseError(cl.CreateBucketWithResponse(ctx, workspaceId, request))
 	if err != nil {
 		return nil, fmt.Errorf("creating controlled GCS bucket: %w", err)
 	}
@@ -234,7 +234,7 @@ func UpdateControlledGcsBucket(ctx context.Context, cl *wsm.ClientWithResponses,
 	if err != nil {
 		return nil, fmt.Errorf("parsing resource ID %s: %v", resourceId, err)
 	}
-	rsp, err := client.ResponseError(cl.UpdateGcsBucketWithResponse(ctx, workspaceId, rId, request))
+	rsp, err := wsmClient.ResponseError(cl.UpdateGcsBucketWithResponse(ctx, workspaceId, rId, request))
 	if err != nil {
 		return nil, fmt.Errorf("updating controlled GCS bucket: %w", err)
 	}
@@ -248,7 +248,7 @@ func DeleteControlledGcsBucketAsync(ctx context.Context, cl *wsm.ClientWithRespo
 	if err != nil {
 		return nil, fmt.Errorf("invalid resource ID %s: %v", resourceId, err)
 	}
-	rsp, err := client.ResponseError(cl.DeleteBucketWithResponse(ctx, workspaceId, rId, wsm.DeleteControlledGcpGcsBucketRequest{
+	rsp, err := wsmClient.ResponseError(cl.DeleteBucketWithResponse(ctx, workspaceId, rId, wsm.DeleteControlledGcpGcsBucketRequest{
 		JobControl: wsm.JobControl{
 			Id: uuid.New().String(),
 		},
@@ -257,19 +257,19 @@ func DeleteControlledGcsBucketAsync(ctx context.Context, cl *wsm.ClientWithRespo
 		return nil, fmt.Errorf("deleting controlled GCS bucket: %w", err)
 	}
 	if rsp.JSON200 != nil {
-		return client.Ptr(rsp.JSON200.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON200.JobReport.Id), nil
 	}
 	if rsp.JSON202 != nil {
-		return client.Ptr(rsp.JSON202.JobReport.Id), nil
+		return wsmClient.Ptr(rsp.JSON202.JobReport.Id), nil
 	}
 	return nil, fmt.Errorf("deleting gcs bucket, unexpected response: %v", rsp.StatusCode())
 }
 
 // NewWSMClient creates a new WSM client with the given host and context.
-func NewWSMClient(ctx context.Context, host string, useIdToken bool, impersonateServiceAccount string) (*wsm.ClientWithResponses, error) {
+func NewWSMClient(ctx context.Context, host string, useIdToken bool, useCLICredentials bool, impersonateServiceAccount string) (*wsm.ClientWithResponses, error) {
 	wsmUrl := fmt.Sprintf("%s/api/wsm", host)
 
-	httpClient, err := createHttpClient(ctx, wsmUrl, useIdToken, impersonateServiceAccount)
+	httpClient, err := createHttpClient(ctx, wsmUrl, useIdToken, useCLICredentials, impersonateServiceAccount)
 	if err != nil {
 		return nil, err
 	}

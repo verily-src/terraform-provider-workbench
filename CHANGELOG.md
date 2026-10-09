@@ -1,3 +1,10 @@
+## 0.0.5 (October 8, 2026)
+
+- Added `program_name` to data collection inputs.
+- Added support for Terraform provider authentication via Workbench CLI.
+- Preserved user-specified policies in Terraform provider state for data collection and workspace
+  resources.
+
 ## 0.0.4 (January 22, 2026)
 
 - Added import functionality to `workbench_group` resource.

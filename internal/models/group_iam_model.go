@@ -7,8 +7,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	userClient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 type GroupIdentifier struct {
@@ -34,7 +34,7 @@ func NewGroupIdentifier(groupName string, orgID string) GroupIdentifier {
 func (g GroupIdentifier) Params() (user.GroupNameParam, *user.OrgIdQueryParam) {
 	var orgID *user.OrgIdQueryParam
 	if !g.OrgID.IsNull() {
-		orgID = client.Ptr(user.OrgId(g.OrgID.ValueString()))
+		orgID = userClient.Ptr(user.OrgId(g.OrgID.ValueString()))
 	}
 	return user.GroupNameParam(g.GroupName.ValueString()), orgID
 }
@@ -77,7 +77,7 @@ func convertGroupPrincipalToUm(p GroupPrincipal) user.Principal {
 			OrganizationId: p.Group.OrgID.ValueString(),
 		}
 	case p.Public.ValueBool():
-		up.PublicPrincipal = client.Ptr(true)
+		up.PublicPrincipal = userClient.Ptr(true)
 	}
 	return up
 }
@@ -89,10 +89,10 @@ func ConvertGroupPrincipalToTf(p user.Principal) GroupPrincipal {
 	case p.UserPrincipal != nil:
 		gp.User = types.StringValue(p.UserPrincipal.Email)
 	case p.GroupPrincipal != nil:
-		gp.Group = client.Ptr(NewGroupIdentifier(p.GroupPrincipal.GroupName,
+		gp.Group = userClient.Ptr(NewGroupIdentifier(p.GroupPrincipal.GroupName,
 			p.GroupPrincipal.OrganizationId))
 	case p.GlobalGroupPrincipal != nil:
-		gp.Group = client.Ptr(NewGroupIdentifier(p.GlobalGroupPrincipal.GroupName, ""))
+		gp.Group = userClient.Ptr(NewGroupIdentifier(p.GlobalGroupPrincipal.GroupName, ""))
 	case p.PublicPrincipal != nil && *p.PublicPrincipal:
 		gp.Public = types.BoolValue(true)
 	}

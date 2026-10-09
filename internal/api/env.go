@@ -2,17 +2,22 @@ package api
 
 import (
 	"context"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"net/http"
+
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
-func createHttpClient(ctx context.Context, host string, useIdtoken bool, impersonateServiceAccount string) (*http.Client, error) {
+func createHttpClient(ctx context.Context, host string, useIdtoken bool, useCLICredentials bool, impersonateServiceAccount string) (*http.Client, error) {
 	if impersonateServiceAccount != "" {
-		return client.OauthClientWithImpersonation(ctx, impersonateServiceAccount)
+		return wsmClient.OauthClientWithImpersonation(ctx, impersonateServiceAccount)
+	}
+
+	if useCLICredentials {
+		return wsmClient.OauthClientFromCLI(ctx)
 	}
 
 	if useIdtoken {
-		return client.OauthClientFromWorkloadIdentity(ctx, host)
+		return wsmClient.OauthClientFromWorkloadIdentity(ctx, host)
 	}
-	return client.OauthClientFromGoogleCredentials(ctx)
+	return wsmClient.OauthClientFromGoogleCredentials(ctx)
 }

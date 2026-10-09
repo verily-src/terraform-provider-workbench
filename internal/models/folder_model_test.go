@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestNewFolder(t *testing.T) {
@@ -27,7 +27,7 @@ func TestNewFolder(t *testing.T) {
 			m: &wsm.Folder{
 				Id:          id,
 				DisplayName: "Test Folder",
-				Description: client.Ptr("This is a test folder"),
+				Description: wsmClient.Ptr("This is a test folder"),
 				Properties: &wsm.Properties{
 					{
 						Key:   SHORT_DESCRIPTION_KEY,
@@ -51,7 +51,7 @@ func TestNewFolder(t *testing.T) {
 				ID:          types.StringValue(id.String()),
 				WorkspaceId: types.StringValue("workspace-id"),
 				DisplayName: types.StringValue("Test Folder"),
-				Description: types.StringPointerValue(client.Ptr("This is a test folder")),
+				Description: types.StringPointerValue(wsmClient.Ptr("This is a test folder")),
 				Properties: &[]PropertyModel{
 					{
 						Key:   types.StringValue("key1"),
@@ -69,7 +69,7 @@ func TestNewFolder(t *testing.T) {
 			m: &wsm.Folder{
 				Id:          id,
 				DisplayName: "Test Folder",
-				Description: client.Ptr("This is a test folder"),
+				Description: wsmClient.Ptr("This is a test folder"),
 				Properties: &wsm.Properties{
 					{
 						Key:   SHORT_DESCRIPTION_KEY,
@@ -84,7 +84,7 @@ func TestNewFolder(t *testing.T) {
 						Value: "value1",
 					},
 				},
-				ParentFolderId:  client.Ptr(parentFolderId),
+				ParentFolderId:  wsmClient.Ptr(parentFolderId),
 				LastUpdatedDate: now,
 				LastUpdatedBy:   "test-user",
 				CreatedDate:     now,
@@ -94,7 +94,7 @@ func TestNewFolder(t *testing.T) {
 				ID:          types.StringValue(id.String()),
 				WorkspaceId: types.StringValue("workspace-id"),
 				DisplayName: types.StringValue("Test Folder"),
-				Description: types.StringPointerValue(client.Ptr("This is a test folder")),
+				Description: types.StringPointerValue(wsmClient.Ptr("This is a test folder")),
 				Properties: &[]PropertyModel{
 					{
 						Key:   types.StringValue("key1"),
@@ -132,7 +132,7 @@ func TestFolderToCreateRequest(t *testing.T) {
 			m: &FolderModel{
 				WorkspaceId: types.StringValue("workspace-id"),
 				DisplayName: types.StringValue("Test Folder"),
-				Description: types.StringPointerValue(client.Ptr("This is a test folder")),
+				Description: types.StringPointerValue(wsmClient.Ptr("This is a test folder")),
 				Properties: &[]PropertyModel{
 					{
 						Key:   types.StringValue("key1"),
@@ -146,7 +146,7 @@ func TestFolderToCreateRequest(t *testing.T) {
 			},
 			want: &wsm.CreateFolderJSONRequestBody{
 				DisplayName: "Test Folder",
-				Description: client.Ptr("This is a test folder"),
+				Description: wsmClient.Ptr("This is a test folder"),
 				Properties: &wsm.Properties{
 					{
 						Key:   "key1",
@@ -164,7 +164,7 @@ func TestFolderToCreateRequest(t *testing.T) {
 			m: &FolderModel{
 				WorkspaceId:    types.StringValue("workspace-id"),
 				DisplayName:    types.StringValue("Test Folder"),
-				Description:    types.StringPointerValue(client.Ptr("This is a test folder")),
+				Description:    types.StringPointerValue(wsmClient.Ptr("This is a test folder")),
 				ParentFolderId: types.StringValue(parentFolderId.String()),
 				Properties: &[]PropertyModel{
 					{
@@ -179,7 +179,7 @@ func TestFolderToCreateRequest(t *testing.T) {
 			},
 			want: &wsm.CreateFolderJSONRequestBody{
 				DisplayName:    "Test Folder",
-				Description:    client.Ptr("This is a test folder"),
+				Description:    wsmClient.Ptr("This is a test folder"),
 				ParentFolderId: &parentFolderId,
 				Properties: &wsm.Properties{
 					{

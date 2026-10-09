@@ -130,6 +130,10 @@ func (d *DataCollectionDataSource) Schema(ctx context.Context, req datasource.Sc
 				MarkdownDescription: "Data Update frequency for this data collection",
 				Computed:            true,
 			},
+			"program_name": schema.StringAttribute{
+				MarkdownDescription: "Program this Data Collection belongs to",
+				Computed:            true,
+			},
 			"last_updated_date": schema.StringAttribute{
 				MarkdownDescription: "Workbench data collection last updated date",
 				Computed:            true,
@@ -192,7 +196,7 @@ func (d *DataCollectionDataSource) Read(ctx context.Context, req datasource.Read
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, d.client.Host, d.client.UseIdToken, d.client.UseCLICredentials, d.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

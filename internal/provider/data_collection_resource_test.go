@@ -22,7 +22,7 @@ func TestAccDataCollectionResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
-				Config: testAccDataCollectionResourceConfig(host, orgID.String(), podID.String(), "Test Workspace", "test-workspace", "Managed by terraform", propertiesString(map[string]string{"key1": "value1", "key3": "value3"}), "testing@example.com", "verily-test-org", "[\"cardiology\", \"dermatology\"]", "weekly"),
+				Config: testAccDataCollectionResourceConfig(host, orgID.String(), podID.String(), "Test Workspace", "test-workspace", "Managed by terraform", propertiesString(map[string]string{"key1": "value1", "key3": "value3"}), "testing@example.com", "verily-test-org", "[\"cardiology\", \"dermatology\"]", "weekly", "test-program"),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
 						"workbench_data_collection.test",
@@ -134,6 +134,11 @@ func TestAccDataCollectionResource(t *testing.T) {
 					),
 					statecheck.ExpectKnownValue(
 						"workbench_data_collection.test",
+						tfjsonpath.New("program_name"),
+						knownvalue.StringExact("test-program"),
+					),
+					statecheck.ExpectKnownValue(
+						"workbench_data_collection.test",
 						tfjsonpath.New("gcp_project_id"),
 						knownvalue.NotNull(),
 					),
@@ -141,7 +146,7 @@ func TestAccDataCollectionResource(t *testing.T) {
 			},
 			// Update and Read testing
 			{
-				Config: testAccDataCollectionResourceConfig(host, orgID.String(), podID.String(), "Updated Workspace", "test-workspace", "Updated by terraform", propertiesString(map[string]string{"key1": "value2", "key2": "value2"}), "testing@example.com", "verily-test-org", "[\"cardiology\", \"oncology\"]", "weekly"),
+				Config: testAccDataCollectionResourceConfig(host, orgID.String(), podID.String(), "Updated Workspace", "test-workspace", "Updated by terraform", propertiesString(map[string]string{"key1": "value2", "key2": "value2"}), "testing@example.com", "verily-test-org", "[\"cardiology\", \"oncology\"]", "weekly", "my-updated-program"),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
 						"workbench_data_collection.test",
@@ -217,6 +222,11 @@ func TestAccDataCollectionResource(t *testing.T) {
 					),
 					statecheck.ExpectKnownValue(
 						"workbench_data_collection.test",
+						tfjsonpath.New("program_name"),
+						knownvalue.StringExact("my-updated-program"),
+					),
+					statecheck.ExpectKnownValue(
+						"workbench_data_collection.test",
 						tfjsonpath.New("gcp_project_id"),
 						knownvalue.NotNull(),
 					),
@@ -224,16 +234,17 @@ func TestAccDataCollectionResource(t *testing.T) {
 			},
 			// Import Testing
 			{
-				ImportState:       true,
-				ResourceName:      "workbench_data_collection.test",
-				ImportStateVerify: true,
+				ImportState:             true,
+				ResourceName:            "workbench_data_collection.test",
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"policies"},
 			},
 			// Deletion is handled automatically by the testing framework.
 		},
 	})
 }
 
-func testAccDataCollectionResourceConfig(host string, orgID string, podID string, displayName string, userFacingID string, description string, properties string, supportEmail string, organizationName string, therapeudicTags string, updateFrequency string) string {
+func testAccDataCollectionResourceConfig(host string, orgID string, podID string, displayName string, userFacingID string, description string, properties string, supportEmail string, organizationName string, therapeudicTags string, updateFrequency string, programName string) string {
 	return fmt.Sprintf(`
 provider "workbench" {
   host = "%s"
@@ -263,6 +274,7 @@ resource "workbench_data_collection" "test" {
   organization_name = "%s"
   therapeutic_tags = %s
   update_frequency = "%s"
+  program_name = "%s"
 }
-`, host, displayName, userFacingID, description, orgID, podID, properties, supportEmail, organizationName, therapeudicTags, updateFrequency)
+`, host, displayName, userFacingID, description, orgID, podID, properties, supportEmail, organizationName, therapeudicTags, updateFrequency, programName)
 }

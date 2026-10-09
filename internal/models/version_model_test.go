@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestNewVersionModel(t *testing.T) {
@@ -21,7 +21,7 @@ func TestNewVersionModel(t *testing.T) {
 		folder := &wsm.Folder{
 			Id:          id,
 			DisplayName: "Test Version",
-			Description: client.Ptr("A test version"),
+			Description: wsmClient.Ptr("A test version"),
 			Properties: &wsm.Properties{
 				{
 					Key:   SHORT_DESCRIPTION_KEY,
@@ -46,7 +46,7 @@ func TestNewVersionModel(t *testing.T) {
 				ID:              types.StringValue(id.String()),
 				WorkspaceId:     types.StringValue(workspaceId),
 				DisplayName:     types.StringValue("Test Version"),
-				Description:     types.StringPointerValue(client.Ptr("A test version")),
+				Description:     types.StringPointerValue(wsmClient.Ptr("A test version")),
 				Properties:      convertProperties(folder.Properties),
 				LastUpdatedDate: timetypes.NewRFC3339TimeValue(now),
 				LastUpdatedBy:   types.StringValue("user1"),
@@ -67,7 +67,7 @@ func TestNewVersionModel(t *testing.T) {
 		folder := &wsm.Folder{
 			Id:          id,
 			DisplayName: "Test Version",
-			Description: client.Ptr("A test version"),
+			Description: wsmClient.Ptr("A test version"),
 			Properties: &wsm.Properties{
 				{
 					Key:   RELEASE_NOTES_URL_KEY,
@@ -93,7 +93,7 @@ func TestNewVersionModel(t *testing.T) {
 				ID:              types.StringValue(id.String()),
 				WorkspaceId:     types.StringValue(workspaceId),
 				DisplayName:     types.StringValue("Test Version"),
-				Description:     types.StringPointerValue(client.Ptr("A test version")),
+				Description:     types.StringPointerValue(wsmClient.Ptr("A test version")),
 				Properties:      convertProperties(folder.Properties),
 				LastUpdatedDate: timetypes.NewRFC3339TimeValue(now),
 				LastUpdatedBy:   types.StringValue("user1"),
@@ -118,7 +118,7 @@ func TestVersionToCreateRequest(t *testing.T) {
 			ID:          types.StringValue(id.String()),
 			WorkspaceId: types.StringValue(workspaceId),
 			DisplayName: types.StringValue("Test Version"),
-			Description: types.StringPointerValue(client.Ptr("A test version")),
+			Description: types.StringPointerValue(wsmClient.Ptr("A test version")),
 			Properties: &[]PropertyModel{
 				{
 					Key:   types.StringValue("key1"),

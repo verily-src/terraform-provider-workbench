@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccGroupIamBindingDataSource(t *testing.T) {
@@ -53,7 +53,7 @@ func TestAccGroupIamBindingDataSource(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(client.Ptr(desc))
+			_ = json.NewEncoder(w).Encode(wsmclient.Ptr(desc))
 		}
 	}))
 	defer mockServer.Close()

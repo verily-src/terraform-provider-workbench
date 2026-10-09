@@ -186,6 +186,7 @@ func (r *WorkspaceResource) Create(ctx context.Context, req resource.CreateReque
 	}
 	id := uuid.New().String()
 	data.ID = types.StringValue(id)
+	plannedPolicies := data.Policies
 	w, err := r.createWorkspaceAndWaitForComplete(ctx, data.ConvertToCreateRequest())
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -196,12 +197,15 @@ func (r *WorkspaceResource) Create(ctx context.Context, req resource.CreateReque
 	}
 	workspaceState := models.NewWorkspaceModel(w)
 	data = *workspaceState
+	// Preserve planned policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified.
+	data.Policies = plannedPolicies
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *WorkspaceResource) createWorkspaceAndWaitForComplete(ctx context.Context, request wsm.CreateWorkspaceV2JSONRequestBody) (*wsm.WorkspaceDescription, error) {
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create Workbench client, unexpected error: %w", err)
 	}
@@ -253,7 +257,7 @@ func (r *WorkspaceResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 
 	// Update metadata
 	r.updateMetadata(ctx, c, resp, &data, &state)
@@ -275,6 +279,8 @@ func (r *WorkspaceResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	plannedPolicies := data.Policies
+
 	tflog.Trace(ctx, "Updated a workspace")
 	w, err := api.GetWorkspace(ctx, c, data.ID.ValueString())
 	if err != nil {
@@ -283,6 +289,9 @@ func (r *WorkspaceResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 	workspaceState := models.NewWorkspaceModel(w)
 	data = *workspaceState
+	// Preserve planned policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified.
+	data.Policies = plannedPolicies
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -342,8 +351,9 @@ func (r *WorkspaceResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	statePolicies := data.Policies
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -356,6 +366,12 @@ func (r *WorkspaceResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 	workspaceState := models.NewWorkspaceModel(w)
 	data = *workspaceState
+	// Preserve state policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified. During import,
+	// statePolicies is nil so we use the API response as-is.
+	if statePolicies != nil {
+		data.Policies = statePolicies
+	}
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -370,7 +386,7 @@ func (r *WorkspaceResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return

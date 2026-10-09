@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccControlledGCSBucketDataSource(t *testing.T) {
@@ -36,18 +36,18 @@ func TestAccControlledGCSBucketDataSource(t *testing.T) {
 				Metadata: wsm.ResourceMetadata{
 					ResourceId:          rID,
 					Name:                "test-controlled-gcs-bucket",
-					DisplayName:         client.Ptr("Test Controlled GCS Bucket"),
-					Description:         client.Ptr("This is a test controlled GCS bucket"),
+					DisplayName:         wsmclient.Ptr("Test Controlled GCS Bucket"),
+					Description:         wsmclient.Ptr("This is a test controlled GCS bucket"),
 					CreatedBy:           "user@example.com",
 					CreatedDate:         now,
 					LastUpdatedBy:       "user@example.com",
 					LastUpdatedDate:     now,
 					StewardshipType:     wsm.CONTROLLED,
 					ResourceType:        wsm.GCSBUCKET,
-					Properties:          client.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
-					ResourceLineage:     client.Ptr(rLineage),
-					FolderId:            client.Ptr(folderId),
-					CloningInstructions: client.Ptr(wsm.COPYNOTHING),
+					Properties:          wsmclient.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
+					ResourceLineage:     wsmclient.Ptr(rLineage),
+					FolderId:            wsmclient.Ptr(folderId),
+					CloningInstructions: wsmclient.Ptr(wsm.COPYNOTHING),
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")

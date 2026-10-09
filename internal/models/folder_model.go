@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 // FolderModel is the description of the folder resource.
@@ -38,7 +38,7 @@ func NewFolderModel(f *wsm.Folder, workspaceId string) *FolderModel {
 	}
 	var parentFolderId *string
 	if f.ParentFolderId != nil {
-		parentFolderId = client.Ptr(f.ParentFolderId.String())
+		parentFolderId = wsmClient.Ptr(f.ParentFolderId.String())
 	}
 	return &FolderModel{
 		ID:              types.StringValue(f.Id.String()),

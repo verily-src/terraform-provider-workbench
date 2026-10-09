@@ -2,8 +2,8 @@ package models
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 // PolicyModel is the description of the policy resource.
@@ -106,8 +106,8 @@ func GetPoliciesInput(policies *[]PolicyModel) *wsm.WsmPolicyInputs {
 		var additionalData []wsm.WsmPolicyPair
 		for _, ad := range *p.AdditionalData {
 			additionalData = append(additionalData, wsm.WsmPolicyPair{
-				Key:   client.Ptr(ad.Key.ValueString()),
-				Value: client.Ptr(ad.Value.ValueString()),
+				Key:   wsmClient.Ptr(ad.Key.ValueString()),
+				Value: wsmClient.Ptr(ad.Value.ValueString()),
 			})
 		}
 		policyModels = append(policyModels, wsm.WsmPolicyInput{

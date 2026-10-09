@@ -1,5 +1,5 @@
 // Package wsm provides a workspace-manager fake at the service API layer.
-package wsm
+package gofakes
 
 import (
 	"encoding/json"
@@ -12,8 +12,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	"github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 // New creates a new workspace-manager Service struct.
@@ -602,7 +602,7 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 		if req.GcsBucket.Location == nil {
 			// This is retrieved from the workspace location, but as a fake, we are just
 			// defaulting to us-central1.
-			location = client.Ptr("us-central1")
+			location = goclient.Ptr("us-central1")
 		}
 		bucket := wsm.GcpGcsBucketResource{
 			Metadata: wsm.ResourceMetadata{
@@ -614,19 +614,19 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 				FolderId:            req.Common.FolderId,
 				ResourceType:        wsm.GCSBUCKET,
 				StewardshipType:     wsm.CONTROLLED,
-				CloningInstructions: client.Ptr(req.Common.CloningInstructions),
+				CloningInstructions: goclient.Ptr(req.Common.CloningInstructions),
 				ControlledResourceMetadata: &wsm.ControlledResourceMetadata{
-					AccessScope:          client.Ptr(req.Common.AccessScope),
-					ManagedBy:            client.Ptr(req.Common.ManagedBy),
-					PrivateResourceState: client.Ptr(wsm.PrivateResourceStateNOTAPPLICABLE),
+					AccessScope:          goclient.Ptr(req.Common.AccessScope),
+					ManagedBy:            goclient.Ptr(req.Common.ManagedBy),
+					PrivateResourceState: goclient.Ptr(wsm.PrivateResourceStateNOTAPPLICABLE),
 					Region:               location,
 				},
 				LastUpdatedDate: time.Now(),
 				LastUpdatedBy:   "testuser",
 				CreatedDate:     time.Now(),
 				CreatedBy:       "testuser",
-				State:           client.Ptr(wsm.READY),
-				CloudPlatform:   client.Ptr(wsm.GCP),
+				State:           goclient.Ptr(wsm.READY),
+				CloudPlatform:   goclient.Ptr(wsm.GCP),
 			},
 			Attributes: wsm.GcpGcsBucketAttributes{
 				BucketName: *req.GcsBucket.Name,
@@ -772,7 +772,7 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 }
 
 func jsonError(c echo.Context, code int, format string, a ...interface{}) error {
-	return c.JSON(code, client.NewApiError(code, fmt.Sprintf(format, a...)))
+	return c.JSON(code, goclient.NewApiError(code, fmt.Sprintf(format, a...)))
 }
 
 func (s *Service) find(workspaceID string) (*workspaceState, bool) {

@@ -5,13 +5,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	userClient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 // CreateGroup creates a workbench managed group.
 func CreateGroup(ctx context.Context, cl *user.ClientWithResponses, orgUFID string, request user.CreateGroupJSONRequestBody) error {
-	if _, err := client.ResponseError(cl.CreateGroupWithResponse(ctx, *uxid(orgUFID), request)); err != nil {
+	if _, err := userClient.ResponseError(cl.CreateGroupWithResponse(ctx, *uxid(orgUFID), request)); err != nil {
 		return fmt.Errorf("creating group: %w", err)
 	}
 	return nil
@@ -19,7 +19,7 @@ func CreateGroup(ctx context.Context, cl *user.ClientWithResponses, orgUFID stri
 
 // DescribeGroup retrieves a workbench managed group by its name.
 func DescribeGroup(ctx context.Context, cl *user.ClientWithResponses, groupName string, orgUFID string) (*user.GroupDescriptionAndRoles, error) {
-	rsp, err := client.ResponseError(cl.DescribeGroupWithResponse(ctx, groupName, &user.DescribeGroupParams{
+	rsp, err := userClient.ResponseError(cl.DescribeGroupWithResponse(ctx, groupName, &user.DescribeGroupParams{
 		OrgIdQueryParam: uxid(orgUFID),
 	}))
 	if err != nil {
@@ -30,7 +30,7 @@ func DescribeGroup(ctx context.Context, cl *user.ClientWithResponses, groupName 
 
 // DeleteGroup deletes a workbench managed group.
 func DeleteGroup(ctx context.Context, cl *user.ClientWithResponses, groupName string, orgUFID string) error {
-	rsp, err := client.ResponseError(cl.DeleteGroupWithResponse(ctx, *uxid(orgUFID), groupName))
+	rsp, err := userClient.ResponseError(cl.DeleteGroupWithResponse(ctx, *uxid(orgUFID), groupName))
 	if rsp.JSON404 != nil {
 		// Group not found, return nil
 		return nil
@@ -43,7 +43,7 @@ func DeleteGroup(ctx context.Context, cl *user.ClientWithResponses, groupName st
 
 // UpdateGroup updates a workbench managed group.
 func UpdateGroup(ctx context.Context, cl *user.ClientWithResponses, groupName string, orgUFID string, request user.UpdateGroupRequest) error {
-	if _, err := client.ResponseError(cl.UpdateGroupWithResponse(ctx, *uxid(orgUFID), groupName, request)); err != nil {
+	if _, err := userClient.ResponseError(cl.UpdateGroupWithResponse(ctx, *uxid(orgUFID), groupName, request)); err != nil {
 		return fmt.Errorf("updating group: %w", err)
 	}
 	return nil
@@ -51,7 +51,7 @@ func UpdateGroup(ctx context.Context, cl *user.ClientWithResponses, groupName st
 
 // SyncGroup synchronizes a workbench managed group with the google group.
 func SyncGroup(ctx context.Context, cl *user.ClientWithResponses, groupName string, orgUFID string) error {
-	if _, err := client.ResponseError(cl.SyncGroupWithResponse(ctx, *uxid(orgUFID), groupName)); err != nil {
+	if _, err := userClient.ResponseError(cl.SyncGroupWithResponse(ctx, *uxid(orgUFID), groupName)); err != nil {
 		return fmt.Errorf("syncing group: %w", err)
 	}
 	return nil
@@ -65,7 +65,7 @@ func SetGroupRole(ctx context.Context, cl *user.ClientWithResponses, groupName u
 			OrgIdQueryParam: orgID,
 		}
 	}
-	if _, err := client.ResponseError(cl.SetGroupAccessWithResponse(ctx, groupName, params, request)); err != nil {
+	if _, err := userClient.ResponseError(cl.SetGroupAccessWithResponse(ctx, groupName, params, request)); err != nil {
 		return fmt.Errorf("setting group role for %s: %w", groupName, err)
 	}
 	return nil
@@ -79,7 +79,7 @@ func GetGroupRoles(ctx context.Context, cl *user.ClientWithResponses, groupName 
 			OrgIdQueryParam: orgID,
 		}
 	}
-	rsp, err := client.ResponseError(cl.ListGroupMembershipWithResponse(ctx, groupName, params))
+	rsp, err := userClient.ResponseError(cl.ListGroupMembershipWithResponse(ctx, groupName, params))
 	if err != nil {
 		return nil, fmt.Errorf("getting group roles: %w", err)
 	}
@@ -98,9 +98,9 @@ func uxid(s string) *string {
 }
 
 // NewUserClient creates a new user manager client with the given host and context.
-func NewUserClient(ctx context.Context, host string, useIdToken bool, impersonateServiceAccount string) (*user.ClientWithResponses, error) {
+func NewUserClient(ctx context.Context, host string, useIdToken, useCLICredentials bool, impersonateServiceAccount string) (*user.ClientWithResponses, error) {
 	userUrl := fmt.Sprintf("%s/api/user", host)
-	httpClient, err := createHttpClient(ctx, userUrl, useIdToken, impersonateServiceAccount)
+	httpClient, err := createHttpClient(ctx, userUrl, useIdToken, useCLICredentials, impersonateServiceAccount)
 	if err != nil {
 		return nil, err
 	}

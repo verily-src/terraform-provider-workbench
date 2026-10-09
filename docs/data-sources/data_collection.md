@@ -45,6 +45,7 @@ output "my_data_collection" {
 - `pod_id` (String) Workbench datacollection pod id
 - `policies` (Attributes Set) Workbench datacollection policies (see
   [below for nested schema](#nestedatt--policies))
+- `program_name` (String) Program this Data Collection belongs to
 - `properties` (Attributes Set) Workbench data collection properties in key-value pair (see
   [below for nested schema](#nestedatt--properties))
 - `support_email` (String) Support email for the maintainer of this Data Collection

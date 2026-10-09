@@ -136,6 +136,12 @@ func (r *DataCollectionResource) Schema(ctx context.Context, req resource.Schema
 				Computed:            true,
 				Default:             stringdefault.StaticString("No Update Frequency Provided"),
 			},
+			"program_name": schema.StringAttribute{
+				MarkdownDescription: "Program this Data Collection belongs to",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString(""),
+			},
 			"last_updated_date": schema.StringAttribute{
 				MarkdownDescription: "Workbench data collection last updated date",
 				Computed:            true,
@@ -206,6 +212,7 @@ func (r *DataCollectionResource) Create(ctx context.Context, req resource.Create
 	}
 	id := uuid.New().String()
 	data.ID = types.StringValue(id)
+	plannedPolicies := data.Policies
 	api_create_req, diags := data.ConvertToCreateRequest()
 	resp.Diagnostics.Append(diags...)
 	w, err := r.createWorkspaceAndWaitForComplete(ctx, api_create_req)
@@ -220,6 +227,9 @@ func (r *DataCollectionResource) Create(ctx context.Context, req resource.Create
 	resp.Diagnostics.Append(diags...)
 
 	data = *datacollectionState
+	// Preserve planned policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified.
+	data.Policies = plannedPolicies
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -239,7 +249,7 @@ func (r *DataCollectionResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 
 	// Update metadata
 	r.updateMetadata(ctx, c, resp, &data.WorkspaceModel, &state.WorkspaceModel)
@@ -264,6 +274,8 @@ func (r *DataCollectionResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
+	plannedPolicies := data.Policies
+
 	tflog.Trace(ctx, "Updated a data collection")
 	w, err := api.GetWorkspace(ctx, c, data.ID.ValueString())
 	if err != nil {
@@ -274,6 +286,9 @@ func (r *DataCollectionResource) Update(ctx context.Context, req resource.Update
 	resp.Diagnostics.Append(diags...)
 
 	data = *datacollectionState
+	// Preserve planned policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified.
+	data.Policies = plannedPolicies
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -309,6 +324,16 @@ func (r *DataCollectionResource) diffDCProperties(ctx context.Context, state *mo
 			Value: data.UpdateFrequency,
 		})
 	}
+	if state.ProgramName != data.ProgramName {
+		deletedProperties = append(deletedProperties, models.PropertyModel{
+			Key:   types.StringValue(models.PROGRAM_NAME_KEY),
+			Value: state.ProgramName,
+		})
+		addedProperties = append(addedProperties, models.PropertyModel{
+			Key:   types.StringValue(models.PROGRAM_NAME_KEY),
+			Value: data.ProgramName,
+		})
+	}
 	if !state.TherapeuticTags.Equal(data.TherapeuticTags) {
 		deletedProperties = append(deletedProperties, models.PropertyModel{
 			Key:   types.StringValue(models.THERAPEUTIC_TAGS_KEY),
@@ -336,8 +361,9 @@ func (r *DataCollectionResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	statePolicies := data.Policies
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
@@ -352,6 +378,12 @@ func (r *DataCollectionResource) Read(ctx context.Context, req resource.ReadRequ
 	resp.Diagnostics.Append(diags...)
 
 	data = *datacollectionState
+	// Preserve state policies - API returns effective policies from TPS which may
+	// include additional attributes beyond what the user specified. During import,
+	// statePolicies is nil so we use the API response as-is.
+	if statePolicies != nil {
+		data.Policies = statePolicies
+	}
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -366,7 +398,7 @@ func (r *DataCollectionResource) Delete(ctx context.Context, req resource.Delete
 		return
 	}
 	// Create a new client
-	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.ImpersonateServiceAccount)
+	c, err := api.NewWSMClient(ctx, r.client.Host, r.client.UseIdToken, r.client.UseCLICredentials, r.client.ImpersonateServiceAccount)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Workbench client, unexpected error: %s", err))
 		return
