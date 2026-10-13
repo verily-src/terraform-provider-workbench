@@ -1,14 +1,15 @@
 package models
 
 import (
+	"testing"
+	"time"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
-	"testing"
-	"time"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestResourceModelToControlledResourceCreateRequest(t *testing.T) {
@@ -30,12 +31,12 @@ func TestResourceModelToControlledResourceCreateRequest(t *testing.T) {
 			},
 			want: wsm.ControlledResourceCommonFields{
 				AccessScope:         wsm.SHAREDACCESS,
-				Name:                client.Ptr(wsm.Name("test-resource")),
-				DisplayName:         client.Ptr(wsm.Name("Test Resource")),
-				Description:         client.Ptr("This is a test resource"),
+				Name:                wsmClient.Ptr(wsm.Name("test-resource")),
+				DisplayName:         wsmClient.Ptr(wsm.Name("Test Resource")),
+				Description:         wsmClient.Ptr("This is a test resource"),
 				CloningInstructions: wsm.COPYNOTHING,
-				Properties:          client.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
-				FolderId:            client.Ptr(folderId),
+				Properties:          wsmClient.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
+				FolderId:            wsmClient.Ptr(folderId),
 				ManagedBy:           wsm.USER,
 			},
 		},
@@ -47,7 +48,7 @@ func TestResourceModelToControlledResourceCreateRequest(t *testing.T) {
 			},
 			want: wsm.ControlledResourceCommonFields{
 				AccessScope:         wsm.SHAREDACCESS,
-				Name:                client.Ptr(wsm.Name("test-resource")),
+				Name:                wsmClient.Ptr(wsm.Name("test-resource")),
 				CloningInstructions: wsm.COPYNOTHING,
 				ManagedBy:           wsm.USER,
 			},
@@ -91,18 +92,18 @@ func TestNewResourceModel(t *testing.T) {
 			b: wsm.ResourceMetadata{
 				ResourceId:          resourceId,
 				Name:                wsm.Name("test-resource"),
-				DisplayName:         client.Ptr("Test Resource"),
-				Description:         client.Ptr("This is a test resource"),
+				DisplayName:         wsmClient.Ptr("Test Resource"),
+				Description:         wsmClient.Ptr("This is a test resource"),
 				CreatedDate:         now,
 				CreatedBy:           "user@example.com",
 				LastUpdatedDate:     now,
 				LastUpdatedBy:       "user@example.com",
 				ResourceType:        wsm.GCSOBJECT,
 				StewardshipType:     wsm.CONTROLLED,
-				Properties:          client.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
-				ResourceLineage:     client.Ptr(rLineage),
-				FolderId:            client.Ptr(folderId),
-				CloningInstructions: client.Ptr(wsm.COPYNOTHING),
+				Properties:          wsmClient.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
+				ResourceLineage:     wsmClient.Ptr(rLineage),
+				FolderId:            wsmClient.Ptr(folderId),
+				CloningInstructions: wsmClient.Ptr(wsm.COPYNOTHING),
 			},
 			want: ResourceModel{
 				ID:               types.StringValue(resourceId.String()),

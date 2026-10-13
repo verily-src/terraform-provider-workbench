@@ -19,6 +19,14 @@ const (
 	ACCEPT AcceptTosState = "ACCEPT"
 )
 
+// Defines values for BackfillJobStatusResponseStatus.
+const (
+	BackfillJobStatusResponseStatusERROR   BackfillJobStatusResponseStatus = "ERROR"
+	BackfillJobStatusResponseStatusFATAL   BackfillJobStatusResponseStatus = "FATAL"
+	BackfillJobStatusResponseStatusRUNNING BackfillJobStatusResponseStatus = "RUNNING"
+	BackfillJobStatusResponseStatusSUCCESS BackfillJobStatusResponseStatus = "SUCCESS"
+)
+
 // Defines values for CleanupMode.
 const (
 	CLEANUP CleanupMode = "CLEANUP"
@@ -27,17 +35,18 @@ const (
 
 // Defines values for GroupRole.
 const (
-	GroupRoleADMIN   GroupRole = "ADMIN"
-	GroupRoleMEMBER  GroupRole = "MEMBER"
-	GroupRoleREADER  GroupRole = "READER"
-	GroupRoleSUPPORT GroupRole = "SUPPORT"
+	GroupRoleADMIN             GroupRole = "ADMIN"
+	GroupRoleMEMBER            GroupRole = "MEMBER"
+	GroupRoleNOTIFICATIONADMIN GroupRole = "NOTIFICATION_ADMIN"
+	GroupRoleREADER            GroupRole = "READER"
+	GroupRoleSUPPORT           GroupRole = "SUPPORT"
 )
 
 // Defines values for JobReportStatus.
 const (
-	FAILED    JobReportStatus = "FAILED"
-	RUNNING   JobReportStatus = "RUNNING"
-	SUCCEEDED JobReportStatus = "SUCCEEDED"
+	JobReportStatusFAILED    JobReportStatus = "FAILED"
+	JobReportStatusRUNNING   JobReportStatus = "RUNNING"
+	JobReportStatusSUCCEEDED JobReportStatus = "SUCCEEDED"
 )
 
 // Defines values for MembershipRequestResponseRequestStatus.
@@ -49,6 +58,33 @@ const (
 // Defines values for MembershipRequirementType.
 const (
 	USERAGREEMENT MembershipRequirementType = "USER_AGREEMENT"
+)
+
+// Defines values for NotificationPriority.
+const (
+	ERROR   NotificationPriority = "ERROR"
+	INFO    NotificationPriority = "INFO"
+	WARNING NotificationPriority = "WARNING"
+)
+
+// Defines values for NotificationScopeType.
+const (
+	NotificationScopeTypeGROUP        NotificationScopeType = "GROUP"
+	NotificationScopeTypeORGANIZATION NotificationScopeType = "ORGANIZATION"
+	NotificationScopeTypeSYSTEM       NotificationScopeType = "SYSTEM"
+	NotificationScopeTypeUSER         NotificationScopeType = "USER"
+)
+
+// Defines values for NotificationStatus.
+const (
+	ACTIVE   NotificationStatus = "ACTIVE"
+	INACTIVE NotificationStatus = "INACTIVE"
+)
+
+// Defines values for NotificationType.
+const (
+	BLOCKING NotificationType = "BLOCKING"
+	PASSIVE  NotificationType = "PASSIVE"
 )
 
 // Defines values for OrganizationRole.
@@ -69,8 +105,9 @@ const (
 
 // Defines values for PodEnvironmentType.
 const (
-	AWS PodEnvironmentType = "AWS"
-	GCP PodEnvironmentType = "GCP"
+	AWS   PodEnvironmentType = "AWS"
+	AZURE PodEnvironmentType = "AZURE"
+	GCP   PodEnvironmentType = "GCP"
 )
 
 // Defines values for PodRole.
@@ -110,12 +147,19 @@ const (
 
 // Defines values for WorkbenchRole.
 const (
-	WorkbenchRoleADMIN      WorkbenchRole = "ADMIN"
-	WorkbenchRoleAODADMIN   WorkbenchRole = "AOD_ADMIN"
-	WorkbenchRoleAODSUPPORT WorkbenchRole = "AOD_SUPPORT"
-	WorkbenchRoleMANAGER    WorkbenchRole = "MANAGER"
-	WorkbenchRoleSUPERADMIN WorkbenchRole = "SUPERADMIN"
-	WorkbenchRoleSUPPORT    WorkbenchRole = "SUPPORT"
+	ADMIN      WorkbenchRole = "ADMIN"
+	AODADMIN   WorkbenchRole = "AOD_ADMIN"
+	AODSUPPORT WorkbenchRole = "AOD_SUPPORT"
+	MANAGER    WorkbenchRole = "MANAGER"
+	SUPERADMIN WorkbenchRole = "SUPERADMIN"
+	SUPPORT    WorkbenchRole = "SUPPORT"
+)
+
+// Defines values for ForceSyncOrganizationFromFhirParamsMutationType.
+const (
+	CREATE ForceSyncOrganizationFromFhirParamsMutationType = "CREATE"
+	DELETE ForceSyncOrganizationFromFhirParamsMutationType = "DELETE"
+	UPDATE ForceSyncOrganizationFromFhirParamsMutationType = "UPDATE"
 )
 
 // Defines values for ListOrganizationMembersV2ParamsFilterStatus.
@@ -193,6 +237,18 @@ type AdminCleanupGrantsResult struct {
 	JobReport     JobReport                 `json:"jobReport"`
 }
 
+// AdminGrantUserLicenseRequest defines model for AdminGrantUserLicenseRequest.
+type AdminGrantUserLicenseRequest struct {
+	// LicenseType Enum of User License Types.
+	LicenseType UserLicenseType `json:"licenseType"`
+}
+
+// AdminRevokeUserLicenseRequest defines model for AdminRevokeUserLicenseRequest.
+type AdminRevokeUserLicenseRequest struct {
+	// LicenseType Enum of User License Types.
+	LicenseType UserLicenseType `json:"licenseType"`
+}
+
 // AdminSendEmailRequest defines model for AdminSendEmailRequest.
 type AdminSendEmailRequest struct {
 	// From Sender email address (e.g., "Name &lt;email@domain.com&gt;" or "email@domain.com"). If not provided, uses configured default.
@@ -226,9 +282,88 @@ type AdminSendEmailResponse struct {
 	NotificationId *string `json:"notificationId,omitempty"`
 }
 
+// AdminSyncOrganizationResponse defines model for AdminSyncOrganizationResponse.
+type AdminSyncOrganizationResponse struct {
+	// Message Human-readable outcome of the sync.
+	Message *string `json:"message,omitempty"`
+
+	// Success Whether the forced sync completed successfully.
+	Success bool `json:"success"`
+}
+
+// AdminSyncUserResponse defines model for AdminSyncUserResponse.
+type AdminSyncUserResponse struct {
+	// Message Human-readable outcome of the user sync.
+	Message *string `json:"message,omitempty"`
+
+	// Success Whether the forced user sync completed successfully.
+	Success bool `json:"success"`
+}
+
 // AnyObject defines model for AnyObject.
 type AnyObject struct {
 	Value interface{} `json:"value"`
+}
+
+// BackfillAllowExternalMembersResponse defines model for BackfillAllowExternalMembersResponse.
+type BackfillAllowExternalMembersResponse struct {
+	// DryRun Whether this was a dry run (no actual changes made)
+	DryRun *bool `json:"dryRun,omitempty"`
+
+	// Errors Number of groups that encountered errors
+	Errors int `json:"errors"`
+
+	// FailedGroups List of groups that failed to update (excluding 404 not found errors)
+	FailedGroups []FailedGroupInfo `json:"failedGroups"`
+
+	// TotalGroups Total number of groups processed
+	TotalGroups int `json:"totalGroups"`
+
+	// Updated Number of groups that were patched (or would be patched in dry run). PATCH is idempotent so all groups are patched.
+	Updated int `json:"updated"`
+}
+
+// BackfillJobResponse defines model for BackfillJobResponse.
+type BackfillJobResponse struct {
+	// JobId Unique identifier for the backfill job (Stairway flight ID)
+	JobId string `json:"jobId"`
+
+	// Message Human-readable message about the job
+	Message *string `json:"message,omitempty"`
+}
+
+// BackfillJobStatusResponse defines model for BackfillJobStatusResponse.
+type BackfillJobStatusResponse struct {
+	// JobId Unique identifier for the backfill job
+	JobId  string                                `json:"jobId"`
+	Result *BackfillAllowExternalMembersResponse `json:"result,omitempty"`
+
+	// Status Current status of the job
+	Status BackfillJobStatusResponseStatus `json:"status"`
+}
+
+// BackfillJobStatusResponseStatus Current status of the job
+type BackfillJobStatusResponseStatus string
+
+// BackfillRequest defines model for BackfillRequest.
+type BackfillRequest struct {
+	// DryRun If true, only simulate the backfill without making changes
+	DryRun *bool `json:"dryRun,omitempty"`
+
+	// GroupEmails List of group email addresses to backfill
+	GroupEmails []string `json:"groupEmails"`
+}
+
+// BillingExportTable defines model for BillingExportTable.
+type BillingExportTable struct {
+	// DatasetId BigQuery dataset ID containing the billing export table
+	DatasetId string `json:"datasetId"`
+
+	// ProjectId GCP project ID containing the billing export table
+	ProjectId string `json:"projectId"`
+
+	// TableId BigQuery table/view ID containing the billing export data.
+	TableId string `json:"tableId"`
 }
 
 // CleanupMode whether to report results or cleanup as well
@@ -248,6 +383,9 @@ type CreateCommunityUserResponse struct {
 
 // CreateGroupRequest Request body for creating a workbench group
 type CreateGroupRequest struct {
+	// AllowMemberSharing true to allow group members (not just admins) to use this group as a principal when sharing workspaces, data collections, and pods. Group admins/owners and org admins can always share. Defaults to true.
+	AllowMemberSharing *bool `json:"allowMemberSharing,omitempty"`
+
 	// Description text describing the group
 	Description *string `json:"description,omitempty"`
 
@@ -287,6 +425,18 @@ type ErrorReport struct {
 // ExpirationDays Specify the expiration time of a grant
 type ExpirationDays = int
 
+// FailedGroupInfo defines model for FailedGroupInfo.
+type FailedGroupInfo struct {
+	// ErrorCode HTTP status code of the error
+	ErrorCode *int `json:"errorCode,omitempty"`
+
+	// ErrorMessage Error message describing why the update failed
+	ErrorMessage string `json:"errorMessage"`
+
+	// GroupEmail Email address of the group that failed
+	GroupEmail string `json:"groupEmail"`
+}
+
 // GroupAndRoles Group that a user has access to. OrgId is optional. If present, the group is scoped to the
 // organization. If absent, group is global and will eventually be migrated.
 type GroupAndRoles struct {
@@ -317,6 +467,9 @@ type GroupAndRolesList struct {
 
 // GroupDescription description of one org-scoped group
 type GroupDescription struct {
+	// AllowMemberSharing true if group members (not just admins) may use this group as a principal when sharing workspaces, data collections, and pods.
+	AllowMemberSharing *bool `json:"allowMemberSharing,omitempty"`
+
 	// CreatedBy User email of creator
 	CreatedBy string `json:"createdBy"`
 
@@ -338,11 +491,14 @@ type GroupDescription struct {
 	LastUpdatedBy string `json:"lastUpdatedBy"`
 
 	// LastUpdatedDate Timestamp of last update
-	LastUpdatedDate    time.Time `json:"lastUpdatedDate"`
-	OrgId              string    `json:"org_id"`
-	OrgUfid            string    `json:"org_ufid"`
-	RequireGrantReason *bool     `json:"requireGrantReason,omitempty"`
-	SyncGroup          bool      `json:"syncGroup"`
+	LastUpdatedDate time.Time `json:"lastUpdatedDate"`
+	OrgId           string    `json:"org_id"`
+	OrgUfid         string    `json:"org_ufid"`
+
+	// ReportedAffiliationId The reported affiliation organization ID (set when group is moved to community org)
+	ReportedAffiliationId *string `json:"reportedAffiliationId,omitempty"`
+	RequireGrantReason    *bool   `json:"requireGrantReason,omitempty"`
+	SyncGroup             bool    `json:"syncGroup"`
 }
 
 // GroupDescriptionAndRoles Basic group information for global and org-scoped groups. Full description for org-scoped groups.
@@ -521,6 +677,139 @@ type MoveUserRequest struct {
 	TargetOrgUfid string `json:"targetOrgUfid"`
 }
 
+// NotificationCreateRequest Request to create a new notification
+type NotificationCreateRequest struct {
+	// EndTime When the notification expires
+	EndTime *time.Time `json:"endTime,omitempty"`
+
+	// Id Optional ID for idempotency. If not provided, a random UUID will be generated.
+	Id *openapi_types.UUID `json:"id,omitempty"`
+
+	// Message Message content of the notification
+	Message string `json:"message"`
+
+	// Notes Internal notes about the notification
+	Notes *string `json:"notes,omitempty"`
+
+	// NotificationPriority Priority level of the notification affecting display order and styling.
+	// - INFO: Informational messages (lowest priority)
+	// - WARNING: Warning messages requiring attention
+	// - ERROR: Error or critical messages (highest priority)
+	NotificationPriority *NotificationPriority `json:"notificationPriority,omitempty"`
+
+	// NotificationType Type of notification determining its behavior.
+	// - BLOCKING: Blocks user action until acknowledged (e.g., modals, popups)
+	// - PASSIVE: Passively available (e.g., in notification center)
+	NotificationType *NotificationType `json:"notificationType,omitempty"`
+
+	// OrgId Organization ID (required for non-system notifications)
+	OrgId *openapi_types.UUID `json:"orgId,omitempty"`
+
+	// ScopeId ID of the scope entity (for group/user notifications)
+	ScopeId *string `json:"scopeId,omitempty"`
+
+	// ScopeType Scope of the notification determining who can see it.
+	// - SYSTEM: Visible to all users across all organizations
+	// - ORGANIZATION: Visible to all users in a specific organization
+	// - GROUP: Visible to all members of a specific group
+	// - USER: Visible to a specific user only
+	ScopeType NotificationScopeType `json:"scopeType"`
+
+	// StartTime When the notification becomes active
+	StartTime *time.Time `json:"startTime,omitempty"`
+
+	// Title Title of the notification
+	Title string `json:"title"`
+}
+
+// NotificationDescription A notification that can be displayed to users in the application.
+// Notifications can be scoped to system-wide, organization, group, or individual users.
+type NotificationDescription struct {
+	// CreatedAt Timestamp when the notification was created (ISO-8601 format)
+	CreatedAt time.Time `json:"createdAt"`
+
+	// CreatedBy Email of the user who created the notification
+	CreatedBy string `json:"createdBy"`
+
+	// EndTime When the notification expires (ISO-8601 format)
+	EndTime *time.Time `json:"endTime,omitempty"`
+
+	// Id Unique identifier for the notification
+	Id openapi_types.UUID `json:"id"`
+
+	// Message Message content of the notification
+	Message string `json:"message"`
+
+	// Notes Internal notes about the notification (not shown to users)
+	Notes *string `json:"notes,omitempty"`
+
+	// NotificationPriority Priority level of the notification affecting display order and styling.
+	// - INFO: Informational messages (lowest priority)
+	// - WARNING: Warning messages requiring attention
+	// - ERROR: Error or critical messages (highest priority)
+	NotificationPriority NotificationPriority `json:"notificationPriority"`
+
+	// NotificationType Type of notification determining its behavior.
+	// - BLOCKING: Blocks user action until acknowledged (e.g., modals, popups)
+	// - PASSIVE: Passively available (e.g., in notification center)
+	NotificationType NotificationType `json:"notificationType"`
+
+	// OrgId Organization ID for the notification. Required for non-system notifications.
+	// Must be null for system-level notifications.
+	OrgId *openapi_types.UUID `json:"orgId,omitempty"`
+
+	// ScopeId The ID of the scope entity (e.g., group ID for group notifications,
+	// user email for user notifications). Null for system and organization scopes.
+	ScopeId *string `json:"scopeId,omitempty"`
+
+	// ScopeType Scope of the notification determining who can see it.
+	// - SYSTEM: Visible to all users across all organizations
+	// - ORGANIZATION: Visible to all users in a specific organization
+	// - GROUP: Visible to all members of a specific group
+	// - USER: Visible to a specific user only
+	ScopeType NotificationScopeType `json:"scopeType"`
+
+	// StartTime When the notification becomes active (ISO-8601 format)
+	StartTime *time.Time `json:"startTime,omitempty"`
+
+	// Status Current status of the notification.
+	// - ACTIVE: Currently visible to users
+	// - INACTIVE: Soft-deleted or expired, not visible to users
+	Status NotificationStatus `json:"status"`
+
+	// Title Title of the notification
+	Title string `json:"title"`
+
+	// UpdatedAt Timestamp when the notification was last updated (ISO-8601 format)
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+
+	// UpdatedBy Email of the user who last updated the notification
+	UpdatedBy *string `json:"updatedBy,omitempty"`
+}
+
+// NotificationPriority Priority level of the notification affecting display order and styling.
+// - INFO: Informational messages (lowest priority)
+// - WARNING: Warning messages requiring attention
+// - ERROR: Error or critical messages (highest priority)
+type NotificationPriority string
+
+// NotificationScopeType Scope of the notification determining who can see it.
+// - SYSTEM: Visible to all users across all organizations
+// - ORGANIZATION: Visible to all users in a specific organization
+// - GROUP: Visible to all members of a specific group
+// - USER: Visible to a specific user only
+type NotificationScopeType string
+
+// NotificationStatus Current status of the notification.
+// - ACTIVE: Currently visible to users
+// - INACTIVE: Soft-deleted or expired, not visible to users
+type NotificationStatus string
+
+// NotificationType Type of notification determining its behavior.
+// - BLOCKING: Blocks user action until acknowledged (e.g., modals, popups)
+// - PASSIVE: Passively available (e.g., in notification center)
+type NotificationType string
+
 // OrgId The globally unique organization identifier; either UUID or UFID.
 // If it is a UFID, it must be prefixed with a tilde (~).
 type OrgId = string
@@ -632,6 +921,9 @@ type OrganizationUpdateRequestV2 struct {
 	// DisplayName If present, update the display name of the organization. Otherwise, make no change
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// FhirId If present, update the FHIR organization ID. Otherwise, make no change
+	FhirId *openapi_types.UUID `json:"fhirId,omitempty"`
+
 	// Properties If present, update the existing properties of the organization. Otherwise, make no change
 	Properties *map[string]string `json:"properties,omitempty"`
 
@@ -650,6 +942,7 @@ type PodCreateRequest struct {
 	Description *string `json:"description,omitempty"`
 
 	// Environment If the environment type is AWS, then environmentDataAws must be present. If the environment type
+	// is AZURE, then environmentDataAzure must be present. If the environment type
 	// is GCP, then environmentDataGcp must be present.
 	Environment *PodEnvironment `json:"environment,omitempty"`
 
@@ -672,6 +965,7 @@ type PodDescription struct {
 	Description *string   `json:"description,omitempty"`
 
 	// EnvironmentData If the environment type is AWS, then environmentDataAws must be present. If the environment type
+	// is AZURE, then environmentDataAzure must be present. If the environment type
 	// is GCP, then environmentDataGcp must be present.
 	EnvironmentData PodEnvironment `json:"environmentData"`
 	GroupName       *string        `json:"groupName,omitempty"`
@@ -685,7 +979,10 @@ type PodDescription struct {
 	OrgId           openapi_types.UUID `json:"orgId"`
 	OrgUserFacingId *string            `json:"orgUserFacingId,omitempty"`
 	PodId           openapi_types.UUID `json:"podId"`
-	UserFacingId    string             `json:"userFacingId"`
+
+	// ReportedAffiliationId The reported affiliation organization ID (set when pod is moved to community org)
+	ReportedAffiliationId *string `json:"reportedAffiliationId,omitempty"`
+	UserFacingId          string  `json:"userFacingId"`
 }
 
 // PodDescriptionList defines model for PodDescriptionList.
@@ -710,6 +1007,7 @@ type PodDescriptionV3 struct {
 	Description *string   `json:"description,omitempty"`
 
 	// EnvironmentData If the environment type is AWS, then environmentDataAws must be present. If the environment type
+	// is AZURE, then environmentDataAzure must be present. If the environment type
 	// is GCP, then environmentDataGcp must be present.
 	EnvironmentData PodEnvironment `json:"environmentData"`
 	GroupName       *string        `json:"groupName,omitempty"`
@@ -728,10 +1026,12 @@ type PodDescriptionV3 struct {
 }
 
 // PodEnvironment If the environment type is AWS, then environmentDataAws must be present. If the environment type
+// is AZURE, then environmentDataAzure must be present. If the environment type
 // is GCP, then environmentDataGcp must be present.
 type PodEnvironment struct {
-	EnvironmentDataAws *PodEnvironmentDataAws `json:"environmentDataAws,omitempty"`
-	EnvironmentDataGcp *PodEnvironmentDataGcp `json:"environmentDataGcp,omitempty"`
+	EnvironmentDataAws   *PodEnvironmentDataAws   `json:"environmentDataAws,omitempty"`
+	EnvironmentDataAzure *PodEnvironmentDataAzure `json:"environmentDataAzure,omitempty"`
+	EnvironmentDataGcp   *PodEnvironmentDataGcp   `json:"environmentDataGcp,omitempty"`
 
 	// EnvironmentType Enum of environment types.
 	EnvironmentType PodEnvironmentType `json:"environmentType"`
@@ -746,11 +1046,21 @@ type PodEnvironmentDataAws struct {
 	DiscoveryRoleArn                string    `json:"discoveryRoleArn"`
 }
 
+// PodEnvironmentDataAzure defines model for PodEnvironmentDataAzure.
+type PodEnvironmentDataAzure struct {
+	// ClientId Client ID of Azure Service Principal (Managed Identity or App Registration)
+	// with permissions to manage resources on behalf of Pod users
+	ClientId       *openapi_types.UUID `json:"clientId,omitempty"`
+	SubscriptionId *openapi_types.UUID `json:"subscriptionId,omitempty"`
+	TenantId       *openapi_types.UUID `json:"tenantId,omitempty"`
+}
+
 // PodEnvironmentDataGcp defines model for PodEnvironmentDataGcp.
 type PodEnvironmentDataGcp struct {
 	// Deprecated:
-	Biller           *string `json:"biller,omitempty"`
-	BillingAccountId string  `json:"billingAccountId"`
+	Biller             *string             `json:"biller,omitempty"`
+	BillingAccountId   string              `json:"billingAccountId"`
+	BillingExportTable *BillingExportTable `json:"billingExportTable,omitempty"`
 }
 
 // PodEnvironmentList defines model for PodEnvironmentList.
@@ -815,6 +1125,7 @@ type PodUpdateRequest struct {
 	Description *string `json:"description,omitempty"`
 
 	// Environment If the environment type is AWS, then environmentDataAws must be present. If the environment type
+	// is AZURE, then environmentDataAzure must be present. If the environment type
 	// is GCP, then environmentDataGcp must be present.
 	Environment *PodEnvironment `json:"environment,omitempty"`
 	JobControl  JobControl      `json:"jobControl"`
@@ -877,6 +1188,10 @@ type SelfDescription struct {
 
 	// OrganizationId The organization the user belongs to.
 	OrganizationId openapi_types.UUID `json:"organizationId"`
+
+	// ReportedAffiliationId Reported Affiliation organization ID.
+	// Tracks the user's original organization before migrating the community.
+	ReportedAffiliationId *string `json:"reportedAffiliationId,omitempty"`
 
 	// TosState Enum of User TOS States.
 	TosState  UserTosState `json:"tosState"`
@@ -945,6 +1260,9 @@ type UpdateExpirationRequest struct {
 // UpdateGroupRequest Request an update on a group. You can set/unset the group expiration
 // time. This is a separate request object to allow extension over time.
 type UpdateGroupRequest struct {
+	// AllowMemberSharing true to allow group members (not just admins) to use this group as a principal when sharing workspaces, data collections, and pods. Admin-only setting.
+	AllowMemberSharing *bool `json:"allowMemberSharing,omitempty"`
+
 	// Description text describing the group
 	Description *string `json:"description,omitempty"`
 
@@ -959,6 +1277,12 @@ type UpdateGroupRequest struct {
 
 	// RequireGrantReason true to require a reason field on membership grants
 	RequireGrantReason *bool `json:"requireGrantReason,omitempty"`
+}
+
+// UpdateReportedAffiliation defines model for UpdateReportedAffiliation.
+type UpdateReportedAffiliation struct {
+	// ReportedAffiliationId The reported affiliation organization ID
+	ReportedAffiliationId *string `json:"reportedAffiliationId"`
 }
 
 // UserActiveState Enum of User Active States.
@@ -978,6 +1302,10 @@ type UserCreateRequest struct {
 
 // UserDescription defines model for UserDescription.
 type UserDescription struct {
+	// AcquisitionSource The source from which the user was acquired.
+	// This field tracks the origin or channel through which the user joined the system.
+	AcquisitionSource *string `json:"acquisitionSource,omitempty"`
+
 	// ActiveState Enum of User Active States.
 	ActiveState UserActiveState `json:"activeState"`
 
@@ -990,6 +1318,9 @@ type UserDescription struct {
 	// Email The user's email
 	Email string `json:"email"`
 
+	// FhirId The FHIR Person resource ID for this user
+	FhirId *openapi_types.UUID `json:"fhirId,omitempty"`
+
 	// LastUpdatedBy User email of last update
 	LastUpdatedBy string `json:"lastUpdatedBy"`
 
@@ -1001,6 +1332,10 @@ type UserDescription struct {
 	Licenses        *[]UserLicense     `json:"licenses,omitempty"`
 	OrgUserFacingId string             `json:"orgUserFacingId"`
 	OrganizationId  openapi_types.UUID `json:"organizationId"`
+
+	// ReportedAffiliationId Reported Affiliation organization ID.
+	// Tracks the user's original organization before migrating the community.
+	ReportedAffiliationId *string `json:"reportedAffiliationId,omitempty"`
 
 	// TosState Enum of User TOS States.
 	TosState UserTosState `json:"tosState"`
@@ -1159,6 +1494,22 @@ type PodUpdateResponse = PodUpdateResult
 // ServerError defines model for ServerError.
 type ServerError = ErrorReport
 
+// BackfillAllGroupsParams defines parameters for BackfillAllGroups.
+type BackfillAllGroupsParams struct {
+	// DryRun If true, only report what would be updated without making changes
+	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
+
+	// StartTimestamp Optional start timestamp in ISO 8601 format (e.g., "2026-06-24T00:00:00Z" or "2026-06-24T00:00:00.000Z").
+	// Only groups created on or after this timestamp will be included.
+	// If not specified, no lower bound filter is applied.
+	StartTimestamp *string `form:"startTimestamp,omitempty" json:"startTimestamp,omitempty"`
+
+	// EndTimestamp Optional end timestamp in ISO 8601 format (e.g., "2026-06-26T23:59:59Z" or "2026-06-26T23:59:59.999Z").
+	// Only groups created before this timestamp will be included.
+	// If not specified, current time is assumed and no upper bound filter is applied.
+	EndTimestamp *string `form:"endTimestamp,omitempty" json:"endTimestamp,omitempty"`
+}
+
 // ListPodEnvironmentsParams defines parameters for ListPodEnvironments.
 type ListPodEnvironmentsParams struct {
 	// EnvironmentType Environment type to filter on
@@ -1169,6 +1520,49 @@ type ListPodEnvironmentsParams struct {
 
 	// Limit The maximum number of list items to return. Default 10
 	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// MigrateUsersToFhirParams defines parameters for MigrateUsersToFhir.
+type MigrateUsersToFhirParams struct {
+	// DryRun If true, logs what would be migrated without calling Professional APIs.
+	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
+}
+
+// MigrateSingleUserToFhirParams defines parameters for MigrateSingleUserToFhir.
+type MigrateSingleUserToFhirParams struct {
+	// DryRun If true, logs what would be migrated without calling Professional APIs.
+	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
+}
+
+// MigrateSingleOrgUsersToFhirParams defines parameters for MigrateSingleOrgUsersToFhir.
+type MigrateSingleOrgUsersToFhirParams struct {
+	// DryRun If true, logs what would be migrated without calling Professional APIs.
+	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
+}
+
+// ListOrganizationsFromDbParams defines parameters for ListOrganizationsFromDb.
+type ListOrganizationsFromDbParams struct {
+	// PageToken A previously returned page token describing where to resume a list
+	PageTokenParam *PageTokenParam `form:"pageToken,omitempty" json:"pageToken,omitempty"`
+
+	// Limit The maximum number of list items to return. Default 10
+	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ForceSyncOrganizationFromFhirParams defines parameters for ForceSyncOrganizationFromFhir.
+type ForceSyncOrganizationFromFhirParams struct {
+	// FhirId The FHIR organization ID that orgId is expected to correspond to.
+	FhirId       string                                          `form:"fhirId" json:"fhirId"`
+	MutationType ForceSyncOrganizationFromFhirParamsMutationType `form:"mutationType" json:"mutationType"`
+}
+
+// ForceSyncOrganizationFromFhirParamsMutationType defines parameters for ForceSyncOrganizationFromFhir.
+type ForceSyncOrganizationFromFhirParamsMutationType string
+
+// ForceSyncUserFromFhirParams defines parameters for ForceSyncUserFromFhir.
+type ForceSyncUserFromFhirParams struct {
+	// OrganizationFhirId FHIR Organization Id containing the user's Professional account.
+	OrganizationFhirId string `form:"organizationFhirId" json:"organizationFhirId"`
 }
 
 // ListAccessibleGroupsParams defines parameters for ListAccessibleGroups.
@@ -1195,6 +1589,11 @@ type SetGroupAccessParams struct {
 	OrgIdQueryParam *OrgIdQueryParam `form:"orgId,omitempty" json:"orgId,omitempty"`
 }
 
+// CheckShareAccessParams defines parameters for CheckShareAccess.
+type CheckShareAccessParams struct {
+	OrgIdQueryParam *OrgIdQueryParam `form:"orgId,omitempty" json:"orgId,omitempty"`
+}
+
 // GetOneGroupMemberParams defines parameters for GetOneGroupMember.
 type GetOneGroupMemberParams struct {
 	OrgIdQueryParam *OrgIdQueryParam `form:"orgId,omitempty" json:"orgId,omitempty"`
@@ -1205,6 +1604,40 @@ type ListGroupMembershipParams struct {
 	OrgIdQueryParam *OrgIdQueryParam `form:"orgId,omitempty" json:"orgId,omitempty"`
 }
 
+// GetNotificationsParams defines parameters for GetNotifications.
+type GetNotificationsParams struct {
+	// OrgId Organization ID for admin listing
+	OrgId *string `form:"orgId,omitempty" json:"orgId,omitempty"`
+
+	// NotificationType Filter by notification type (user view)
+	NotificationType *NotificationType `form:"notificationType,omitempty" json:"notificationType,omitempty"`
+
+	// ScopeType Filter by scope type (admin view)
+	ScopeType *NotificationScopeType `form:"scopeType,omitempty" json:"scopeType,omitempty"`
+
+	// ScopeId Filter by scope ID (admin view)
+	ScopeId *string `form:"scopeId,omitempty" json:"scopeId,omitempty"`
+
+	// IsActive Filter by active status (admin view)
+	IsActive *bool `form:"isActive,omitempty" json:"isActive,omitempty"`
+
+	// Limit Maximum number of results
+	Limit  *int `form:"limit,omitempty" json:"limit,omitempty"`
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
+// GetNotificationCountParams defines parameters for GetNotificationCount.
+type GetNotificationCountParams struct {
+	// OrgId Organization ID
+	OrgId string `form:"orgId" json:"orgId"`
+}
+
+// UpdateNotificationStatusJSONBody defines parameters for UpdateNotificationStatus.
+type UpdateNotificationStatusJSONBody struct {
+	// Status New status for the notification
+	Status string `json:"status"`
+}
+
 // ListOrganizationsV2Params defines parameters for ListOrganizationsV2.
 type ListOrganizationsV2Params struct {
 	// PageToken A previously returned page token describing where to resume a list
@@ -1212,6 +1645,13 @@ type ListOrganizationsV2Params struct {
 
 	// Limit The maximum number of list items to return. Default 10
 	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// UpdateFhirOrganizationParams defines parameters for UpdateFhirOrganization.
+type UpdateFhirOrganizationParams struct {
+	// IsFhirMigration If true, use UM database as source for existing organization data (migration scenario).
+	// If false, fetch existing organization from FHIR (normal update scenario).
+	IsFhirMigration bool `form:"isFhirMigration" json:"isFhirMigration"`
 }
 
 // AcceptTermsOfServiceV2Params defines parameters for AcceptTermsOfServiceV2.
@@ -1366,6 +1806,9 @@ type GrantMemberWorkbenchRoleParams struct {
 // AddRoleJSONRequestBody defines body for AddRole for application/json ContentType.
 type AddRoleJSONRequestBody = AdminAddRoleRequest
 
+// BackfillForGroupsJSONRequestBody defines body for BackfillForGroups for application/json ContentType.
+type BackfillForGroupsJSONRequestBody = BackfillRequest
+
 // CleanupGrantsJSONRequestBody defines body for CleanupGrants for application/json ContentType.
 type CleanupGrantsJSONRequestBody = AdminCleanupGrantsRequest
 
@@ -1381,6 +1824,12 @@ type MovePodJSONRequestBody = MovePodRequest
 // SendEmailJSONRequestBody defines body for SendEmail for application/json ContentType.
 type SendEmailJSONRequestBody = AdminSendEmailRequest
 
+// RevokeUserLicenseJSONRequestBody defines body for RevokeUserLicense for application/json ContentType.
+type RevokeUserLicenseJSONRequestBody = AdminRevokeUserLicenseRequest
+
+// GrantUserLicenseJSONRequestBody defines body for GrantUserLicense for application/json ContentType.
+type GrantUserLicenseJSONRequestBody = AdminGrantUserLicenseRequest
+
 // MoveUserJSONRequestBody defines body for MoveUser for application/json ContentType.
 type MoveUserJSONRequestBody = MoveUserRequest
 
@@ -1393,6 +1842,12 @@ type SetGroupAccessJSONRequestBody = SetAccessRequest
 // GetOneGroupMemberJSONRequestBody defines body for GetOneGroupMember for application/json ContentType.
 type GetOneGroupMemberJSONRequestBody = Principal
 
+// CreateNotificationJSONRequestBody defines body for CreateNotification for application/json ContentType.
+type CreateNotificationJSONRequestBody = NotificationCreateRequest
+
+// UpdateNotificationStatusJSONRequestBody defines body for UpdateNotificationStatus for application/json ContentType.
+type UpdateNotificationStatusJSONRequestBody UpdateNotificationStatusJSONBody
+
 // CreateOrganizationV2JSONRequestBody defines body for CreateOrganizationV2 for application/json ContentType.
 type CreateOrganizationV2JSONRequestBody = OrganizationCreateRequest
 
@@ -1401,6 +1856,12 @@ type OrganizationAccessOnDemandByUserFacingIdJSONRequestBody = AccessOnDemandReq
 
 // PodAccessOnDemandByUserFacingIdJSONRequestBody defines body for PodAccessOnDemandByUserFacingId for application/json ContentType.
 type PodAccessOnDemandByUserFacingIdJSONRequestBody = AccessOnDemandRequest
+
+// UpdateFhirOrganizationJSONRequestBody defines body for UpdateFhirOrganization for application/json ContentType.
+type UpdateFhirOrganizationJSONRequestBody = OrganizationUpdateRequestV2
+
+// UpdateSelfReportedAffiliationJSONRequestBody defines body for UpdateSelfReportedAffiliation for application/json ContentType.
+type UpdateSelfReportedAffiliationJSONRequestBody = UpdateReportedAffiliation
 
 // UpdateOrganizationV2JSONRequestBody defines body for UpdateOrganizationV2 for application/json ContentType.
 type UpdateOrganizationV2JSONRequestBody = OrganizationUpdateRequestV2

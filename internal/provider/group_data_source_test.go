@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccGroupDataSource(t *testing.T) {
@@ -25,8 +25,8 @@ func TestAccGroupDataSource(t *testing.T) {
 			desc := &user.GroupDescriptionAndRoles{
 				GroupDescription: &user.GroupDescription{
 					GroupEmail:             "test-group@gmail.com",
-					GroupName:              client.Ptr("test-group"),
-					InternalName:           client.Ptr("test-group-internal"),
+					GroupName:              wsmclient.Ptr("test-group"),
+					InternalName:           wsmclient.Ptr("test-group-internal"),
 					OrgId:                  orgID.String(),
 					OrgUfid:                orgUfid,
 					CreatedBy:              "test-user",
@@ -34,10 +34,10 @@ func TestAccGroupDataSource(t *testing.T) {
 					LastUpdatedBy:          "test-user",
 					LastUpdatedDate:        now,
 					ExpirationDays:         30,
-					ExpirationNotification: client.Ptr(true),
-					RequireGrantReason:     client.Ptr(true),
+					ExpirationNotification: wsmclient.Ptr(true),
+					RequireGrantReason:     wsmclient.Ptr(true),
 					SyncGroup:              true,
-					Description:            client.Ptr("This is a test group"),
+					Description:            wsmclient.Ptr("This is a test group"),
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")

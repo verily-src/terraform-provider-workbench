@@ -20,6 +20,7 @@ resource "workbench_data_collection" "tf_datacollection_in_vpc" {
   support_email     = "support@example.com"
   organization_name = "my-org"
   therapeutic_tags  = ["dermatology", "immunology"]
+  program_name      = "my-program"
 }
 
 output "my_datacollection" {

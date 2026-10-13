@@ -1,3 +1,4 @@
 bin/
+terraform-provider
 terraform-provider-workbench
 **/terraform.tfstate.backup

@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccDataCollectionDataSource(t *testing.T) {
@@ -25,11 +25,11 @@ func TestAccDataCollectionDataSource(t *testing.T) {
 			desc := &wsm.WorkspaceDescription{
 				Id:              ID,
 				UserFacingId:    "test-data-collection",
-				Description:     client.Ptr("This is a test data collection"),
-				DisplayName:     client.Ptr("Test Data Collection"),
+				Description:     wsmclient.Ptr("This is a test data collection"),
+				DisplayName:     wsmclient.Ptr("Test Data Collection"),
 				OrgId:           &orgID,
 				CrgId:           &podID,
-				Properties:      buildProperties(map[string]string{"terra-type": "data-collection", "terra-support-email": "testing@example.com", "terra-organization-name": "verily-test-org", "terra-therapeutic-tags": "[\"cardiology\", \"dermatology\"]", "terra-update-frequency": "weekly"}),
+				Properties:      buildProperties(map[string]string{"terra-type": "data-collection", "terra-support-email": "testing@example.com", "terra-organization-name": "verily-test-org", "terra-therapeutic-tags": "[\"cardiology\", \"dermatology\"]", "terra-update-frequency": "weekly", "terra-program-name": "test-program"}),
 				CreatedBy:       "test-user",
 				CreatedDate:     now,
 				LastUpdatedBy:   "test-user",
@@ -67,6 +67,7 @@ func TestAccDataCollectionDataSource(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr("data.workbench_data_collection.test", "therapeutic_tags.*", "cardiology"),
 					resource.TestCheckTypeSetElemAttr("data.workbench_data_collection.test", "therapeutic_tags.*", "dermatology"),
 					resource.TestCheckResourceAttr("data.workbench_data_collection.test", "update_frequency", "weekly"),
+					resource.TestCheckResourceAttr("data.workbench_data_collection.test", "program_name", "test-program"),
 					resource.TestCheckResourceAttr("data.workbench_data_collection.test", "gcp_project_id", "test-data-collection-project"),
 					resource.TestCheckNoResourceAttr("data.workbench_data_collection.test", "aws_account_id"),
 				),

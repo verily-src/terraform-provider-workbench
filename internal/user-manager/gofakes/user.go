@@ -1,5 +1,5 @@
 // Package user provides a user-manager fake at the service API layer.
-package user
+package gofakes
 
 import (
 	"encoding/json"
@@ -13,8 +13,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	goclient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 // New creates a new user-manager Service struct.
@@ -72,7 +72,6 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 		if _, index := s.find(groupName, orgID); index >= 0 {
 			return jsonError(c, http.StatusConflict, "group %s in org %s already exist", groupName, orgID)
 		}
-		// TODO(PHP-63134): validate org exists when we are faking org endpoints.
 		orgUfid, orgUUID, err := getOrgUxids(orgID)
 		if err != nil {
 			return jsonError(c, http.StatusBadRequest, "invalid orgId %s", orgID)
@@ -274,7 +273,7 @@ func (s *Service) RegisterHTTP(e *echo.Echo) {
 }
 
 func jsonError(c echo.Context, code int, format string, a ...interface{}) error {
-	return c.JSON(code, client.NewApiError(code, fmt.Sprintf(format, a...)))
+	return c.JSON(code, goclient.NewApiError(code, fmt.Sprintf(format, a...)))
 }
 
 func (s *Service) find(groupName string, orgID string) (*user.GroupDescriptionAndRoles, int) {

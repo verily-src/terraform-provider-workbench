@@ -5,9 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/verily-src/terraform-provider-workbench/internal/fakes"
-	userfake "github.com/verily-src/terraform-provider-workbench/internal/fakes/user"
-	wsmfake "github.com/verily-src/terraform-provider-workbench/internal/fakes/wsm"
+	userfake "github.com/verily-src/terraform-provider-workbench/internal/user-manager/gofakes"
+	wsmfake "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/gofakes"
 )
 
 type configBuilder struct {
@@ -73,7 +72,7 @@ func groupOrgByReference(terraformID string) string {
 }
 
 func setupFakes(t *testing.T) string {
-	addr := fakes.Use(t,
+	addr := wsmfake.Use(t,
 		wsmfake.New(),
 		userfake.New())
 

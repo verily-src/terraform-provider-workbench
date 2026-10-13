@@ -14,15 +14,9 @@ const (
 	BearerAuthScopes    = "bearerAuth.Scopes"
 )
 
-// Defines values for AccessOnDemandOperation.
+// Defines values for AccessRestrictionType.
 const (
-	GRANTSUPPORT  AccessOnDemandOperation = "GRANT_SUPPORT"
-	REVOKESUPPORT AccessOnDemandOperation = "REVOKE_SUPPORT"
-)
-
-// Defines values for AccessRequirementType.
-const (
-	USERAGREEMENT AccessRequirementType = "USER_AGREEMENT"
+	LOCKED AccessRestrictionType = "LOCKED"
 )
 
 // Defines values for AccessScope.
@@ -48,6 +42,12 @@ const (
 const (
 	DISABLE BackfillApplicationsRequestApplicationAble = "DISABLE"
 	ENABLE  BackfillApplicationsRequestApplicationAble = "ENABLE"
+)
+
+// Defines values for BatchMergeCheckDirection.
+const (
+	SOURCETOTARGET BatchMergeCheckDirection = "SOURCE_TO_TARGET"
+	TARGETTOSOURCE BatchMergeCheckDirection = "TARGET_TO_SOURCE"
 )
 
 // Defines values for CloneResourceResult.
@@ -78,6 +78,12 @@ const (
 	ControlledResourceIamRoleEDITOR ControlledResourceIamRole = "EDITOR"
 	ControlledResourceIamRoleREADER ControlledResourceIamRole = "READER"
 	ControlledResourceIamRoleWRITER ControlledResourceIamRole = "WRITER"
+)
+
+// Defines values for GcpDataprocClusterCreationParametersSoftwareFramework.
+const (
+	GcpDataprocClusterCreationParametersSoftwareFrameworkHAIL GcpDataprocClusterCreationParametersSoftwareFramework = "HAIL"
+	GcpDataprocClusterCreationParametersSoftwareFrameworkNONE GcpDataprocClusterCreationParametersSoftwareFramework = "NONE"
 )
 
 // Defines values for GcpDataprocClusterInstanceGroupConfigPreemptibility.
@@ -140,18 +146,21 @@ const (
 
 // Defines values for OperationType.
 const (
-	OperationTypeADMINUPDATE         OperationType = "ADMIN_UPDATE"
-	OperationTypeAPPLICATIONDISABLED OperationType = "APPLICATION_DISABLED"
-	OperationTypeAPPLICATIONENABLED  OperationType = "APPLICATION_ENABLED"
-	OperationTypeCLONE               OperationType = "CLONE"
-	OperationTypeCREATE              OperationType = "CREATE"
-	OperationTypeDATATRANSFER        OperationType = "DATA_TRANSFER"
-	OperationTypeDELETE              OperationType = "DELETE"
-	OperationTypeGRANTWORKSPACEROLE  OperationType = "GRANT_WORKSPACE_ROLE"
-	OperationTypeREMOVEWORKSPACEROLE OperationType = "REMOVE_WORKSPACE_ROLE"
-	OperationTypeSYSTEMCLEANUP       OperationType = "SYSTEM_CLEANUP"
-	OperationTypeUNKNOWN             OperationType = "UNKNOWN"
-	OperationTypeUPDATE              OperationType = "UPDATE"
+	OperationTypeADMINUPDATE                OperationType = "ADMIN_UPDATE"
+	OperationTypeAPPLICATIONDISABLED        OperationType = "APPLICATION_DISABLED"
+	OperationTypeAPPLICATIONENABLED         OperationType = "APPLICATION_ENABLED"
+	OperationTypeCLONE                      OperationType = "CLONE"
+	OperationTypeCREATE                     OperationType = "CREATE"
+	OperationTypeDATATRANSFER               OperationType = "DATA_TRANSFER"
+	OperationTypeDELETE                     OperationType = "DELETE"
+	OperationTypeENABLEMULTIREGIONAPIACCESS OperationType = "ENABLE_MULTI_REGION_API_ACCESS"
+	OperationTypeGRANTWORKSPACEROLE         OperationType = "GRANT_WORKSPACE_ROLE"
+	OperationTypeLOCK                       OperationType = "LOCK"
+	OperationTypeREMOVEWORKSPACEROLE        OperationType = "REMOVE_WORKSPACE_ROLE"
+	OperationTypeSYSTEMCLEANUP              OperationType = "SYSTEM_CLEANUP"
+	OperationTypeUNKNOWN                    OperationType = "UNKNOWN"
+	OperationTypeUNLOCK                     OperationType = "UNLOCK"
+	OperationTypeUPDATE                     OperationType = "UPDATE"
 )
 
 // Defines values for PrivateResourceState.
@@ -164,9 +173,9 @@ const (
 
 // Defines values for ResolvedResourceAccessLevel.
 const (
-	NONE   ResolvedResourceAccessLevel = "NONE"
-	READER ResolvedResourceAccessLevel = "READER"
-	WRITER ResolvedResourceAccessLevel = "WRITER"
+	ResolvedResourceAccessLevelNONE   ResolvedResourceAccessLevel = "NONE"
+	ResolvedResourceAccessLevelREADER ResolvedResourceAccessLevel = "READER"
+	ResolvedResourceAccessLevelWRITER ResolvedResourceAccessLevel = "WRITER"
 )
 
 // Defines values for ResourceType.
@@ -190,6 +199,7 @@ const (
 	GCSBUCKET                         ResourceType = "GCS_BUCKET"
 	GCSOBJECT                         ResourceType = "GCS_OBJECT"
 	GITREPO                           ResourceType = "GIT_REPO"
+	SECRET                            ResourceType = "SECRET"
 	TERRAWORKSPACE                    ResourceType = "TERRA_WORKSPACE"
 )
 
@@ -199,10 +209,17 @@ const (
 	REVOKE SetAccessOperation = "REVOKE"
 )
 
+// Defines values for SigningAlgorithmEnum.
+const (
+	ED25519 SigningAlgorithmEnum = "ED25519"
+	UNSET   SigningAlgorithmEnum = "UNSET"
+)
+
 // Defines values for State.
 const (
 	BROKEN   State = "BROKEN"
 	CREATING State = "CREATING"
+	DELETED  State = "DELETED"
 	DELETING State = "DELETING"
 	READY    State = "READY"
 	UPDATING State = "UPDATING"
@@ -254,56 +271,8 @@ const (
 	FAILONCONFLICT  WsmPolicyUpdateMode = "FAIL_ON_CONFLICT"
 )
 
-// AccessOnDemandOperation Enum of requested AoD operations
-type AccessOnDemandOperation string
-
-// AccessOnDemandRequest UM Access on demand request
-type AccessOnDemandRequest struct {
-	// Email email to grant/revoke
-	Email string `json:"email"`
-
-	// Operation Enum of requested AoD operations
-	Operation AccessOnDemandOperation `json:"operation"`
-
-	// Reason required reason for access demand
-	Reason string `json:"reason"`
-}
-
-// AccessRequirement defines model for AccessRequirement.
-type AccessRequirement struct {
-	// AccessRequirementId Id of a given access requirement. Unique and immutable.
-	AccessRequirementId AccessRequirementId `json:"accessRequirementId"`
-
-	// Attributes This object is a reference to a set of attributes which depends on requirement
-	// type. Exactly one will be populated based on the AccessRequirementType
-	// (currently only User Agreement is supported).
-	Attributes AccessRequirementAttributes `json:"attributes"`
-
-	// RequirementType Enum describing the type of Access Requirement
-	RequirementType AccessRequirementType `json:"requirementType"`
-
-	// WorkspaceId The UUID of the workspace
-	WorkspaceId WorkspaceId `json:"workspaceId"`
-}
-
-// AccessRequirementAttributes This object is a reference to a set of attributes which depends on requirement
-// type. Exactly one will be populated based on the AccessRequirementType
-// (currently only User Agreement is supported).
-type AccessRequirementAttributes struct {
-	// UserAgreementAttributes Attributes of a User Agreement File
-	UserAgreementAttributes *UserAgreementAttributes `json:"userAgreementAttributes,omitempty"`
-}
-
-// AccessRequirementId Id of a given access requirement. Unique and immutable.
-type AccessRequirementId = openapi_types.UUID
-
-// AccessRequirementList defines model for AccessRequirementList.
-type AccessRequirementList struct {
-	AccessRequirements []AccessRequirement `json:"accessRequirements"`
-}
-
-// AccessRequirementType Enum describing the type of Access Requirement
-type AccessRequirementType string
+// AccessRestrictionType Type of access restriction or constraint affecting a workspace.
+type AccessRestrictionType string
 
 // AccessScope Specifies the resource as shared or private
 type AccessScope string
@@ -313,7 +282,7 @@ type AiNotebookCloudId struct {
 	GeneratedAiNotebookAiNotebookCloudId string `json:"generatedAiNotebookAiNotebookCloudId"`
 }
 
-// AppAttributes defines model for AppAttributes.
+// AppAttributes Application attributes for VM instance provisioning
 type AppAttributes struct {
 	// ArtifactRegistryLocations private GCP artifact registries that requires logging in. Empty if the
 	// container image is public.
@@ -334,8 +303,26 @@ type AppAttributes struct {
 	Port   *string `json:"port,omitempty"`
 }
 
+// AppIdentifier Identifies an app resource requesting the secret.
+type AppIdentifier struct {
+	// ResourceId UUID of the app resource.
+	ResourceId openapi_types.UUID `json:"resourceId"`
+
+	// WorkspaceId UUID of the workspace containing the app resource.
+	WorkspaceId openapi_types.UUID `json:"workspaceId"`
+}
+
 // ApplicationState State of an application in the system
 type ApplicationState string
+
+// AttachedSecretReference Reference to a controlled secret resource to be attached to an app.
+type AttachedSecretReference struct {
+	// ResourceId UUID of the controlled secret resource.
+	ResourceId openapi_types.UUID `json:"resourceId"`
+
+	// WorkspaceId UUID of the workspace containing the secret.
+	WorkspaceId openapi_types.UUID `json:"workspaceId"`
+}
 
 // AwsAuroraDatabaseAttributes AWS Aurora Database resource properties included in post-creation get.
 type AwsAuroraDatabaseAttributes struct {
@@ -458,12 +445,19 @@ type AwsEbsVolumeDescription struct {
 type AwsEc2InstanceAttributes struct {
 	// InstanceId The ID of the EC2 Virtual Machine instance
 	InstanceId *string `json:"instanceId,omitempty"`
+
+	// Secrets Map of attached secrets. Keys are names specified by the configured app; values are references to controlled secret resources.
+	Secrets          *map[string]AttachedSecretReference `json:"secrets,omitempty"`
+	SigningAlgorithm *SigningAlgorithmEnum               `json:"signingAlgorithm,omitempty"`
 }
 
 // AwsEc2InstanceCreationParameters EC2 Virtual Machine specific properties to be set on creation. These are a subset of the values accepted by the AWS EC2 Virtual Machine API.
 type AwsEc2InstanceCreationParameters struct {
 	// AvailabilityZone Optional AWS availability zone within the region (e.g., 'us-east-1a', 'us-east-1b'). If not specified, uses the default subnet for the region.
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
+
+	// CacheImages App image caches to create the data volume from. Only the first is used.
+	CacheImages *[]string `json:"cacheImages,omitempty"`
 
 	// DiskDeviceName Device filename to map to the data volume
 	DiskDeviceName *string `json:"diskDeviceName,omitempty"`
@@ -482,6 +476,9 @@ type AwsEc2InstanceCreationParameters struct {
 
 	// RootDiskSizeGiB Size in GiB of instance root volume
 	RootDiskSizeGiB *int `json:"rootDiskSizeGiB,omitempty"`
+
+	// Secrets Optional map of attached secrets. Keys are names specified by the configured app; values reference controlled secret resources by workspace and resource ID. The app will only be allowed to read these specific secrets. An empty map blocks all secret reads.
+	Secrets *map[string]AttachedSecretReference `json:"secrets,omitempty"`
 
 	// Tags key-value pair tags on the VM. User defined tags must have vwbusr prefix
 	Tags *map[string]string `json:"tags,omitempty"`
@@ -756,9 +753,46 @@ type BackfillApplicationsRequest struct {
 // BackfillApplicationsRequestApplicationAble Whether to enable or disable the applications
 type BackfillApplicationsRequestApplicationAble string
 
+// BatchMergeCheckDirection Direction of the merge check relative to the path workspace.
+// SOURCE_TO_TARGET: path workspace is the target, body workspaces are sources (Add from catalog).
+// TARGET_TO_SOURCE: path workspace is the source, body workspaces are targets (Add to workspace).
+type BatchMergeCheckDirection string
+
+// BatchMergeCheckRequest Request for batch merge check against multiple workspaces.
+type BatchMergeCheckRequest struct {
+	// Direction Direction of the merge check relative to the path workspace.
+	// SOURCE_TO_TARGET: path workspace is the target, body workspaces are sources (Add from catalog).
+	// TARGET_TO_SOURCE: path workspace is the source, body workspaces are targets (Add to workspace).
+	Direction BatchMergeCheckDirection `json:"direction"`
+
+	// WorkspaceIds List of workspace IDs to check against.
+	WorkspaceIds []WsmPolicyObjectId `json:"workspaceIds"`
+}
+
+// BatchMergeCheckResult Results of a batch merge check.
+type BatchMergeCheckResult struct {
+	Results []BatchMergeCheckResultEntry `json:"results"`
+}
+
+// BatchMergeCheckResultEntry Merge check result for a single workspace pair.
+type BatchMergeCheckResultEntry struct {
+	Result WsmPolicyMergeCheckResult `json:"result"`
+
+	// WorkspaceId The Terra object associated with this PAO; for example, a workspace UUID associated
+	// with its policy attribute object. Since these are UUIDs, they will not conflict even
+	// they are generated by different Terra components.
+	WorkspaceId WsmPolicyObjectId `json:"workspaceId"`
+}
+
 // BqDatasetCloudId defines model for BqDatasetCloudId.
 type BqDatasetCloudId struct {
 	GeneratedDatasetCloudId string `json:"generatedDatasetCloudId"`
+}
+
+// ChallengeRequestorIdentifier Identifies who is requesting the secret. Exactly one of the challenge requestor identifiers must be specified.
+type ChallengeRequestorIdentifier struct {
+	// App Identifies an app resource requesting the secret.
+	App *AppIdentifier `json:"app,omitempty"`
 }
 
 // CloneControlledAwsAuroraDatabaseRequestBody Values to be assigned to the cloned Aurora Database resource for a given source Aurora Database controlled resource. Supports COPY_REFERENCE and LINK_REFERENCE (creates referenced resource) and COPY_NOTHING. Set name, displayName, and description null to maintain the original values.
@@ -1183,6 +1217,64 @@ type CloneControlledGcpGcsBucketResult struct {
 	JobReport   *JobReport                    `json:"jobReport,omitempty"`
 }
 
+// CloneControlledSecretRequest Values to be assigned with the cloned secret resource for a given source secret resource. Only COPY_REFERENCE and COPY_NOTHING are supported for secret resources. Set name, displayName, and description null to maintain the original values.
+type CloneControlledSecretRequest struct {
+	// CloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	CloningInstructions *CloningInstructionsEnum `json:"cloningInstructions,omitempty"`
+	Description         *string                  `json:"description,omitempty"`
+
+	// DestinationFolderId Id of a given folder. Unique and immutable within a workspace.
+	DestinationFolderId *FolderId `json:"destinationFolderId,omitempty"`
+
+	// DestinationWorkspaceId The UUID of the workspace
+	DestinationWorkspaceId WorkspaceId  `json:"destinationWorkspaceId"`
+	DisplayName            *DisplayName `json:"displayName,omitempty"`
+	Name                   *Name        `json:"name,omitempty"`
+}
+
+// CloneControlledSecretResult Result of successful secret resource clone. Creates a reference to the original.
+type CloneControlledSecretResult struct {
+	// EffectiveCloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	EffectiveCloningInstructions *CloningInstructionsEnum `json:"effectiveCloningInstructions,omitempty"`
+
+	// Resource A referenced secret resource that points to a ControlledSecretResource.
+	Resource *SecretReferenceResource `json:"resource,omitempty"`
+
+	// SourceResourceId The UUID of the resource.
+	SourceResourceId *ResourceId `json:"sourceResourceId,omitempty"`
+
+	// SourceWorkspaceId The UUID of the workspace
+	SourceWorkspaceId *WorkspaceId `json:"sourceWorkspaceId,omitempty"`
+}
+
 // CloneReferencedAwsAuroraDatabaseReferencedResourceResult API result class for cloning a referenced AWS Aurora Database resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
 type CloneReferencedAwsAuroraDatabaseReferencedResourceResult struct {
 	// EffectiveCloningInstructions How to clone resource:
@@ -1475,42 +1567,37 @@ type CloneReferencedResourceRequestBody struct {
 	Name                   *Name        `json:"name,omitempty"`
 }
 
+// CloneReferencedSecretResourceResult API result class for cloning a referenced secret resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE, then no clone is created and the resource is null.
+type CloneReferencedSecretResourceResult struct {
+	// EffectiveCloningInstructions How to clone resource:
+	//   * COPY_NOTHING: Don't clone resource.
+	//   * COPY_DEFINITION: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource with same metadata, but don't copy any data. For example
+	//     for GCS bucket, create new GCS bucket with same region/lifecycle rules as source
+	//     bucket. Files will not be copied over.
+	//   * COPY_RESOURCE: Only used for controlled resources. Create new controlled resource
+	//     and new cloud resource, with data copied over.  For example for GCS bucket,
+	//     create new GCS bucket with same region/lifecycle rules as source bucket. Copy files
+	//     from source bucket to new bucket.
+	//   * COPY_REFERENCE: Used for controlled and referenced resources. Create new referenced resource
+	//     that points to same cloud resource as source resource.
+	//   * COPY_LINK_REFERENCE: Used for controlled and referenced resources. Create a new referenced resource
+	//     that points to the same cloud resource as the source resource, AND link the source workspace
+	//     policy to the destination workspace policy; changes in the source will propagate to the destination.
+	EffectiveCloningInstructions *CloningInstructionsEnum `json:"effectiveCloningInstructions,omitempty"`
+
+	// Resource A referenced secret resource that points to a ControlledSecretResource.
+	Resource *SecretReferenceResource `json:"resource,omitempty"`
+
+	// SourceResourceId The UUID of the resource.
+	SourceResourceId *ResourceId `json:"sourceResourceId,omitempty"`
+
+	// SourceWorkspaceId The UUID of the workspace
+	SourceWorkspaceId *WorkspaceId `json:"sourceWorkspaceId,omitempty"`
+}
+
 // CloneResourceResult defines model for CloneResourceResult.
 type CloneResourceResult string
-
-// CloneWorkspaceRequest Request body for cloning an entire workspace. Cloning instructions are taken from individual resources.
-type CloneWorkspaceRequest struct {
-	AdditionalPolicies *WsmPolicyInputs `json:"additionalPolicies,omitempty"`
-
-	// Description A description of the cloned workspace
-	Description *string `json:"description,omitempty"`
-
-	// DestinationWorkspaceId destinationWorkspaceId cannot be specified on clone workspace request
-	// Deprecated:
-	DestinationWorkspaceId *openapi_types.UUID `json:"destinationWorkspaceId,omitempty"`
-
-	// DisplayName The human readable name of the workspace
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Location GCP Location to use for cloud-based resources. If omitted, the location of the source resource will be used.
-	Location *string `json:"location,omitempty"`
-
-	// SpendProfile ID of provided spend profile
-	SpendProfile string `json:"spendProfile"`
-
-	// UserFacingId Human-settable, mutable id. Must have 3-63 characters, contain lowercase letters, numbers, dashes, or
-	// underscores, and start with lowercase letter or number.
-	UserFacingId *UserFacingId `json:"userFacingId,omitempty"`
-}
-
-// CloneWorkspaceResult Response for workspace clone, including details on each controlled or referenced resource either cloned or attempted to be cloned.
-type CloneWorkspaceResult struct {
-	ErrorReport *ErrorReport `json:"errorReport,omitempty"`
-	JobReport   *JobReport   `json:"jobReport,omitempty"`
-
-	// Workspace Flight result class for workspace clone. Indicates status for each resource cloned (or skipped).
-	Workspace *ClonedWorkspace `json:"workspace,omitempty"`
-}
 
 // CloneWorkspaceV2Request Request body for cloning an entire CRG workspace. Cloning instructions are taken from individual resources.
 type CloneWorkspaceV2Request struct {
@@ -1534,6 +1621,13 @@ type CloneWorkspaceV2Request struct {
 
 	// OrganizationId A UXID representing either a UUID or a UFID
 	OrganizationId OrganizationUxid `json:"organizationId"`
+
+	// ReplaceDataCollectionResources Replace resources from one or more data collections with a different
+	// set of resources from those same data collections. For each entry,
+	// all resources in the source workspace whose lineage traces to the
+	// given DC are excluded, and the specified resource IDs are cloned from
+	// the DC instead. If omitted or empty, all resources are cloned as-is.
+	ReplaceDataCollectionResources *[]DataCollectionResourceReplacement `json:"replaceDataCollectionResources,omitempty"`
 
 	// UserFacingId Human-settable, mutable id. Must have 3-63 characters, contain lowercase letters, numbers, dashes, or
 	// underscores, and start with lowercase letter or number.
@@ -1655,21 +1749,17 @@ type ControlledDataExplorerCohortCreationParameters struct {
 	// of data-collection backing the underlay.
 	UnderlayId UnderlayId `json:"underlayId"`
 
-	// UnderlayResourceId Id of the BQ Dataset resource backing the versioned underlay in
-	// Data Explorer. The version is managed in Data Explorer and not the
-	// data collection version in Workbench. By default the latest underlay
-	// version in Data Explorer is used.
-	UnderlayResourceId *UnderlayResourceId `json:"underlayResourceId,omitempty"`
+	// UnderlayVersionId Id of the underlay version in Data Explorer. Not the name of the
+	// data collection version in Workbench. If not provided, the latest
+	// underlay version in Data Explorer is used during creation
+	UnderlayVersionId *UnderlayVersionId `json:"underlayVersionId,omitempty"`
 }
 
 // ControlledDataExplorerCohortSaveParameters Properties specific to Data Explorer cohort set on saving it as a
-// controlled resource in the workspace. StudyId identifies the study that
-// contains the cohort in Data Explorer, and is required to fetch and
-// validate the cohort before saving it. CohortId identifies the existing
+// controlled resource in the workspace. CohortId identifies the existing
 // cohort in Data Explorer, this will be used as the resourceId.
 type ControlledDataExplorerCohortSaveParameters struct {
 	CohortId openapi_types.UUID `json:"cohortId"`
-	StudyId  openapi_types.UUID `json:"studyId"`
 }
 
 // ControlledDataprocClusterUpdateParameters Cluster parameters that can be updated. Cluster lifecycle rules can be modified or removed on clusters created with lifecycle rules, though this isn't documented. See https://cloud.google.com/dataproc/docs/reference/rest/v1/projects.regions.clusters/patch#query-parameters for list other updatable configurations.
@@ -1764,6 +1854,14 @@ type ControlledResourceMetadata struct {
 	Region *string `json:"region,omitempty"`
 }
 
+// ControlledSecretCreationParameters Parameters for creating a controlled secret resource.
+type ControlledSecretCreationParameters struct {
+	AccessPolicy *WsmPolicyInputs `json:"accessPolicy,omitempty"`
+
+	// Base64EncodedSecretValue The base64-encoded secret value to store.
+	Base64EncodedSecretValue string `json:"base64EncodedSecretValue"`
+}
+
 // CreateAwsAuroraDatabaseReferenceRequestBody A request to create a reference to an AWS Aurora Database.
 type CreateAwsAuroraDatabaseReferenceRequestBody struct {
 	// AuroraDatabase Identifiers for a Controlled Aurora Database resource to reference.
@@ -1800,29 +1898,6 @@ type CreateAwsS3FolderReferenceRequestBody struct {
 	S3folder AwsReferencedS3FolderCreationParameters `json:"s3folder"`
 }
 
-// CreateCloudContextRequest Request body for asynchronously creating a cloud context for a workspace.
-// Contains the CloudPlatform for the context and the JobControl object.
-// For GCP, a project is created to contain the cloud resources of the context.
-// and a subscription obtained from the spend profile linked to the parent workspace.
-type CreateCloudContextRequest struct {
-	// CloudPlatform Enum representing a cloud platform type.
-	CloudPlatform CloudPlatform `json:"cloudPlatform"`
-	JobControl    JobControl    `json:"jobControl"`
-}
-
-// CreateCloudContextResult The result of a call to create a cloud context for a workspace. Contains
-// a JobReport detailing the async operation, and either a GcpContext or AwsContext (if operation complete)
-// or an ErrorReport detailing an error.
-type CreateCloudContextResult struct {
-	// AwsContext The AWS cloud context associated with a workspace.
-	AwsContext  *AwsContext  `json:"awsContext,omitempty"`
-	ErrorReport *ErrorReport `json:"errorReport,omitempty"`
-
-	// GcpContext The GCP cloud context associated with a workspace.
-	GcpContext *GcpContext `json:"gcpContext,omitempty"`
-	JobReport  JobReport   `json:"jobReport"`
-}
-
 // CreateControlledAwsAuroraDatabaseRequestBody Payload for requesting a new controlled AWS Aurora Database resource.
 type CreateControlledAwsAuroraDatabaseRequestBody struct {
 	// AuroraDatabase Aurora Database specific properties to be set on creation.
@@ -1857,6 +1932,19 @@ type CreateControlledAwsEc2InstanceResult struct {
 	AwsEc2Instance *AwsEc2InstanceResource `json:"awsEc2Instance,omitempty"`
 	ErrorReport    *ErrorReport            `json:"errorReport,omitempty"`
 	JobReport      *JobReport              `json:"jobReport,omitempty"`
+}
+
+// CreateControlledAwsEc2InstanceV2RequestBody Payload for requesting a new controlled AWS EC2 Virtual Machine instance resource.
+type CreateControlledAwsEc2InstanceV2RequestBody struct {
+	// AwsEc2Instance EC2 Virtual Machine specific properties to be set on creation. These are a subset of the values accepted by the AWS EC2 Virtual Machine API.
+	AwsEc2Instance AwsEc2InstanceCreationParameters `json:"awsEc2Instance"`
+
+	// Common Common information used in all create controlled resource requests. Either displayName or name must be provided.
+	Common ControlledResourceCommonFields `json:"common"`
+
+	// IgnitionRequest Request to generate an ignition script to provision VM.
+	IgnitionRequest WsmGenerateIgnitionRequest `json:"ignitionRequest"`
+	JobControl      JobControl                 `json:"jobControl"`
 }
 
 // CreateControlledAwsEcrExternalRepositoryRequestBody Payload for requesting a new controlled externally-managed AWS ECR Repository resource.
@@ -1966,6 +2054,15 @@ type CreateControlledGcpGcsBucketRequestBody struct {
 	GcsBucket GcpGcsBucketCreationParameters `json:"gcsBucket"`
 }
 
+// CreateControlledSecretRequestBody Request body for creating a controlled secret resource.
+type CreateControlledSecretRequestBody struct {
+	// Common Common information used in all create controlled resource requests. Either displayName or name must be provided.
+	Common ControlledResourceCommonFields `json:"common"`
+
+	// Secret Parameters for creating a controlled secret resource.
+	Secret ControlledSecretCreationParameters `json:"secret"`
+}
+
 // CreateFolderRequestBody defines model for CreateFolderRequestBody.
 type CreateFolderRequestBody struct {
 	// Description A description of the folder
@@ -2033,6 +2130,15 @@ type CreateNatGatewayRequestBody struct {
 	Region string `json:"region"`
 }
 
+// CreateSecretReferenceRequestBody Request body for creating a referenced secret resource.
+type CreateSecretReferenceRequestBody struct {
+	// Metadata Common information used in all create referenced resource requests. Either displayName or name must be provided.
+	Metadata ReferenceResourceCommonFields `json:"metadata"`
+
+	// SecretReference Attributes for referencing a ControlledSecretResource in another workspace.
+	SecretReference SecretReferenceAttributes `json:"secretReference"`
+}
+
 // CreateTerraWorkspaceReferenceRequestBody A request to create a reference to a Terra workspace
 type CreateTerraWorkspaceReferenceRequestBody struct {
 	// Metadata Common information used in all create referenced resource requests. Either displayName or name must be provided.
@@ -2058,6 +2164,9 @@ type CreateWorkspaceV2Request struct {
 
 	// DisplayName The human readable name of the workspace
 	DisplayName *string `json:"displayName,omitempty"`
+
+	// EnableMultiRegionApiAccess Whether GCP multi-region API access should be enabled or disabled for this workspace
+	EnableMultiRegionApiAccess *bool `json:"enableMultiRegionApiAccess,omitempty"`
 
 	// Id The ID of the workspace
 	Id         openapi_types.UUID `json:"id"`
@@ -2183,6 +2292,24 @@ type CreatedControlledGcpGcsBucket struct {
 	ResourceId ResourceId `json:"resourceId"`
 }
 
+// CreatedControlledSecret Response for a created controlled secret resource.
+type CreatedControlledSecret struct {
+	// ResourceId UUID of the created resource
+	ResourceId openapi_types.UUID `json:"resourceId"`
+
+	// SecretResource A controlled secret resource.
+	SecretResource SecretResource `json:"secretResource"`
+}
+
+// DataCollectionResourceReplacement Specifies a data collection whose resources should be replaced during a workspace clone. All source workspace resources with lineage tracing to this DC are excluded and the specified resource IDs from the DC are cloned instead.
+type DataCollectionResourceReplacement struct {
+	// DataCollectionId The workspace ID of the data collection whose resources to replace. Must be a DC that the source workspace already has resources from.
+	DataCollectionId openapi_types.UUID `json:"dataCollectionId"`
+
+	// ResourceIds The resource IDs from this data collection to clone into the workspace in place of the originals. Must not be empty.
+	ResourceIds []openapi_types.UUID `json:"resourceIds"`
+}
+
 // DataExplorerCohortAttributes Attributes of a Data Explorer cohort.
 type DataExplorerCohortAttributes struct {
 	// UnderlayId Unique identifier used for the underlay in Workbench. This is the id
@@ -2204,6 +2331,11 @@ type DataExplorerCohortAttributes struct {
 	// data collection version in Workbench. By default the latest underlay
 	// version in Data Explorer is used.
 	UnderlayResourceName *UnderlayResourceName `json:"underlayResourceName,omitempty"`
+
+	// UnderlayVersionId Id of the underlay version in Data Explorer. Not the name of the
+	// data collection version in Workbench. If not provided, the latest
+	// underlay version in Data Explorer is used during creation
+	UnderlayVersionId *UnderlayVersionId `json:"underlayVersionId,omitempty"`
 }
 
 // DataExplorerCohortResource Description of a Data Explorer cohort.
@@ -2223,11 +2355,6 @@ type DefaultPartitionLifetime = int64
 
 // DefaultTableLifetime Optional. Default lifetime (in seconds) for newly created tables.
 type DefaultTableLifetime = int64
-
-// DeleteCloudContextV2Request Request body for asynchronously deleting a cloud context for a workspace.
-type DeleteCloudContextV2Request struct {
-	JobControl JobControl `json:"jobControl"`
-}
 
 // DeleteControlledAwsResourceRequestBody defines model for DeleteControlledAwsResourceRequestBody.
 type DeleteControlledAwsResourceRequestBody struct {
@@ -2639,30 +2766,36 @@ type GcpDataprocClusterCreationParameters struct {
 	// ConfigBucket Staging bucket controlled resource uuid.
 	ConfigBucket openapi_types.UUID `json:"configBucket"`
 
-	// ImageVersion Dataproc image version with specific software versions installed for Spark, Hadoop, etc. Defaults to the latest debian image if not specified. See https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-version-clusters#supported_dataproc_versions.
+	// ImageVersion Optional Dataproc image version that overrides the framework default.
 	ImageVersion *string `json:"imageVersion,omitempty"`
 
-	// InitializationScripts List of initialization scripts to run on create. In gs url format.
+	// InitializationScripts Optional initialization scripts to run on cluster creation. Must be GCS URLs (gs://...).
 	InitializationScripts *[]string `json:"initializationScripts,omitempty"`
 
 	// LifecycleConfig Specifies the config of lifecycle options for a cluster. See https://cloud.google.com/dataproc/docs/reference/rest/v1/ClusterConfig#LifecycleConfig
 	LifecycleConfig   *GcpDataprocClusterLifecycleConfig    `json:"lifecycleConfig,omitempty"`
 	ManagerNodeConfig GcpDataprocClusterInstanceGroupConfig `json:"managerNodeConfig"`
 
-	// Metadata Metadata key-value pairs.
+	// Metadata Optional metadata (key-value pairs) merged with framework defaults. Duplicate keys override framework values.
 	Metadata            *map[string]string                     `json:"metadata,omitempty"`
 	PrimaryWorkerConfig *GcpDataprocClusterInstanceGroupConfig `json:"primaryWorkerConfig,omitempty"`
 
-	// Properties Map of additional properties to set on the cluster. See https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties.
+	// Properties Optional cluster properties (key-value pairs) merged with framework defaults. Duplicate keys override framework values.
 	Properties *map[string]string `json:"properties,omitempty"`
 
 	// Region GCP region.
 	Region                *string                                `json:"region,omitempty"`
 	SecondaryWorkerConfig *GcpDataprocClusterInstanceGroupConfig `json:"secondaryWorkerConfig,omitempty"`
 
+	// SoftwareFramework Software framework to install. Applies predefined configuration (imageVersion, metadata, properties) from the catalog. User-provided metadata, properties, and imageVersion override framework defaults.
+	SoftwareFramework *GcpDataprocClusterCreationParametersSoftwareFramework `json:"softwareFramework,omitempty"`
+
 	// TempBucket Temp bucket controlled resource uuid.
 	TempBucket openapi_types.UUID `json:"tempBucket"`
 }
+
+// GcpDataprocClusterCreationParametersSoftwareFramework Software framework to install. Applies predefined configuration (imageVersion, metadata, properties) from the catalog. User-provided metadata, properties, and imageVersion override framework defaults.
+type GcpDataprocClusterCreationParametersSoftwareFramework string
 
 // GcpDataprocClusterDiskConfig Specifies the config of disk options for a group of VM instances. See https://cloud.google.com/dataproc/docs/reference/rest/v1/InstanceGroupConfig#DiskConfig
 type GcpDataprocClusterDiskConfig struct {
@@ -2730,6 +2863,10 @@ type GcpGceInstanceAttributes struct {
 	// ProjectId The GCP project id for the project containing the instance.
 	ProjectId string `json:"projectId"`
 
+	// Secrets Map of attached secrets. Keys are names specified by the configured app; values are references to controlled secret resources.
+	Secrets          *map[string]AttachedSecretReference `json:"secrets,omitempty"`
+	SigningAlgorithm *SigningAlgorithmEnum               `json:"signingAlgorithm,omitempty"`
+
 	// Zone The GCP zone containing the instance, e.g. 'us-east1-b'
 	Zone string `json:"zone"`
 }
@@ -2749,8 +2886,17 @@ type GcpGceInstanceCreationParameters struct {
 	DataDiskSizeGb *int64 `json:"dataDiskSizeGb,omitempty"`
 
 	// DataDiskType The type of the data disk attached to this instance, defaults to standard persistent disk (pd-standard). See https://cloud.google.com/compute/docs/disks#disk-types
-	DataDiskType      *string                           `json:"dataDiskType,omitempty"`
-	GuestAccelerators *[]GcpGceInstanceGuestAccelerator `json:"guestAccelerators,omitempty"`
+	DataDiskType *string `json:"dataDiskType,omitempty"`
+
+	// FlexStart If true, create the VM using the Dynamic Workload Scheduler (DWS) flex-start provisioning model (scheduling.provisioningModel = FLEX_START). Flex-start provisions discounted, non-preemptible capacity from a dedicated pool and can queue the request until in-demand resources (such as GPUs) become available. Cannot be combined with reservationUri. See https://cloud.google.com/compute/docs/instances/about-flex-start-vms.
+	FlexStart *bool `json:"flexStart,omitempty"`
+
+	// FlexStartMaxRunDurationSeconds Only used when flexStart is true, and required in that case (ignored otherwise). The maximum lifetime of the flex-start VM in seconds, after which the VM is stopped. Must be between 600 (10 minutes) and 604800 (7 days).
+	FlexStartMaxRunDurationSeconds *int64 `json:"flexStartMaxRunDurationSeconds,omitempty"`
+
+	// FlexStartRequestValidForDurationSeconds Optional, only used when flexStart is true. How long, in seconds, Compute Engine holds the flex-start request in the DWS queue while waiting for capacity. When set, must be 0 or between 90 and 7200 (2 hours). Set to 0 for instant-only allocation (capacity must be immediately available); use 90-7200 for queued provisioning. If omitted, the field is left unset and Compute Engine makes a short (~90s) best-effort attempt for capacity.
+	FlexStartRequestValidForDurationSeconds *int64                            `json:"flexStartRequestValidForDurationSeconds,omitempty"`
+	GuestAccelerators                       *[]GcpGceInstanceGuestAccelerator `json:"guestAccelerators,omitempty"`
 
 	// InstanceId An instanceId unique to this project and location. Must be 1-63 characters, using lower case letters, numbers, and dashes. The first character must be a lower case letter, and the last character must not be a dash.
 	InstanceId *string `json:"instanceId,omitempty"`
@@ -2763,6 +2909,9 @@ type GcpGceInstanceCreationParameters struct {
 
 	// ReservationUri uri for the VM to be created with using reservation name or reservation blocks. such as projects/RESERVATION_OWNER_PROJECT_ID/reservations/RESERVATION_NAME. If the VM is created in the same project as the reservation, projects/RESERVATION_OWNER_PROJECT_ID/reservations can be omitted. see https://cloud.google.com/compute/docs/gpus/create-gpu-vm-a3u-a4#rest_1 for more details.
 	ReservationUri *string `json:"reservationUri,omitempty"`
+
+	// Secrets Optional map of attached secrets. Keys are names specified by the configured app; values reference controlled secret resources by workspace and resource ID. The app will only be allowed to read these specific secrets. An empty map blocks all secret reads.
+	Secrets *map[string]AttachedSecretReference `json:"secrets,omitempty"`
 
 	// VmImage Custom Compute Engine virtual machine image for starting the instance with the environment installed directly on the VM. Specify the image by its family name, or use a specific version of a public operating system image.
 	VmImage *string `json:"vmImage,omitempty"`
@@ -2936,6 +3085,19 @@ type GenerateAwsResourceCloudNameRequestBody struct {
 	AwsResourceName string `json:"awsResourceName"`
 }
 
+// GenerateChallengeRequest Request to generate a secret challenge to sign.
+type GenerateChallengeRequest struct {
+	// Identifier Identifies who is requesting the secret. Exactly one of the challenge requestor identifiers must be specified.
+	Identifier ChallengeRequestorIdentifier `json:"identifier"`
+}
+
+// GenerateChallengeResult Result of a successful challenge generation.
+type GenerateChallengeResult struct {
+	// ExpiresAt ISO-8601 timestamp when the nonce expires.
+	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
+	Nonce     *string    `json:"nonce,omitempty"`
+}
+
 // GenerateGcpAiNotebookCloudIdRequestBody defines model for GenerateGcpAiNotebookCloudIdRequestBody.
 type GenerateGcpAiNotebookCloudIdRequestBody struct {
 	AiNotebookName string `json:"aiNotebookName"`
@@ -3050,6 +3212,12 @@ type LoadUrlListResult struct {
 	JobReport   *JobReport   `json:"jobReport,omitempty"`
 }
 
+// LockWorkspaceRequest Request body for locking a workspace.
+type LockWorkspaceRequest struct {
+	// Reason Reason why the workspace is being locked.
+	Reason string `json:"reason"`
+}
+
 // ManagedBy Specifies the controller of the resource, workspace users or an application
 type ManagedBy string
 
@@ -3065,6 +3233,11 @@ type MergeCheckRequest struct {
 type MovePodWorkspacesOrgRequest struct {
 	// TargetOrgId The organization ID to move workspaces to
 	TargetOrgId string `json:"targetOrgId"`
+}
+
+// MultiRegionApiAccessRequest Request body for updating multi-region API access for a workspace.
+type MultiRegionApiAccessRequest struct {
+	JobControl JobControl `json:"jobControl"`
 }
 
 // Name defines model for Name.
@@ -3146,6 +3319,23 @@ type Property struct {
 // PropertyKeys A list of string keys used for properties
 type PropertyKeys = []string
 
+// ReadSecretRequest Request to read a secret using a signed challenge.
+type ReadSecretRequest struct {
+	// Identifier Identifies who is requesting the secret. Exactly one of the challenge requestor identifiers must be specified.
+	Identifier ChallengeRequestorIdentifier `json:"identifier"`
+
+	// Nonce The original challenge nonce.
+	Nonce string `json:"nonce"`
+
+	// Signature The signature of the challenge nonce, signed with the identifier's public key.
+	Signature string `json:"signature"`
+}
+
+// ReadSecretResult Result of a successful secret read.
+type ReadSecretResult struct {
+	Base64EncodedSecretValue *string `json:"base64EncodedSecretValue,omitempty"`
+}
+
 // ReferenceResourceCommonFields Common information used in all create referenced resource requests. Either displayName or name must be provided.
 type ReferenceResourceCommonFields struct {
 	// CloningInstructions How to clone resource:
@@ -3186,6 +3376,17 @@ type ReferencedResourceMetadata struct {
 
 // Regions List of regions (e.g. us-central1, us-west1)
 type Regions = []string
+
+// RegisterKeyRequest Request to register a public signing key with an app resource. The algorithm must not be UNSET.
+type RegisterKeyRequest struct {
+	Algorithm SigningAlgorithmEnum `json:"algorithm"`
+
+	// AppResourceId The resource ID of the app to register the key for.
+	AppResourceId openapi_types.UUID `json:"appResourceId"`
+
+	// Key Base64-encoded public signing key.
+	Key string `json:"key"`
+}
 
 // ResolvedAwsEcrExternalRepositoryAttributes Resolved attributes of an AWS ECR External Repository reference.
 type ResolvedAwsEcrExternalRepositoryAttributes struct {
@@ -3307,6 +3508,12 @@ type ResourceAttributesUnion struct {
 
 	// GitRepo Attributes of a Git repository
 	GitRepo *GitRepoAttributes `json:"gitRepo,omitempty"`
+
+	// Secret Attributes of a controlled secret resource.
+	Secret *SecretAttributes `json:"secret,omitempty"`
+
+	// SecretReference Attributes for referencing a ControlledSecretResource in another workspace.
+	SecretReference *SecretReferenceAttributes `json:"secretReference,omitempty"`
 
 	// TerraWorkspace Terra workspace attributes
 	TerraWorkspace *TerraWorkspaceAttributes `json:"terraWorkspace,omitempty"`
@@ -3489,11 +3696,37 @@ type SaveControlledDataExplorerCohortRequest struct {
 	Common ControlledResourceCommonFields `json:"common"`
 
 	// DataExplorerCohort Properties specific to Data Explorer cohort set on saving it as a
-	// controlled resource in the workspace. StudyId identifies the study that
-	// contains the cohort in Data Explorer, and is required to fetch and
-	// validate the cohort before saving it. CohortId identifies the existing
+	// controlled resource in the workspace. CohortId identifies the existing
 	// cohort in Data Explorer, this will be used as the resourceId.
 	DataExplorerCohort ControlledDataExplorerCohortSaveParameters `json:"dataExplorerCohort"`
+}
+
+// SecretAttributes Attributes of a controlled secret resource.
+type SecretAttributes struct {
+	AccessPolicy *WsmPolicyInputs `json:"accessPolicy,omitempty"`
+}
+
+// SecretReferenceAttributes Attributes for referencing a ControlledSecretResource in another workspace.
+type SecretReferenceAttributes struct {
+	// ReferencedResourceId UUID of the ControlledSecretResource being referenced.
+	ReferencedResourceId openapi_types.UUID `json:"referencedResourceId"`
+
+	// ReferencedWorkspaceId UUID of the workspace containing the ControlledSecretResource.
+	ReferencedWorkspaceId openapi_types.UUID `json:"referencedWorkspaceId"`
+}
+
+// SecretReferenceResource A referenced secret resource that points to a ControlledSecretResource.
+type SecretReferenceResource struct {
+	// Attributes Attributes for referencing a ControlledSecretResource in another workspace.
+	Attributes SecretReferenceAttributes `json:"attributes"`
+	Metadata   ResourceMetadata          `json:"metadata"`
+}
+
+// SecretResource A controlled secret resource.
+type SecretResource struct {
+	// Attributes Attributes of a controlled secret resource.
+	Attributes SecretAttributes `json:"attributes"`
+	Metadata   ResourceMetadata `json:"metadata"`
 }
 
 // SetAccessOperation defines model for SetAccessOperation.
@@ -3501,7 +3734,9 @@ type SetAccessOperation string
 
 // SetAccessRequest Request an grant or revoke of a role on a workspace
 type SetAccessRequest struct {
-	Operation SetAccessOperation `json:"operation"`
+	// GrantTimestamp Timestamp when the AccessRequest is created
+	GrantTimestamp *time.Time         `json:"grantTimestamp,omitempty"`
+	Operation      SetAccessOperation `json:"operation"`
 
 	// Principal A user principal or a group principal. One or the other is required.
 	Principal Principal `json:"principal"`
@@ -3509,6 +3744,9 @@ type SetAccessRequest struct {
 	// Role Enum containing all valid IAM roles on a Workspace
 	Role IamRole `json:"role"`
 }
+
+// SigningAlgorithmEnum defines model for SigningAlgorithmEnum.
+type SigningAlgorithmEnum string
 
 // State WSM object state
 type State string
@@ -3566,6 +3804,11 @@ type UnderlayResourceId = openapi_types.UUID
 // data collection version in Workbench. By default the latest underlay
 // version in Data Explorer is used.
 type UnderlayResourceName = string
+
+// UnderlayVersionId Id of the underlay version in Data Explorer. Not the name of the
+// data collection version in Workbench. If not provided, the latest
+// underlay version in Data Explorer is used during creation
+type UnderlayVersionId = string
 
 // UnlinkBillingForCrgRequest Unlinks a billing account of the specified Crg in GCP
 type UnlinkBillingForCrgRequest struct {
@@ -3957,6 +4200,27 @@ type UpdateControlledGcpGcsBucketRequestBody struct {
 	UpdateParameters *GcpGcsBucketUpdateParameters `json:"updateParameters,omitempty"`
 }
 
+// UpdateControlledSecretRequestBody Request body for updating a controlled secret resource.
+type UpdateControlledSecretRequestBody struct {
+	AccessPolicy *WsmPolicyInputs `json:"accessPolicy,omitempty"`
+
+	// Base64EncodedSecretValue Updated base64-encoded secret value.
+	Base64EncodedSecretValue *string `json:"base64EncodedSecretValue,omitempty"`
+
+	// Description Updated description for the resource.
+	Description *string `json:"description,omitempty"`
+
+	// DisplayName Updated display name for the resource.
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Name Updated name for the resource.
+	Name *string `json:"name,omitempty"`
+
+	// UpdateFolderId Whether to update the folderId. If omitted, the folderId will not be updated,
+	// if defined but child property folderId is not provided, then the request is to unset the folderId.
+	UpdateFolderId *UpdateFolderId `json:"updateFolderId,omitempty"`
+}
+
 // UpdateEcrExternalRepositoryReferenceRequestBody Fields updatable on an ECR external repository reference. Leave properties null to keep them the same.
 type UpdateEcrExternalRepositoryReferenceRequestBody struct {
 	// CloningInstructions How to clone resource:
@@ -4155,6 +4419,22 @@ type UpdateS3FolderReferenceRequestBody struct {
 	UpdateFolderId *UpdateFolderId `json:"updateFolderId,omitempty"`
 }
 
+// UpdateSecretReferenceRequestBody Request body for updating a referenced secret resource.
+type UpdateSecretReferenceRequestBody struct {
+	// Description Updated description for the resource.
+	Description *string `json:"description,omitempty"`
+
+	// DisplayName Updated display name for the resource.
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Name Updated name for the resource.
+	Name *string `json:"name,omitempty"`
+
+	// UpdateFolderId Whether to update the folderId. If omitted, the folderId will not be updated,
+	// if defined but child property folderId is not provided, then the request is to unset the folderId.
+	UpdateFolderId *UpdateFolderId `json:"updateFolderId,omitempty"`
+}
+
 // UpdateWorkspaceRequestBody defines model for UpdateWorkspaceRequestBody.
 type UpdateWorkspaceRequestBody struct {
 	// Description A description of the workspace
@@ -4174,12 +4454,6 @@ type UpdateWorkspacesByCrgRequest struct {
 	// GcpBillingAccount The new billing account for workspaces in a CRG
 	GcpBillingAccount string     `json:"gcpBillingAccount"`
 	JobControl        JobControl `json:"jobControl"`
-}
-
-// UserAgreementAttributes Attributes of a User Agreement File
-type UserAgreementAttributes struct {
-	FileName string `json:"fileName"`
-	GsUri    string `json:"gsUri"`
 }
 
 // UserFacingId Human-settable, mutable id. Must have 3-63 characters, contain lowercase letters, numbers, dashes, or
@@ -4230,6 +4504,12 @@ type WorkspaceBillingStatusBillingAccountStatus string
 
 // WorkspaceDescription defines model for WorkspaceDescription.
 type WorkspaceDescription struct {
+	// AccessRestriction Type of access restriction or constraint affecting a workspace.
+	AccessRestriction *AccessRestrictionType `json:"accessRestriction,omitempty"`
+
+	// AccessRestrictionReason Reason provided by the user who turned on access restrictions on the workspace; null only if accessRestriction is null
+	AccessRestrictionReason *string `json:"accessRestrictionReason,omitempty"`
+
 	// AwsContext The AWS cloud context associated with a workspace.
 	AwsContext *AwsContext `json:"awsContext,omitempty"`
 
@@ -4251,14 +4531,26 @@ type WorkspaceDescription struct {
 	// DisplayName The human readable name of the workspace
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// EnableMultiRegionApiAccess Whether multi-region API access has been enabled or disabled for this workspace
+	EnableMultiRegionApiAccess *bool `json:"enableMultiRegionApiAccess,omitempty"`
+
+	// FeaturedTags Tags applied to the workspace (if workspace is Featured).
+	FeaturedTags *[]string `json:"featuredTags,omitempty"`
+
 	// GcpContext The GCP cloud context associated with a workspace.
 	GcpContext *GcpContext `json:"gcpContext,omitempty"`
 
 	// HighestRole Enum containing all valid IAM roles on a Workspace
 	HighestRole IamRole `json:"highestRole"`
 
+	// HighestRoleBeforeLock Enum containing all valid IAM roles on a Workspace
+	HighestRoleBeforeLock *IamRole `json:"highestRoleBeforeLock,omitempty"`
+
 	// Id The ID of the workspace. Immutable.
 	Id openapi_types.UUID `json:"id"`
+
+	// IsFeatured True if the workspace has been marked as Featured.
+	IsFeatured *bool `json:"isFeatured,omitempty"`
 
 	// LastUpdatedBy User email of whom made the last update to the workspace
 	LastUpdatedBy string `json:"lastUpdatedBy"`
@@ -4301,6 +4593,9 @@ type WorkspaceDescriptionList struct {
 type WorkspaceFilter struct {
 	// GcpProjectIds GCP project ids of the workspaces
 	GcpProjectIds *[]string `json:"gcpProjectIds,omitempty"`
+
+	// IsFeatured Return only featured or only non-featured workspaces (optional).
+	IsFeatured *bool `json:"isFeatured,omitempty"`
 
 	// Limit The maximum number of items to return
 	Limit *int `json:"limit,omitempty"`
@@ -4364,7 +4659,9 @@ type WorkspaceStageModel string
 // WsmGenerateIgnitionRequest Request to generate an ignition script to provision VM.
 type WsmGenerateIgnitionRequest struct {
 	// Accelerator hardware accelerator of the vm instance.
-	Accelerator   *string        `json:"accelerator,omitempty"`
+	Accelerator *string `json:"accelerator,omitempty"`
+
+	// AppAttributes Application attributes for VM instance provisioning
 	AppAttributes *AppAttributes `json:"app_attributes,omitempty"`
 	BuildOnly     *bool          `json:"build_only,omitempty"`
 
@@ -4594,9 +4891,6 @@ type AwsCredentialAccessScopeParam = AwsCredentialAccessScope
 // AwsCredentialDurationSecondsParam defines model for AwsCredentialDurationSeconds.
 type AwsCredentialDurationSecondsParam = AwsCredentialDurationSeconds
 
-// CloudContextParam Enum representing a cloud platform type.
-type CloudContextParam = CloudPlatform
-
 // CloudResourceGroupIdParam defines model for CloudResourceGroupId.
 type CloudResourceGroupIdParam = openapi_types.UUID
 
@@ -4720,6 +5014,9 @@ type CloneControlledFlexibleResourceResponse = CloneControlledFlexibleResourceRe
 // CloneControlledGcpBigQueryDatasetResponse Result of successful BigQuery dataset clone
 type CloneControlledGcpBigQueryDatasetResponse = CloneControlledGcpBigQueryDatasetResult
 
+// CloneControlledSecretResponse Result of successful secret resource clone. Creates a reference to the original.
+type CloneControlledSecretResponse = CloneControlledSecretResult
+
 // CloneReferencedAwsAuroraDatabaseResourceResponse API result class for cloning a referenced AWS Aurora Database resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE or LINK_REFERENCE, then no clone is created and the resource is null.
 type CloneReferencedAwsAuroraDatabaseResourceResponse = CloneReferencedAwsAuroraDatabaseReferencedResourceResult
 
@@ -4744,8 +5041,8 @@ type CloneReferencedGcpGcsBucketResourceResponse = CloneReferencedGcpGcsBucketRe
 // CloneReferencedGitRepoResourceResponse API result class for cloning a referenced Git repo resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE, then no clone is created and the resource is null.
 type CloneReferencedGitRepoResourceResponse = CloneReferencedGitRepoResourceResult
 
-// CloneWorkspaceResponse Response for workspace clone, including details on each controlled or referenced resource either cloned or attempted to be cloned.
-type CloneWorkspaceResponse = CloneWorkspaceResult
+// CloneReferencedSecretResourceResponse API result class for cloning a referenced secret resource. Includes source workspace and resource IDs for provenance. If the effective cloning instructions are not COPY_REFERENCE, then no clone is created and the resource is null.
+type CloneReferencedSecretResourceResponse = CloneReferencedSecretResourceResult
 
 // CloneWorkspaceV2Response Response for workspace clone, including results for each controlled or referenced resource eligible to be cloned.
 type CloneWorkspaceV2Response = CloneWorkspaceV2Result
@@ -4765,10 +5062,8 @@ type ControlledFlexibleResourceResponse = FlexibleResource
 // ControlledGcpBigQueryDatasetResponse A reference to a BigQuery dataset.
 type ControlledGcpBigQueryDatasetResponse = GcpBigQueryDatasetResource
 
-// CreateCloudContextResultResponse The result of a call to create a cloud context for a workspace. Contains
-// a JobReport detailing the async operation, and either a GcpContext or AwsContext (if operation complete)
-// or an ErrorReport detailing an error.
-type CreateCloudContextResultResponse = CreateCloudContextResult
+// ControlledSecretResponse A controlled secret resource.
+type ControlledSecretResponse = SecretResource
 
 // CreateControlledAwsAuroraDatabaseResponse Response Payload for requesting a new controlled AWS Aurora Database resource.
 type CreateControlledAwsAuroraDatabaseResponse = CreateControlledAwsAuroraDatabaseResult
@@ -4846,6 +5141,9 @@ type GcsBucketCloudNameResponse = GcsBucketCloudName
 // GenerateAwsResourceCloudNameResponse A valid cloud name for resource.
 type GenerateAwsResourceCloudNameResponse = AwsResourceCloudName
 
+// GenerateChallengeResponse Result of a successful challenge generation.
+type GenerateChallengeResponse = GenerateChallengeResult
+
 // GetControlledAwsAuroraDatabaseResponse Description of an AWS Aurora Database resource.
 type GetControlledAwsAuroraDatabaseResponse = AwsAuroraDatabaseResource
 
@@ -4887,6 +5185,12 @@ type NotFound = ErrorReport
 
 // PermissionDenied defines model for PermissionDenied.
 type PermissionDenied = ErrorReport
+
+// ReadSecretResponse Result of a successful secret read.
+type ReadSecretResponse = ReadSecretResult
+
+// SecretReferenceResponse A referenced secret resource that points to a ControlledSecretResource.
+type SecretReferenceResponse = SecretReferenceResource
 
 // ServerError defines model for ServerError.
 type ServerError = ErrorReport
@@ -4936,14 +5240,20 @@ type BackfillWorkspaceRolesParams struct {
 	Email string `form:"email" json:"email"`
 }
 
-// BackfillResourcePropertiesParams defines parameters for BackfillResourceProperties.
-type BackfillResourcePropertiesParams struct {
+// SyncIamRolesParams defines parameters for SyncIamRoles.
+type SyncIamRolesParams struct {
 	// WetRun Whether this is a wet run.
 	WetRunParam *WetRunParam `form:"wetRun,omitempty" json:"wetRun,omitempty"`
 }
 
-// SyncIamRolesParams defines parameters for SyncIamRoles.
-type SyncIamRolesParams struct {
+// FixStudyMappingParams defines parameters for FixStudyMapping.
+type FixStudyMappingParams struct {
+	// WetRun Whether this is a wet run.
+	WetRunParam *WetRunParam `form:"wetRun,omitempty" json:"wetRun,omitempty"`
+}
+
+// FixWorkspaceStudyParams defines parameters for FixWorkspaceStudy.
+type FixWorkspaceStudyParams struct {
 	// WetRun Whether this is a wet run.
 	WetRunParam *WetRunParam `form:"wetRun,omitempty" json:"wetRun,omitempty"`
 }
@@ -5076,6 +5386,15 @@ type EnumerateResourcesParams struct {
 	ResolveReferenceParam *ResolveReferenceParam `form:"resolveReference,omitempty" json:"resolveReference,omitempty"`
 }
 
+// EnumerateAppsParams defines parameters for EnumerateApps.
+type EnumerateAppsParams struct {
+	// Offset The number of items to skip before starting to collect the result set.
+	OffsetParam *OffsetParam `form:"offset,omitempty" json:"offset,omitempty"`
+
+	// Limit The maximum number of items to return. Default 10
+	LimitParam *LimitParam `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // GetControlledAwsAuroraDatabaseCredentialParams defines parameters for GetControlledAwsAuroraDatabaseCredential.
 type GetControlledAwsAuroraDatabaseCredentialParams struct {
 	// AccessScope Access to request for an AWS credential or Console URL.
@@ -5157,6 +5476,15 @@ type GetAwsS3StorageFolderCredentialParams struct {
 	AwsCredentialDurationSecondsParam AwsCredentialDurationSecondsParam `form:"durationSeconds" json:"durationSeconds"`
 }
 
+// GetAuroraDatabaseReferenceCredentialParams defines parameters for GetAuroraDatabaseReferenceCredential.
+type GetAuroraDatabaseReferenceCredentialParams struct {
+	// AccessScope Access to request for an AWS credential or Console URL.
+	AwsCredentialAccessScopeParam AwsCredentialAccessScopeParam `form:"accessScope" json:"accessScope"`
+
+	// DurationSeconds Duration for credential to access controlled AWS resource in seconds.
+	AwsCredentialDurationSecondsParam AwsCredentialDurationSecondsParam `form:"durationSeconds" json:"durationSeconds"`
+}
+
 // GetS3FolderReferenceCredentialParams defines parameters for GetS3FolderReferenceCredential.
 type GetS3FolderReferenceCredentialParams struct {
 	// AccessScope Access to request for an AWS credential or Console URL.
@@ -5181,20 +5509,17 @@ type FilterUserResourcesJSONRequestBody = ResourceFilterByAssignedUser
 // BackfillWorkspaceApplicationsJSONRequestBody defines body for BackfillWorkspaceApplications for application/json ContentType.
 type BackfillWorkspaceApplicationsJSONRequestBody = BackfillApplicationsRequest
 
-// AodOperationJSONRequestBody defines body for AodOperation for application/json ContentType.
-type AodOperationJSONRequestBody = AccessOnDemandRequest
+// AdminFilterWorkspacesJSONRequestBody defines body for AdminFilterWorkspaces for application/json ContentType.
+type AdminFilterWorkspacesJSONRequestBody = WorkspaceFilter
+
+// AdminReplacePolicyJSONRequestBody defines body for AdminReplacePolicy for application/json ContentType.
+type AdminReplacePolicyJSONRequestBody = WsmPolicyInputs
 
 // LoadUrlListJSONRequestBody defines body for LoadUrlList for application/json ContentType.
 type LoadUrlListJSONRequestBody = LoadUrlListRequestBody
 
 // UpdateWorkspaceJSONRequestBody defines body for UpdateWorkspace for application/json ContentType.
 type UpdateWorkspaceJSONRequestBody = UpdateWorkspaceRequestBody
-
-// CloneWorkspaceJSONRequestBody defines body for CloneWorkspace for application/json ContentType.
-type CloneWorkspaceJSONRequestBody = CloneWorkspaceRequest
-
-// CreateCloudContextJSONRequestBody defines body for CreateCloudContext for application/json ContentType.
-type CreateCloudContextJSONRequestBody = CreateCloudContextRequest
 
 // CreateFolderJSONRequestBody defines body for CreateFolder for application/json ContentType.
 type CreateFolderJSONRequestBody = CreateFolderRequestBody
@@ -5211,8 +5536,14 @@ type UpdateFolderPropertiesJSONRequestBody = Properties
 // CreateNatGatewayJSONRequestBody defines body for CreateNatGateway for application/json ContentType.
 type CreateNatGatewayJSONRequestBody = CreateNatGatewayRequestBody
 
+// EnableMultiRegionApiAccessJSONRequestBody defines body for EnableMultiRegionApiAccess for application/json ContentType.
+type EnableMultiRegionApiAccessJSONRequestBody = MultiRegionApiAccessRequest
+
 // UpdatePoliciesJSONRequestBody defines body for UpdatePolicies for application/json ContentType.
 type UpdatePoliciesJSONRequestBody = WsmPolicyUpdateRequest
+
+// BatchMergeCheckJSONRequestBody defines body for BatchMergeCheck for application/json ContentType.
+type BatchMergeCheckJSONRequestBody = BatchMergeCheckRequest
 
 // MergeCheckJSONRequestBody defines body for MergeCheck for application/json ContentType.
 type MergeCheckJSONRequestBody = MergeCheckRequest
@@ -5231,6 +5562,15 @@ type UpdateFlexibleResourceJSONRequestBody = UpdateControlledFlexibleResourceReq
 
 // CloneFlexibleResourceJSONRequestBody defines body for CloneFlexibleResource for application/json ContentType.
 type CloneFlexibleResourceJSONRequestBody = CloneControlledFlexibleResourceRequest
+
+// CreateSecretJSONRequestBody defines body for CreateSecret for application/json ContentType.
+type CreateSecretJSONRequestBody = CreateControlledSecretRequestBody
+
+// UpdateSecretJSONRequestBody defines body for UpdateSecret for application/json ContentType.
+type UpdateSecretJSONRequestBody = UpdateControlledSecretRequestBody
+
+// CloneSecretJSONRequestBody defines body for CloneSecret for application/json ContentType.
+type CloneSecretJSONRequestBody = CloneControlledSecretRequest
 
 // CreateControlledAwsAuroraDatabaseJSONRequestBody defines body for CreateControlledAwsAuroraDatabase for application/json ContentType.
 type CreateControlledAwsAuroraDatabaseJSONRequestBody = CreateControlledAwsAuroraDatabaseRequestBody
@@ -5454,6 +5794,15 @@ type UpdateGitRepoReferenceJSONRequestBody = UpdateGitRepoReferenceRequestBody
 // CloneGitRepoReferenceJSONRequestBody defines body for CloneGitRepoReference for application/json ContentType.
 type CloneGitRepoReferenceJSONRequestBody = CloneReferencedResourceRequestBody
 
+// CreateSecretReferenceJSONRequestBody defines body for CreateSecretReference for application/json ContentType.
+type CreateSecretReferenceJSONRequestBody = CreateSecretReferenceRequestBody
+
+// UpdateSecretReferenceJSONRequestBody defines body for UpdateSecretReference for application/json ContentType.
+type UpdateSecretReferenceJSONRequestBody = UpdateSecretReferenceRequestBody
+
+// CloneSecretReferenceJSONRequestBody defines body for CloneSecretReference for application/json ContentType.
+type CloneSecretReferenceJSONRequestBody = CloneReferencedResourceRequestBody
+
 // CreateTerraWorkspaceReferenceJSONRequestBody defines body for CreateTerraWorkspaceReference for application/json ContentType.
 type CreateTerraWorkspaceReferenceJSONRequestBody = CreateTerraWorkspaceReferenceRequestBody
 
@@ -5475,6 +5824,15 @@ type SetRoleJSONRequestBody = SetAccessRequest
 // GrantRoleJSONRequestBody defines body for GrantRole for application/json ContentType.
 type GrantRoleJSONRequestBody = GrantRoleRequestBody
 
+// RegisterKeyJSONRequestBody defines body for RegisterKey for application/json ContentType.
+type RegisterKeyJSONRequestBody = RegisterKeyRequest
+
+// GenerateChallengeJSONRequestBody defines body for GenerateChallenge for application/json ContentType.
+type GenerateChallengeJSONRequestBody = GenerateChallengeRequest
+
+// ReadSecretJSONRequestBody defines body for ReadSecret for application/json ContentType.
+type ReadSecretJSONRequestBody = ReadSecretRequest
+
 // CreateWorkspaceV2JSONRequestBody defines body for CreateWorkspaceV2 for application/json ContentType.
 type CreateWorkspaceV2JSONRequestBody = CreateWorkspaceV2Request
 
@@ -5490,11 +5848,14 @@ type FilterWorkspacesJSONRequestBody = WorkspaceFilter
 // CloneWorkspaceV2JSONRequestBody defines body for CloneWorkspaceV2 for application/json ContentType.
 type CloneWorkspaceV2JSONRequestBody = CloneWorkspaceV2Request
 
-// DeleteCloudContextV2JSONRequestBody defines body for DeleteCloudContextV2 for application/json ContentType.
-type DeleteCloudContextV2JSONRequestBody = DeleteCloudContextV2Request
-
 // DeleteWorkspaceV2JSONRequestBody defines body for DeleteWorkspaceV2 for application/json ContentType.
 type DeleteWorkspaceV2JSONRequestBody = DeleteWorkspaceV2Request
+
+// LockWorkspaceJSONRequestBody defines body for LockWorkspace for application/json ContentType.
+type LockWorkspaceJSONRequestBody = LockWorkspaceRequest
+
+// CreateAwsEc2InstanceV2JSONRequestBody defines body for CreateAwsEc2InstanceV2 for application/json ContentType.
+type CreateAwsEc2InstanceV2JSONRequestBody = CreateControlledAwsEc2InstanceV2RequestBody
 
 // CreateGceInstanceV2JSONRequestBody defines body for CreateGceInstanceV2 for application/json ContentType.
 type CreateGceInstanceV2JSONRequestBody = CreateControlledGcpGceInstanceV2RequestBody

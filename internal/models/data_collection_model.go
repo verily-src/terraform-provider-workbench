@@ -16,6 +16,7 @@ const (
 	THERAPEUTIC_TAGS_KEY  = "terra-therapeutic-tags"
 	UPDATE_FREQUENCY_KEY  = "terra-update-frequency"
 	ORGANIZATION_NAME_TAG = "terra-organization-name"
+	PROGRAM_NAME_KEY      = "terra-program-name"
 )
 
 type DataCollectionModel struct {
@@ -24,6 +25,7 @@ type DataCollectionModel struct {
 	OrganizationName types.String `tfsdk:"organization_name"`
 	TherapeuticTags  types.Set    `tfsdk:"therapeutic_tags"`
 	UpdateFrequency  types.String `tfsdk:"update_frequency"`
+	ProgramName      types.String `tfsdk:"program_name"`
 }
 
 // NewDataCollectionModel creates a new DataCollectionModel with a given workspace description.
@@ -40,6 +42,7 @@ func NewDataCollectionModel(workspace *wsm.WorkspaceDescription) (*DataCollectio
 		OrganizationName: types.StringValue(GetValue(workspace.Properties, ORGANIZATION_NAME_TAG)),
 		TherapeuticTags:  unmarshalled_ttags,
 		UpdateFrequency:  types.StringValue(GetValue(workspace.Properties, UPDATE_FREQUENCY_KEY)),
+		ProgramName:      types.StringValue(GetValue(workspace.Properties, PROGRAM_NAME_KEY)),
 	}, diags
 }
 
@@ -138,6 +141,9 @@ func (datacollection *DataCollectionModel) GetProperties(diags diag.Diagnostics)
 	}, wsm.Property{
 		Key:   THERAPEUTIC_TAGS_KEY,
 		Value: marshalled,
+	}, wsm.Property{
+		Key:   PROGRAM_NAME_KEY,
+		Value: datacollection.ProgramName.ValueString(),
 		// Append the terra-type which identifies this as DC
 	}, wsm.Property{
 		Key:   "terra-type",

@@ -3,8 +3,8 @@ package models
 import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 // GCSBucketModel represents a Google Cloud Storage (GCS) bucket in Workbench.
@@ -119,12 +119,12 @@ func safeStorageClass(storageClass types.String) *wsm.GcpGcsBucketDefaultStorage
 	if storageClass.IsNull() || storageClass.ValueString() == "" {
 		return nil
 	}
-	return client.Ptr(wsm.GcpGcsBucketDefaultStorageClass(storageClass.ValueString()))
+	return wsmClient.Ptr(wsm.GcpGcsBucketDefaultStorageClass(storageClass.ValueString()))
 }
 
 func safeCloningInstruction(cloningInstruction types.String) *wsm.CloningInstructionsEnum {
 	if cloningInstruction.IsNull() || cloningInstruction.ValueString() == "" {
 		return nil
 	}
-	return client.Ptr(wsm.CloningInstructionsEnum(cloningInstruction.ValueString()))
+	return wsmClient.Ptr(wsm.CloningInstructionsEnum(cloningInstruction.ValueString()))
 }

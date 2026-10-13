@@ -4,8 +4,8 @@ package models
 import (
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	userClient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 // GroupModel is the description of workbench group.
@@ -87,7 +87,7 @@ func (m *GroupModel) ToCreateGroupRequest() user.CreateGroupRequest {
 // ToUpdateGroupRequest converts the GroupModel to an UpdateGroupRequest.
 func (m *GroupModel) ToUpdateGroupRequest() user.UpdateGroupRequest {
 	return user.UpdateGroupRequest{
-		Description:            client.Ptr(m.Description.ValueString()),
+		Description:            userClient.Ptr(m.Description.ValueString()),
 		Expiration:             int64PtrToIntPtr(m.ExpirationDays.ValueInt64Pointer()),
 		ExpirationNotification: m.ExpirationNotification.ValueBoolPointer(),
 		RequireGrantReason:     m.RequireGrantReason.ValueBoolPointer(),

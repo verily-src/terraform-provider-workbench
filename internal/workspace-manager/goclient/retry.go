@@ -1,4 +1,4 @@
-package client
+package goclient
 
 import (
 	"fmt"
@@ -25,9 +25,14 @@ type RetryClient struct {
 
 // NewRetryClient creates a retry configuration.
 func NewRetryClient() *RetryClient {
+	return NewRetryClientWithTimeout(MAX_ELAPSED_TIME)
+}
+
+// NewRetryClientWithTimeout creates a retry configuration with a custom max elapsed time.
+func NewRetryClientWithTimeout(maxElapsedTime time.Duration) *RetryClient {
 	var expBackoff = backoff.NewExponentialBackOff()
 	expBackoff.InitialInterval = INITIAL_INTERVAL
-	expBackoff.MaxElapsedTime = MAX_ELAPSED_TIME
+	expBackoff.MaxElapsedTime = maxElapsedTime
 	expBackoff.MaxInterval = MAX_INTERVAL
 	expBackoff.Multiplier = MULTIPLIER
 

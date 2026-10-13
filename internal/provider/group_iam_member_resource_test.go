@@ -15,8 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/verily-src/terraform-provider-workbench/internal/api"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccGroupIamMemberResource(t *testing.T) {
@@ -351,12 +351,12 @@ func testAccCheckGroupRoles(host, groupName, groupTFID string, want *user.GroupM
 		}
 
 		ctx := context.Background()
-		c, err := api.NewUserClient(ctx, host, false, "")
+		c, err := api.NewUserClient(ctx, host, false, false, "")
 		if err != nil {
 			return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 		}
 
-		got, err := api.GetGroupRoles(ctx, c, groupName, client.Ptr(orgID))
+		got, err := api.GetGroupRoles(ctx, c, groupName, wsmclient.Ptr(orgID))
 		if err != nil {
 			return fmt.Errorf("failed to get IAM bindings for group %s in org %s: %v", groupName, orgID, err)
 		}
@@ -381,12 +381,12 @@ func testAccCheckGroupRoles(host, groupName, groupTFID string, want *user.GroupM
 }
 
 func userGrantRole(ctx context.Context, host, groupName, groupOrg string, op user.SetAccessOperation, role user.GroupRole, member string) error {
-	c, err := api.NewUserClient(ctx, host, false, "")
+	c, err := api.NewUserClient(ctx, host, false, false, "")
 	if err != nil {
 		return fmt.Errorf("unable to create Workbench client, unexpected error: %v", err)
 	}
 
-	err = api.SetGroupRole(ctx, c, groupName, client.Ptr(groupOrg), user.SetAccessRequest{
+	err = api.SetGroupRole(ctx, c, groupName, wsmclient.Ptr(groupOrg), user.SetAccessRequest{
 		Operation: op,
 		Role:      user.GroupRole(role),
 		Principal: user.Principal{

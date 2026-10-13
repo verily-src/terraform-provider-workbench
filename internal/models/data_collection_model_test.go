@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestNewDataCollectionModel(t *testing.T) {
@@ -41,8 +41,8 @@ func TestNewDataCollectionModel(t *testing.T) {
 			workspace: &wsm.WorkspaceDescription{
 				Id:              id,
 				UserFacingId:    "test-data-collection",
-				Description:     client.Ptr("This is a test data collection"),
-				DisplayName:     client.Ptr("Test Data Collection"),
+				Description:     wsmClient.Ptr("This is a test data collection"),
+				DisplayName:     wsmClient.Ptr("Test Data Collection"),
 				OrgId:           &orgId,
 				CrgId:           &crgId,
 				CreatedBy:       "test-user",
@@ -64,6 +64,7 @@ func TestNewDataCollectionModel(t *testing.T) {
 					ORGANIZATION_NAME_TAG:            "Test Org",
 					THERAPEUTIC_TAGS_KEY:             therapeuticTagsStr,
 					UPDATE_FREQUENCY_KEY:             "weekly",
+					PROGRAM_NAME_KEY:                 "test-program",
 					"terra-type":                     "data-collection",
 					"key2":                           "value2",
 				}),
@@ -104,6 +105,7 @@ func TestNewDataCollectionModel(t *testing.T) {
 				OrganizationName: types.StringValue("Test Org"),
 				TherapeuticTags:  tfTagsList,
 				UpdateFrequency:  types.StringValue("weekly"),
+				ProgramName:      types.StringValue("test-program"),
 			},
 		},
 		{
@@ -139,6 +141,7 @@ func TestNewDataCollectionModel(t *testing.T) {
 				OrganizationName: types.StringValue(""),
 				TherapeuticTags:  types.SetNull(types.StringType),
 				UpdateFrequency:  types.StringValue(""),
+				ProgramName:      types.StringValue(""),
 			},
 		},
 	}
@@ -204,12 +207,13 @@ func TestDataCollectionConvertToCreateRequest(t *testing.T) {
 				OrganizationName: types.StringValue("Test Org"),
 				TherapeuticTags:  tfTagsSet,
 				UpdateFrequency:  types.StringValue("weekly"),
+				ProgramName:      types.StringValue("test-program"),
 			},
 			want: wsm.CreateWorkspaceV2JSONRequestBody{
 				Id:                   uuid.MustParse(id),
-				UserFacingId:         client.Ptr("test-data-collection"),
-				Description:          client.Ptr("This is a test data collection"),
-				DisplayName:          client.Ptr("Test Data Collection"),
+				UserFacingId:         wsmClient.Ptr("test-data-collection"),
+				Description:          wsmClient.Ptr("This is a test data collection"),
+				DisplayName:          wsmClient.Ptr("Test Data Collection"),
 				CloudResourceGroupId: &crgId,
 				OrganizationId:       &orgId,
 				Properties: buildProperties(map[string]string{
@@ -219,6 +223,7 @@ func TestDataCollectionConvertToCreateRequest(t *testing.T) {
 					ORGANIZATION_NAME_TAG:            "Test Org",
 					THERAPEUTIC_TAGS_KEY:             therapeuticTagsStr,
 					UPDATE_FREQUENCY_KEY:             "weekly",
+					PROGRAM_NAME_KEY:                 "test-program",
 					"terra-type":                     "data-collection",
 				}),
 				Stage: &stage,
@@ -236,7 +241,7 @@ func TestDataCollectionConvertToCreateRequest(t *testing.T) {
 			},
 			want: wsm.CreateWorkspaceV2JSONRequestBody{
 				Id:                   uuid.MustParse(id),
-				UserFacingId:         client.Ptr("test-data-collection"),
+				UserFacingId:         wsmClient.Ptr("test-data-collection"),
 				CloudResourceGroupId: &crgId,
 				OrganizationId:       &orgId,
 				Properties: buildProperties(map[string]string{
@@ -245,6 +250,7 @@ func TestDataCollectionConvertToCreateRequest(t *testing.T) {
 					UPDATE_FREQUENCY_KEY:             "",
 					ORGANIZATION_NAME_TAG:            "",
 					THERAPEUTIC_TAGS_KEY:             "[]",
+					PROGRAM_NAME_KEY:                 "",
 					"terra-type":                     "data-collection",
 				}),
 				Stage: &stage,

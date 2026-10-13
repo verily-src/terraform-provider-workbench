@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -94,6 +95,17 @@ type ClientInterface interface {
 
 	AddRole(ctx context.Context, body AddRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BackfillAllGroups request
+	BackfillAllGroups(ctx context.Context, params *BackfillAllGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBackfillJobStatus request
+	GetBackfillJobStatus(ctx context.Context, jobId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BackfillForGroupsWithBody request with any body
+	BackfillForGroupsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BackfillForGroups(ctx context.Context, body BackfillForGroupsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CleanupGrantsWithBody request with any body
 	CleanupGrantsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -104,6 +116,24 @@ type ClientInterface interface {
 
 	// ListPodEnvironments request
 	ListPodEnvironments(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MigrateUmOrganizationsToFhir request
+	MigrateUmOrganizationsToFhir(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MigrateSingleOrgToFhir request
+	MigrateSingleOrgToFhir(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MigrateUsersToFhir request
+	MigrateUsersToFhir(ctx context.Context, params *MigrateUsersToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MigrateSingleUserToFhir request
+	MigrateSingleUserToFhir(ctx context.Context, userId string, params *MigrateSingleUserToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MigrateSingleOrgUsersToFhir request
+	MigrateSingleOrgUsersToFhir(ctx context.Context, orgIdParam OrgIdParam, params *MigrateSingleOrgUsersToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListOrganizationsFromDb request
+	ListOrganizationsFromDb(ctx context.Context, params *ListOrganizationsFromDbParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteUnmanagedOrganizationWithBody request with any body
 	DeleteUnmanagedOrganizationWithBody(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -118,6 +148,9 @@ type ClientInterface interface {
 	// GetPodAsAdmin request
 	GetPodAsAdmin(ctx context.Context, orgIdParam OrgIdParam, podIdParam PodIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ForceSyncOrganizationFromFhir request
+	ForceSyncOrganizationFromFhir(ctx context.Context, orgId string, params *ForceSyncOrganizationFromFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// MovePodWithBody request with any body
 	MovePodWithBody(ctx context.Context, podIdParam PodIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -131,11 +164,27 @@ type ClientInterface interface {
 
 	SendEmail(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteFhirUser request
+	DeleteFhirUser(ctx context.Context, personFhirId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ForceSyncUserFromFhir request
+	ForceSyncUserFromFhir(ctx context.Context, personFhirId string, params *ForceSyncUserFromFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteUser request
 	DeleteUser(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUserByEmail request
 	GetUserByEmail(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeUserLicenseWithBody request with any body
+	RevokeUserLicenseWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RevokeUserLicense(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body RevokeUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GrantUserLicenseWithBody request with any body
+	GrantUserLicenseWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GrantUserLicense(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body GrantUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// MoveUserWithBody request with any body
 	MoveUserWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -164,6 +213,9 @@ type ClientInterface interface {
 
 	SetGroupAccess(ctx context.Context, groupNameParam GroupNameParam, params *SetGroupAccessParams, body SetGroupAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CheckShareAccess request
+	CheckShareAccess(ctx context.Context, groupNameParam GroupNameParam, params *CheckShareAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetOneGroupMemberWithBody request with any body
 	GetOneGroupMemberWithBody(ctx context.Context, groupNameParam GroupNameParam, params *GetOneGroupMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -172,6 +224,25 @@ type ClientInterface interface {
 	// ListGroupMembership request
 	ListGroupMembership(ctx context.Context, groupNameParam GroupNameParam, params *ListGroupMembershipParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetNotifications request
+	GetNotifications(ctx context.Context, params *GetNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateNotificationWithBody request with any body
+	CreateNotificationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateNotification(ctx context.Context, body CreateNotificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetNotificationCount request
+	GetNotificationCount(ctx context.Context, params *GetNotificationCountParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteNotification request
+	DeleteNotification(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateNotificationStatusWithBody request with any body
+	UpdateNotificationStatusWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateNotificationStatus(ctx context.Context, id string, body UpdateNotificationStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListOrganizationsV2 request
 	ListOrganizationsV2(ctx context.Context, params *ListOrganizationsV2Params, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -179,6 +250,12 @@ type ClientInterface interface {
 	CreateOrganizationV2WithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CreateOrganizationV2(ctx context.Context, body CreateOrganizationV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteFhirOrganization request
+	DeleteFhirOrganization(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOrganizationByFhirId request
+	GetOrganizationByFhirId(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOrganizationByUserFacingIdV2 request
 	GetOrganizationByUserFacingIdV2(ctx context.Context, orgUserFacingIdParam OrgUserFacingIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -193,6 +270,14 @@ type ClientInterface interface {
 
 	PodAccessOnDemandByUserFacingId(ctx context.Context, orgUserFacingIdParam OrgUserFacingIdParam, userFacingIdParam UserFacingIdParam, body PodAccessOnDemandByUserFacingIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpdateFhirOrganizationWithBody request with any body
+	UpdateFhirOrganizationWithBody(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateFhirOrganization(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, body UpdateFhirOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetUserByFhirId request
+	GetUserByFhirId(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListUserPods request
 	ListUserPods(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -201,6 +286,11 @@ type ClientInterface interface {
 
 	// AcceptTermsOfServiceV2 request
 	AcceptTermsOfServiceV2(ctx context.Context, params *AcceptTermsOfServiceV2Params, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSelfReportedAffiliationWithBody request with any body
+	UpdateSelfReportedAffiliationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSelfReportedAffiliation(ctx context.Context, body UpdateSelfReportedAffiliationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOrganizationV2 request
 	GetOrganizationV2(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -428,6 +518,54 @@ func (c *Client) AddRole(ctx context.Context, body AddRoleJSONRequestBody, reqEd
 	return c.Client.Do(req)
 }
 
+func (c *Client) BackfillAllGroups(ctx context.Context, params *BackfillAllGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillAllGroupsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetBackfillJobStatus(ctx context.Context, jobId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBackfillJobStatusRequest(c.Server, jobId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BackfillForGroupsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillForGroupsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BackfillForGroups(ctx context.Context, body BackfillForGroupsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBackfillForGroupsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CleanupGrantsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCleanupGrantsRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -466,6 +604,78 @@ func (c *Client) CleanupGrantsResult(ctx context.Context, jobIdParam JobIdParam,
 
 func (c *Client) ListPodEnvironments(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPodEnvironmentsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MigrateUmOrganizationsToFhir(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateUmOrganizationsToFhirRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MigrateSingleOrgToFhir(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateSingleOrgToFhirRequest(c.Server, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MigrateUsersToFhir(ctx context.Context, params *MigrateUsersToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateUsersToFhirRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MigrateSingleUserToFhir(ctx context.Context, userId string, params *MigrateSingleUserToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateSingleUserToFhirRequest(c.Server, userId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MigrateSingleOrgUsersToFhir(ctx context.Context, orgIdParam OrgIdParam, params *MigrateSingleOrgUsersToFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateSingleOrgUsersToFhirRequest(c.Server, orgIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListOrganizationsFromDb(ctx context.Context, params *ListOrganizationsFromDbParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListOrganizationsFromDbRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -536,6 +746,18 @@ func (c *Client) GetPodAsAdmin(ctx context.Context, orgIdParam OrgIdParam, podId
 	return c.Client.Do(req)
 }
 
+func (c *Client) ForceSyncOrganizationFromFhir(ctx context.Context, orgId string, params *ForceSyncOrganizationFromFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewForceSyncOrganizationFromFhirRequest(c.Server, orgId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) MovePodWithBody(ctx context.Context, podIdParam PodIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMovePodRequestWithBody(c.Server, podIdParam, contentType, body)
 	if err != nil {
@@ -596,6 +818,30 @@ func (c *Client) SendEmail(ctx context.Context, body SendEmailJSONRequestBody, r
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteFhirUser(ctx context.Context, personFhirId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFhirUserRequest(c.Server, personFhirId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ForceSyncUserFromFhir(ctx context.Context, personFhirId string, params *ForceSyncUserFromFhirParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewForceSyncUserFromFhirRequest(c.Server, personFhirId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeleteUser(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteUserRequest(c.Server, emailAddressPathParam)
 	if err != nil {
@@ -610,6 +856,54 @@ func (c *Client) DeleteUser(ctx context.Context, emailAddressPathParam EmailAddr
 
 func (c *Client) GetUserByEmail(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetUserByEmailRequest(c.Server, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RevokeUserLicenseWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeUserLicenseRequestWithBody(c.Server, emailAddressPathParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RevokeUserLicense(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body RevokeUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeUserLicenseRequest(c.Server, emailAddressPathParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GrantUserLicenseWithBody(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGrantUserLicenseRequestWithBody(c.Server, emailAddressPathParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GrantUserLicense(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body GrantUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGrantUserLicenseRequest(c.Server, emailAddressPathParam, body)
 	if err != nil {
 		return nil, err
 	}
@@ -740,6 +1034,18 @@ func (c *Client) SetGroupAccess(ctx context.Context, groupNameParam GroupNamePar
 	return c.Client.Do(req)
 }
 
+func (c *Client) CheckShareAccess(ctx context.Context, groupNameParam GroupNameParam, params *CheckShareAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCheckShareAccessRequest(c.Server, groupNameParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetOneGroupMemberWithBody(ctx context.Context, groupNameParam GroupNameParam, params *GetOneGroupMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOneGroupMemberRequestWithBody(c.Server, groupNameParam, params, contentType, body)
 	if err != nil {
@@ -776,6 +1082,90 @@ func (c *Client) ListGroupMembership(ctx context.Context, groupNameParam GroupNa
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetNotifications(ctx context.Context, params *GetNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetNotificationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateNotificationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateNotificationRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateNotification(ctx context.Context, body CreateNotificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateNotificationRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetNotificationCount(ctx context.Context, params *GetNotificationCountParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetNotificationCountRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteNotification(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteNotificationRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateNotificationStatusWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateNotificationStatusRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateNotificationStatus(ctx context.Context, id string, body UpdateNotificationStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateNotificationStatusRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListOrganizationsV2(ctx context.Context, params *ListOrganizationsV2Params, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListOrganizationsV2Request(c.Server, params)
 	if err != nil {
@@ -802,6 +1192,30 @@ func (c *Client) CreateOrganizationV2WithBody(ctx context.Context, contentType s
 
 func (c *Client) CreateOrganizationV2(ctx context.Context, body CreateOrganizationV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateOrganizationV2Request(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteFhirOrganization(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFhirOrganizationRequest(c.Server, fhirId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOrganizationByFhirId(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOrganizationByFhirIdRequest(c.Server, fhirId)
 	if err != nil {
 		return nil, err
 	}
@@ -872,6 +1286,42 @@ func (c *Client) PodAccessOnDemandByUserFacingId(ctx context.Context, orgUserFac
 	return c.Client.Do(req)
 }
 
+func (c *Client) UpdateFhirOrganizationWithBody(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateFhirOrganizationRequestWithBody(c.Server, fhirId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateFhirOrganization(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, body UpdateFhirOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateFhirOrganizationRequest(c.Server, fhirId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetUserByFhirId(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUserByFhirIdRequest(c.Server, fhirId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListUserPods(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListUserPodsRequest(c.Server)
 	if err != nil {
@@ -898,6 +1348,30 @@ func (c *Client) GetSelfV2(ctx context.Context, reqEditors ...RequestEditorFn) (
 
 func (c *Client) AcceptTermsOfServiceV2(ctx context.Context, params *AcceptTermsOfServiceV2Params, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAcceptTermsOfServiceV2Request(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSelfReportedAffiliationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSelfReportedAffiliationRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSelfReportedAffiliation(ctx context.Context, body UpdateSelfReportedAffiliationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSelfReportedAffiliationRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1836,6 +2310,161 @@ func NewAddRoleRequestWithBody(server string, contentType string, body io.Reader
 	return req, nil
 }
 
+// NewBackfillAllGroupsRequest generates requests for BackfillAllGroups
+func NewBackfillAllGroupsRequest(server string, params *BackfillAllGroupsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/backfill-all-groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.DryRun != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dryRun", runtime.ParamLocationQuery, *params.DryRun); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StartTimestamp != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "startTimestamp", runtime.ParamLocationQuery, *params.StartTimestamp); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.EndTimestamp != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "endTimestamp", runtime.ParamLocationQuery, *params.EndTimestamp); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetBackfillJobStatusRequest generates requests for GetBackfillJobStatus
+func NewGetBackfillJobStatusRequest(server string, jobId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/backfill-all-groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBackfillForGroupsRequest calls the generic BackfillForGroups builder with application/json body
+func NewBackfillForGroupsRequest(server string, body BackfillForGroupsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBackfillForGroupsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBackfillForGroupsRequestWithBody generates requests for BackfillForGroups with any type of body
+func NewBackfillForGroupsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/backfill-for-groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCleanupGrantsRequest calls the generic CleanupGrants builder with application/json body
 func NewCleanupGrantsRequest(server string, body CleanupGrantsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -1947,6 +2576,293 @@ func NewListPodEnvironmentsRequest(server string, params *ListPodEnvironmentsPar
 			}
 
 		}
+
+		if params.PageTokenParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageToken", runtime.ParamLocationQuery, *params.PageTokenParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.LimitParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.LimitParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMigrateUmOrganizationsToFhirRequest generates requests for MigrateUmOrganizationsToFhir
+func NewMigrateUmOrganizationsToFhirRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/migrate-fhir")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMigrateSingleOrgToFhirRequest generates requests for MigrateSingleOrgToFhir
+func NewMigrateSingleOrgToFhirRequest(server string, orgIdParam OrgIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/migrate-fhir/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMigrateUsersToFhirRequest generates requests for MigrateUsersToFhir
+func NewMigrateUsersToFhirRequest(server string, params *MigrateUsersToFhirParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/migrate-users")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.DryRun != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dryRun", runtime.ParamLocationQuery, *params.DryRun); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMigrateSingleUserToFhirRequest generates requests for MigrateSingleUserToFhir
+func NewMigrateSingleUserToFhirRequest(server string, userId string, params *MigrateSingleUserToFhirParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/migrate-users/user/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.DryRun != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dryRun", runtime.ParamLocationQuery, *params.DryRun); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMigrateSingleOrgUsersToFhirRequest generates requests for MigrateSingleOrgUsersToFhir
+func NewMigrateSingleOrgUsersToFhirRequest(server string, orgIdParam OrgIdParam, params *MigrateSingleOrgUsersToFhirParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/migrate-users/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.DryRun != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dryRun", runtime.ParamLocationQuery, *params.DryRun); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListOrganizationsFromDbRequest generates requests for ListOrganizationsFromDb
+func NewListOrganizationsFromDbRequest(server string, params *ListOrganizationsFromDbParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/organizations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
 
 		if params.PageTokenParam != nil {
 
@@ -2133,6 +3049,70 @@ func NewGetPodAsAdminRequest(server string, orgIdParam OrgIdParam, podIdParam Po
 	return req, nil
 }
 
+// NewForceSyncOrganizationFromFhirRequest generates requests for ForceSyncOrganizationFromFhir
+func NewForceSyncOrganizationFromFhirRequest(server string, orgId string, params *ForceSyncOrganizationFromFhirParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "orgId", runtime.ParamLocationPath, orgId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/organizations/%s/sync-from-fhir", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "fhirId", runtime.ParamLocationQuery, params.FhirId); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "mutationType", runtime.ParamLocationQuery, params.MutationType); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewMovePodRequest calls the generic MovePod builder with application/json body
 func NewMovePodRequest(server string, podIdParam PodIdParam, body MovePodJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -2247,6 +3227,92 @@ func NewSendEmailRequestWithBody(server string, contentType string, body io.Read
 	return req, nil
 }
 
+// NewDeleteFhirUserRequest generates requests for DeleteFhirUser
+func NewDeleteFhirUserRequest(server string, personFhirId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "personFhirId", runtime.ParamLocationPath, personFhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/users/fhir/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewForceSyncUserFromFhirRequest generates requests for ForceSyncUserFromFhir
+func NewForceSyncUserFromFhirRequest(server string, personFhirId string, params *ForceSyncUserFromFhirParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "personFhirId", runtime.ParamLocationPath, personFhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/users/%s/sync-from-fhir", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "organizationFhirId", runtime.ParamLocationQuery, params.OrganizationFhirId); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeleteUserRequest generates requests for DeleteUser
 func NewDeleteUserRequest(server string, emailAddressPathParam EmailAddressPathParam) (*http.Request, error) {
 	var err error
@@ -2311,6 +3377,100 @@ func NewGetUserByEmailRequest(server string, emailAddressPathParam EmailAddressP
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewRevokeUserLicenseRequest calls the generic RevokeUserLicense builder with application/json body
+func NewRevokeUserLicenseRequest(server string, emailAddressPathParam EmailAddressPathParam, body RevokeUserLicenseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRevokeUserLicenseRequestWithBody(server, emailAddressPathParam, "application/json", bodyReader)
+}
+
+// NewRevokeUserLicenseRequestWithBody generates requests for RevokeUserLicense with any type of body
+func NewRevokeUserLicenseRequestWithBody(server string, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userEmail", runtime.ParamLocationPath, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/users/%s/licenses", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGrantUserLicenseRequest calls the generic GrantUserLicense builder with application/json body
+func NewGrantUserLicenseRequest(server string, emailAddressPathParam EmailAddressPathParam, body GrantUserLicenseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGrantUserLicenseRequestWithBody(server, emailAddressPathParam, "application/json", bodyReader)
+}
+
+// NewGrantUserLicenseRequestWithBody generates requests for GrantUserLicense with any type of body
+func NewGrantUserLicenseRequestWithBody(server string, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userEmail", runtime.ParamLocationPath, emailAddressPathParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/users/%s/licenses", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -2682,6 +3842,62 @@ func NewSetGroupAccessRequestWithBody(server string, groupNameParam GroupNamePar
 	return req, nil
 }
 
+// NewCheckShareAccessRequest generates requests for CheckShareAccess
+func NewCheckShareAccessRequest(server string, groupNameParam GroupNameParam, params *CheckShareAccessParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "groupName", runtime.ParamLocationPath, groupNameParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/groups/v1/%s/check-share-access", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.OrgIdQueryParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "orgId", runtime.ParamLocationQuery, *params.OrgIdQueryParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetOneGroupMemberRequest calls the generic GetOneGroupMember builder with application/json body
 func NewGetOneGroupMemberRequest(server string, groupNameParam GroupNameParam, params *GetOneGroupMemberParams, body GetOneGroupMemberJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -2807,6 +4023,317 @@ func NewListGroupMembershipRequest(server string, groupNameParam GroupNameParam,
 	return req, nil
 }
 
+// NewGetNotificationsRequest generates requests for GetNotifications
+func NewGetNotificationsRequest(server string, params *GetNotificationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/notifications")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.OrgId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "orgId", runtime.ParamLocationQuery, *params.OrgId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.NotificationType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "notificationType", runtime.ParamLocationQuery, *params.NotificationType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ScopeType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "scopeType", runtime.ParamLocationQuery, *params.ScopeType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ScopeId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "scopeId", runtime.ParamLocationQuery, *params.ScopeId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IsActive != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "isActive", runtime.ParamLocationQuery, *params.IsActive); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Offset != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateNotificationRequest calls the generic CreateNotification builder with application/json body
+func NewCreateNotificationRequest(server string, body CreateNotificationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateNotificationRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateNotificationRequestWithBody generates requests for CreateNotification with any type of body
+func NewCreateNotificationRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/notifications")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetNotificationCountRequest generates requests for GetNotificationCount
+func NewGetNotificationCountRequest(server string, params *GetNotificationCountParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/notifications/count")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "orgId", runtime.ParamLocationQuery, params.OrgId); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteNotificationRequest generates requests for DeleteNotification
+func NewDeleteNotificationRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/notifications/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateNotificationStatusRequest calls the generic UpdateNotificationStatus builder with application/json body
+func NewUpdateNotificationStatusRequest(server string, id string, body UpdateNotificationStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateNotificationStatusRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewUpdateNotificationStatusRequestWithBody generates requests for UpdateNotificationStatus with any type of body
+func NewUpdateNotificationStatusRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/notifications/%s/status", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListOrganizationsV2Request generates requests for ListOrganizationsV2
 func NewListOrganizationsV2Request(server string, params *ListOrganizationsV2Params) (*http.Request, error) {
 	var err error
@@ -2908,6 +4435,74 @@ func NewCreateOrganizationV2RequestWithBody(server string, contentType string, b
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteFhirOrganizationRequest generates requests for DeleteFhirOrganization
+func NewDeleteFhirOrganizationRequest(server string, fhirId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "fhirId", runtime.ParamLocationPath, fhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/byFhirId/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetOrganizationByFhirIdRequest generates requests for GetOrganizationByFhirId
+func NewGetOrganizationByFhirIdRequest(server string, fhirId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "fhirId", runtime.ParamLocationPath, fhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/byFhirId/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -3047,6 +4642,105 @@ func NewPodAccessOnDemandByUserFacingIdRequestWithBody(server string, orgUserFac
 	return req, nil
 }
 
+// NewUpdateFhirOrganizationRequest calls the generic UpdateFhirOrganization builder with application/json body
+func NewUpdateFhirOrganizationRequest(server string, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, body UpdateFhirOrganizationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateFhirOrganizationRequestWithBody(server, fhirId, params, "application/json", bodyReader)
+}
+
+// NewUpdateFhirOrganizationRequestWithBody generates requests for UpdateFhirOrganization with any type of body
+func NewUpdateFhirOrganizationRequestWithBody(server string, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "fhirId", runtime.ParamLocationPath, fhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/fhir/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "isFhirMigration", runtime.ParamLocationQuery, params.IsFhirMigration); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetUserByFhirIdRequest generates requests for GetUserByFhirId
+func NewGetUserByFhirIdRequest(server string, fhirId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "fhirId", runtime.ParamLocationPath, fhirId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/users/byFhirId/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListUserPodsRequest generates requests for ListUserPods
 func NewListUserPodsRequest(server string) (*http.Request, error) {
 	var err error
@@ -3142,6 +4836,46 @@ func NewAcceptTermsOfServiceV2Request(server string, params *AcceptTermsOfServic
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewUpdateSelfReportedAffiliationRequest calls the generic UpdateSelfReportedAffiliation builder with application/json body
+func NewUpdateSelfReportedAffiliationRequest(server string, body UpdateSelfReportedAffiliationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSelfReportedAffiliationRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUpdateSelfReportedAffiliationRequestWithBody generates requests for UpdateSelfReportedAffiliation with any type of body
+func NewUpdateSelfReportedAffiliationRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/organizations/v2/users/self/reported-affiliation")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -5927,6 +7661,17 @@ type ClientWithResponsesInterface interface {
 
 	AddRoleWithResponse(ctx context.Context, body AddRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AddRoleResp, error)
 
+	// BackfillAllGroupsWithResponse request
+	BackfillAllGroupsWithResponse(ctx context.Context, params *BackfillAllGroupsParams, reqEditors ...RequestEditorFn) (*BackfillAllGroupsResp, error)
+
+	// GetBackfillJobStatusWithResponse request
+	GetBackfillJobStatusWithResponse(ctx context.Context, jobId string, reqEditors ...RequestEditorFn) (*GetBackfillJobStatusResp, error)
+
+	// BackfillForGroupsWithBodyWithResponse request with any body
+	BackfillForGroupsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BackfillForGroupsResp, error)
+
+	BackfillForGroupsWithResponse(ctx context.Context, body BackfillForGroupsJSONRequestBody, reqEditors ...RequestEditorFn) (*BackfillForGroupsResp, error)
+
 	// CleanupGrantsWithBodyWithResponse request with any body
 	CleanupGrantsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CleanupGrantsResp, error)
 
@@ -5937,6 +7682,24 @@ type ClientWithResponsesInterface interface {
 
 	// ListPodEnvironmentsWithResponse request
 	ListPodEnvironmentsWithResponse(ctx context.Context, params *ListPodEnvironmentsParams, reqEditors ...RequestEditorFn) (*ListPodEnvironmentsResp, error)
+
+	// MigrateUmOrganizationsToFhirWithResponse request
+	MigrateUmOrganizationsToFhirWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MigrateUmOrganizationsToFhirResp, error)
+
+	// MigrateSingleOrgToFhirWithResponse request
+	MigrateSingleOrgToFhirWithResponse(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*MigrateSingleOrgToFhirResp, error)
+
+	// MigrateUsersToFhirWithResponse request
+	MigrateUsersToFhirWithResponse(ctx context.Context, params *MigrateUsersToFhirParams, reqEditors ...RequestEditorFn) (*MigrateUsersToFhirResp, error)
+
+	// MigrateSingleUserToFhirWithResponse request
+	MigrateSingleUserToFhirWithResponse(ctx context.Context, userId string, params *MigrateSingleUserToFhirParams, reqEditors ...RequestEditorFn) (*MigrateSingleUserToFhirResp, error)
+
+	// MigrateSingleOrgUsersToFhirWithResponse request
+	MigrateSingleOrgUsersToFhirWithResponse(ctx context.Context, orgIdParam OrgIdParam, params *MigrateSingleOrgUsersToFhirParams, reqEditors ...RequestEditorFn) (*MigrateSingleOrgUsersToFhirResp, error)
+
+	// ListOrganizationsFromDbWithResponse request
+	ListOrganizationsFromDbWithResponse(ctx context.Context, params *ListOrganizationsFromDbParams, reqEditors ...RequestEditorFn) (*ListOrganizationsFromDbResp, error)
 
 	// DeleteUnmanagedOrganizationWithBodyWithResponse request with any body
 	DeleteUnmanagedOrganizationWithBodyWithResponse(ctx context.Context, orgIdParam OrgIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteUnmanagedOrganizationResp, error)
@@ -5951,6 +7714,9 @@ type ClientWithResponsesInterface interface {
 	// GetPodAsAdminWithResponse request
 	GetPodAsAdminWithResponse(ctx context.Context, orgIdParam OrgIdParam, podIdParam PodIdParam, reqEditors ...RequestEditorFn) (*GetPodAsAdminResp, error)
 
+	// ForceSyncOrganizationFromFhirWithResponse request
+	ForceSyncOrganizationFromFhirWithResponse(ctx context.Context, orgId string, params *ForceSyncOrganizationFromFhirParams, reqEditors ...RequestEditorFn) (*ForceSyncOrganizationFromFhirResp, error)
+
 	// MovePodWithBodyWithResponse request with any body
 	MovePodWithBodyWithResponse(ctx context.Context, podIdParam PodIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MovePodResp, error)
 
@@ -5964,11 +7730,27 @@ type ClientWithResponsesInterface interface {
 
 	SendEmailWithResponse(ctx context.Context, body SendEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*SendEmailResp, error)
 
+	// DeleteFhirUserWithResponse request
+	DeleteFhirUserWithResponse(ctx context.Context, personFhirId string, reqEditors ...RequestEditorFn) (*DeleteFhirUserResp, error)
+
+	// ForceSyncUserFromFhirWithResponse request
+	ForceSyncUserFromFhirWithResponse(ctx context.Context, personFhirId string, params *ForceSyncUserFromFhirParams, reqEditors ...RequestEditorFn) (*ForceSyncUserFromFhirResp, error)
+
 	// DeleteUserWithResponse request
 	DeleteUserWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*DeleteUserResp, error)
 
 	// GetUserByEmailWithResponse request
 	GetUserByEmailWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*GetUserByEmailResp, error)
+
+	// RevokeUserLicenseWithBodyWithResponse request with any body
+	RevokeUserLicenseWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RevokeUserLicenseResp, error)
+
+	RevokeUserLicenseWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body RevokeUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*RevokeUserLicenseResp, error)
+
+	// GrantUserLicenseWithBodyWithResponse request with any body
+	GrantUserLicenseWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GrantUserLicenseResp, error)
+
+	GrantUserLicenseWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body GrantUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*GrantUserLicenseResp, error)
 
 	// MoveUserWithBodyWithResponse request with any body
 	MoveUserWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveUserResp, error)
@@ -5997,6 +7779,9 @@ type ClientWithResponsesInterface interface {
 
 	SetGroupAccessWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *SetGroupAccessParams, body SetGroupAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*SetGroupAccessResp, error)
 
+	// CheckShareAccessWithResponse request
+	CheckShareAccessWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *CheckShareAccessParams, reqEditors ...RequestEditorFn) (*CheckShareAccessResp, error)
+
 	// GetOneGroupMemberWithBodyWithResponse request with any body
 	GetOneGroupMemberWithBodyWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *GetOneGroupMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOneGroupMemberResp, error)
 
@@ -6005,6 +7790,25 @@ type ClientWithResponsesInterface interface {
 	// ListGroupMembershipWithResponse request
 	ListGroupMembershipWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *ListGroupMembershipParams, reqEditors ...RequestEditorFn) (*ListGroupMembershipResp, error)
 
+	// GetNotificationsWithResponse request
+	GetNotificationsWithResponse(ctx context.Context, params *GetNotificationsParams, reqEditors ...RequestEditorFn) (*GetNotificationsResp, error)
+
+	// CreateNotificationWithBodyWithResponse request with any body
+	CreateNotificationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateNotificationResp, error)
+
+	CreateNotificationWithResponse(ctx context.Context, body CreateNotificationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateNotificationResp, error)
+
+	// GetNotificationCountWithResponse request
+	GetNotificationCountWithResponse(ctx context.Context, params *GetNotificationCountParams, reqEditors ...RequestEditorFn) (*GetNotificationCountResp, error)
+
+	// DeleteNotificationWithResponse request
+	DeleteNotificationWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteNotificationResp, error)
+
+	// UpdateNotificationStatusWithBodyWithResponse request with any body
+	UpdateNotificationStatusWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateNotificationStatusResp, error)
+
+	UpdateNotificationStatusWithResponse(ctx context.Context, id string, body UpdateNotificationStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateNotificationStatusResp, error)
+
 	// ListOrganizationsV2WithResponse request
 	ListOrganizationsV2WithResponse(ctx context.Context, params *ListOrganizationsV2Params, reqEditors ...RequestEditorFn) (*ListOrganizationsV2Resp, error)
 
@@ -6012,6 +7816,12 @@ type ClientWithResponsesInterface interface {
 	CreateOrganizationV2WithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateOrganizationV2Resp, error)
 
 	CreateOrganizationV2WithResponse(ctx context.Context, body CreateOrganizationV2JSONRequestBody, reqEditors ...RequestEditorFn) (*CreateOrganizationV2Resp, error)
+
+	// DeleteFhirOrganizationWithResponse request
+	DeleteFhirOrganizationWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*DeleteFhirOrganizationResp, error)
+
+	// GetOrganizationByFhirIdWithResponse request
+	GetOrganizationByFhirIdWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*GetOrganizationByFhirIdResp, error)
 
 	// GetOrganizationByUserFacingIdV2WithResponse request
 	GetOrganizationByUserFacingIdV2WithResponse(ctx context.Context, orgUserFacingIdParam OrgUserFacingIdParam, reqEditors ...RequestEditorFn) (*GetOrganizationByUserFacingIdV2Resp, error)
@@ -6026,6 +7836,14 @@ type ClientWithResponsesInterface interface {
 
 	PodAccessOnDemandByUserFacingIdWithResponse(ctx context.Context, orgUserFacingIdParam OrgUserFacingIdParam, userFacingIdParam UserFacingIdParam, body PodAccessOnDemandByUserFacingIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PodAccessOnDemandByUserFacingIdResp, error)
 
+	// UpdateFhirOrganizationWithBodyWithResponse request with any body
+	UpdateFhirOrganizationWithBodyWithResponse(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateFhirOrganizationResp, error)
+
+	UpdateFhirOrganizationWithResponse(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, body UpdateFhirOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFhirOrganizationResp, error)
+
+	// GetUserByFhirIdWithResponse request
+	GetUserByFhirIdWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*GetUserByFhirIdResp, error)
+
 	// ListUserPodsWithResponse request
 	ListUserPodsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPodsResp, error)
 
@@ -6034,6 +7852,11 @@ type ClientWithResponsesInterface interface {
 
 	// AcceptTermsOfServiceV2WithResponse request
 	AcceptTermsOfServiceV2WithResponse(ctx context.Context, params *AcceptTermsOfServiceV2Params, reqEditors ...RequestEditorFn) (*AcceptTermsOfServiceV2Resp, error)
+
+	// UpdateSelfReportedAffiliationWithBodyWithResponse request with any body
+	UpdateSelfReportedAffiliationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSelfReportedAffiliationResp, error)
+
+	UpdateSelfReportedAffiliationWithResponse(ctx context.Context, body UpdateSelfReportedAffiliationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSelfReportedAffiliationResp, error)
 
 	// GetOrganizationV2WithResponse request
 	GetOrganizationV2WithResponse(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*GetOrganizationV2Resp, error)
@@ -6262,6 +8085,79 @@ func (r AddRoleResp) StatusCode() int {
 	return 0
 }
 
+type BackfillAllGroupsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BackfillJobResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillAllGroupsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillAllGroupsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetBackfillJobStatusResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BackfillJobStatusResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBackfillJobStatusResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBackfillJobStatusResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BackfillForGroupsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BackfillAllowExternalMembersResponse
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BackfillForGroupsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BackfillForGroupsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CleanupGrantsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6333,6 +8229,148 @@ func (r ListPodEnvironmentsResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListPodEnvironmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MigrateUmOrganizationsToFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MigrateUmOrganizationsToFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MigrateUmOrganizationsToFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MigrateSingleOrgToFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MigrateSingleOrgToFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MigrateSingleOrgToFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MigrateUsersToFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MigrateUsersToFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MigrateUsersToFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MigrateSingleUserToFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MigrateSingleUserToFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MigrateSingleUserToFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MigrateSingleOrgUsersToFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r MigrateSingleOrgUsersToFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MigrateSingleOrgUsersToFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListOrganizationsFromDbResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OrganizationDescriptionListV2
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListOrganizationsFromDbResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListOrganizationsFromDbResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6415,6 +8453,32 @@ func (r GetPodAsAdminResp) StatusCode() int {
 	return 0
 }
 
+type ForceSyncOrganizationFromFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AdminSyncOrganizationResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ForceSyncOrganizationFromFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ForceSyncOrganizationFromFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type MovePodResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6490,6 +8554,59 @@ func (r SendEmailResp) StatusCode() int {
 	return 0
 }
 
+type DeleteFhirUserResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+	JSON503      *ErrorReport
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteFhirUserResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteFhirUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ForceSyncUserFromFhirResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AdminSyncUserResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON422      *ErrorReport
+	JSON500      *ServerError
+	JSON503      *ErrorReport
+}
+
+// Status returns HTTPResponse.Status
+func (r ForceSyncUserFromFhirResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ForceSyncUserFromFhirResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6535,6 +8652,58 @@ func (r GetUserByEmailResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetUserByEmailResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RevokeUserLicenseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeUserLicenseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeUserLicenseResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GrantUserLicenseResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GrantUserLicenseResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GrantUserLicenseResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6718,6 +8887,31 @@ func (r SetGroupAccessResp) StatusCode() int {
 	return 0
 }
 
+type CheckShareAccessResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CheckShareAccessResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CheckShareAccessResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetOneGroupMemberResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6770,6 +8964,148 @@ func (r ListGroupMembershipResp) StatusCode() int {
 	return 0
 }
 
+type GetNotificationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Notifications *[]NotificationDescription `json:"notifications,omitempty"`
+		TotalCount    *int                       `json:"totalCount,omitempty"`
+	}
+	JSON400 *BadRequest
+	JSON403 *PermissionDenied
+	JSON500 *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetNotificationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetNotificationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateNotificationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *NotificationDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateNotificationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateNotificationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetNotificationCountResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Blocking Count of BLOCKING type notifications
+		Blocking *int `json:"blocking,omitempty"`
+
+		// Passive Count of PASSIVE type notifications
+		Passive *int `json:"passive,omitempty"`
+
+		// Total Total number of active notifications
+		Total *int `json:"total,omitempty"`
+	}
+	JSON400 *BadRequest
+	JSON403 *PermissionDenied
+	JSON500 *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetNotificationCountResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetNotificationCountResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteNotificationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteNotificationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteNotificationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateNotificationStatusResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Id     *string `json:"id,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON400 *BadRequest
+	JSON403 *PermissionDenied
+	JSON404 *NotFound
+	JSON500 *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateNotificationStatusResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateNotificationStatusResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListOrganizationsV2Resp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6814,6 +9150,57 @@ func (r CreateOrganizationV2Resp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateOrganizationV2Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteFhirOrganizationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteFhirOrganizationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteFhirOrganizationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOrganizationByFhirIdResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OrganizationDescriptionV2
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOrganizationByFhirIdResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOrganizationByFhirIdResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6896,6 +9283,58 @@ func (r PodAccessOnDemandByUserFacingIdResp) StatusCode() int {
 	return 0
 }
 
+type UpdateFhirOrganizationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OrganizationDescriptionV2
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateFhirOrganizationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateFhirOrganizationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetUserByFhirIdResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetUserByFhirIdResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetUserByFhirIdResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListUserPodsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6959,6 +9398,32 @@ func (r AcceptTermsOfServiceV2Resp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AcceptTermsOfServiceV2Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSelfReportedAffiliationResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSelfReportedAffiliationResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSelfReportedAffiliationResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8317,6 +10782,41 @@ func (c *ClientWithResponses) AddRoleWithResponse(ctx context.Context, body AddR
 	return ParseAddRoleResp(rsp)
 }
 
+// BackfillAllGroupsWithResponse request returning *BackfillAllGroupsResp
+func (c *ClientWithResponses) BackfillAllGroupsWithResponse(ctx context.Context, params *BackfillAllGroupsParams, reqEditors ...RequestEditorFn) (*BackfillAllGroupsResp, error) {
+	rsp, err := c.BackfillAllGroups(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillAllGroupsResp(rsp)
+}
+
+// GetBackfillJobStatusWithResponse request returning *GetBackfillJobStatusResp
+func (c *ClientWithResponses) GetBackfillJobStatusWithResponse(ctx context.Context, jobId string, reqEditors ...RequestEditorFn) (*GetBackfillJobStatusResp, error) {
+	rsp, err := c.GetBackfillJobStatus(ctx, jobId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBackfillJobStatusResp(rsp)
+}
+
+// BackfillForGroupsWithBodyWithResponse request with arbitrary body returning *BackfillForGroupsResp
+func (c *ClientWithResponses) BackfillForGroupsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BackfillForGroupsResp, error) {
+	rsp, err := c.BackfillForGroupsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillForGroupsResp(rsp)
+}
+
+func (c *ClientWithResponses) BackfillForGroupsWithResponse(ctx context.Context, body BackfillForGroupsJSONRequestBody, reqEditors ...RequestEditorFn) (*BackfillForGroupsResp, error) {
+	rsp, err := c.BackfillForGroups(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBackfillForGroupsResp(rsp)
+}
+
 // CleanupGrantsWithBodyWithResponse request with arbitrary body returning *CleanupGrantsResp
 func (c *ClientWithResponses) CleanupGrantsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CleanupGrantsResp, error) {
 	rsp, err := c.CleanupGrantsWithBody(ctx, contentType, body, reqEditors...)
@@ -8350,6 +10850,60 @@ func (c *ClientWithResponses) ListPodEnvironmentsWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseListPodEnvironmentsResp(rsp)
+}
+
+// MigrateUmOrganizationsToFhirWithResponse request returning *MigrateUmOrganizationsToFhirResp
+func (c *ClientWithResponses) MigrateUmOrganizationsToFhirWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MigrateUmOrganizationsToFhirResp, error) {
+	rsp, err := c.MigrateUmOrganizationsToFhir(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMigrateUmOrganizationsToFhirResp(rsp)
+}
+
+// MigrateSingleOrgToFhirWithResponse request returning *MigrateSingleOrgToFhirResp
+func (c *ClientWithResponses) MigrateSingleOrgToFhirWithResponse(ctx context.Context, orgIdParam OrgIdParam, reqEditors ...RequestEditorFn) (*MigrateSingleOrgToFhirResp, error) {
+	rsp, err := c.MigrateSingleOrgToFhir(ctx, orgIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMigrateSingleOrgToFhirResp(rsp)
+}
+
+// MigrateUsersToFhirWithResponse request returning *MigrateUsersToFhirResp
+func (c *ClientWithResponses) MigrateUsersToFhirWithResponse(ctx context.Context, params *MigrateUsersToFhirParams, reqEditors ...RequestEditorFn) (*MigrateUsersToFhirResp, error) {
+	rsp, err := c.MigrateUsersToFhir(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMigrateUsersToFhirResp(rsp)
+}
+
+// MigrateSingleUserToFhirWithResponse request returning *MigrateSingleUserToFhirResp
+func (c *ClientWithResponses) MigrateSingleUserToFhirWithResponse(ctx context.Context, userId string, params *MigrateSingleUserToFhirParams, reqEditors ...RequestEditorFn) (*MigrateSingleUserToFhirResp, error) {
+	rsp, err := c.MigrateSingleUserToFhir(ctx, userId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMigrateSingleUserToFhirResp(rsp)
+}
+
+// MigrateSingleOrgUsersToFhirWithResponse request returning *MigrateSingleOrgUsersToFhirResp
+func (c *ClientWithResponses) MigrateSingleOrgUsersToFhirWithResponse(ctx context.Context, orgIdParam OrgIdParam, params *MigrateSingleOrgUsersToFhirParams, reqEditors ...RequestEditorFn) (*MigrateSingleOrgUsersToFhirResp, error) {
+	rsp, err := c.MigrateSingleOrgUsersToFhir(ctx, orgIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMigrateSingleOrgUsersToFhirResp(rsp)
+}
+
+// ListOrganizationsFromDbWithResponse request returning *ListOrganizationsFromDbResp
+func (c *ClientWithResponses) ListOrganizationsFromDbWithResponse(ctx context.Context, params *ListOrganizationsFromDbParams, reqEditors ...RequestEditorFn) (*ListOrganizationsFromDbResp, error) {
+	rsp, err := c.ListOrganizationsFromDb(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListOrganizationsFromDbResp(rsp)
 }
 
 // DeleteUnmanagedOrganizationWithBodyWithResponse request with arbitrary body returning *DeleteUnmanagedOrganizationResp
@@ -8395,6 +10949,15 @@ func (c *ClientWithResponses) GetPodAsAdminWithResponse(ctx context.Context, org
 	return ParseGetPodAsAdminResp(rsp)
 }
 
+// ForceSyncOrganizationFromFhirWithResponse request returning *ForceSyncOrganizationFromFhirResp
+func (c *ClientWithResponses) ForceSyncOrganizationFromFhirWithResponse(ctx context.Context, orgId string, params *ForceSyncOrganizationFromFhirParams, reqEditors ...RequestEditorFn) (*ForceSyncOrganizationFromFhirResp, error) {
+	rsp, err := c.ForceSyncOrganizationFromFhir(ctx, orgId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseForceSyncOrganizationFromFhirResp(rsp)
+}
+
 // MovePodWithBodyWithResponse request with arbitrary body returning *MovePodResp
 func (c *ClientWithResponses) MovePodWithBodyWithResponse(ctx context.Context, podIdParam PodIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MovePodResp, error) {
 	rsp, err := c.MovePodWithBody(ctx, podIdParam, contentType, body, reqEditors...)
@@ -8438,6 +11001,24 @@ func (c *ClientWithResponses) SendEmailWithResponse(ctx context.Context, body Se
 	return ParseSendEmailResp(rsp)
 }
 
+// DeleteFhirUserWithResponse request returning *DeleteFhirUserResp
+func (c *ClientWithResponses) DeleteFhirUserWithResponse(ctx context.Context, personFhirId string, reqEditors ...RequestEditorFn) (*DeleteFhirUserResp, error) {
+	rsp, err := c.DeleteFhirUser(ctx, personFhirId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFhirUserResp(rsp)
+}
+
+// ForceSyncUserFromFhirWithResponse request returning *ForceSyncUserFromFhirResp
+func (c *ClientWithResponses) ForceSyncUserFromFhirWithResponse(ctx context.Context, personFhirId string, params *ForceSyncUserFromFhirParams, reqEditors ...RequestEditorFn) (*ForceSyncUserFromFhirResp, error) {
+	rsp, err := c.ForceSyncUserFromFhir(ctx, personFhirId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseForceSyncUserFromFhirResp(rsp)
+}
+
 // DeleteUserWithResponse request returning *DeleteUserResp
 func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, reqEditors ...RequestEditorFn) (*DeleteUserResp, error) {
 	rsp, err := c.DeleteUser(ctx, emailAddressPathParam, reqEditors...)
@@ -8454,6 +11035,40 @@ func (c *ClientWithResponses) GetUserByEmailWithResponse(ctx context.Context, em
 		return nil, err
 	}
 	return ParseGetUserByEmailResp(rsp)
+}
+
+// RevokeUserLicenseWithBodyWithResponse request with arbitrary body returning *RevokeUserLicenseResp
+func (c *ClientWithResponses) RevokeUserLicenseWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RevokeUserLicenseResp, error) {
+	rsp, err := c.RevokeUserLicenseWithBody(ctx, emailAddressPathParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeUserLicenseResp(rsp)
+}
+
+func (c *ClientWithResponses) RevokeUserLicenseWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body RevokeUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*RevokeUserLicenseResp, error) {
+	rsp, err := c.RevokeUserLicense(ctx, emailAddressPathParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeUserLicenseResp(rsp)
+}
+
+// GrantUserLicenseWithBodyWithResponse request with arbitrary body returning *GrantUserLicenseResp
+func (c *ClientWithResponses) GrantUserLicenseWithBodyWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GrantUserLicenseResp, error) {
+	rsp, err := c.GrantUserLicenseWithBody(ctx, emailAddressPathParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGrantUserLicenseResp(rsp)
+}
+
+func (c *ClientWithResponses) GrantUserLicenseWithResponse(ctx context.Context, emailAddressPathParam EmailAddressPathParam, body GrantUserLicenseJSONRequestBody, reqEditors ...RequestEditorFn) (*GrantUserLicenseResp, error) {
+	rsp, err := c.GrantUserLicense(ctx, emailAddressPathParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGrantUserLicenseResp(rsp)
 }
 
 // MoveUserWithBodyWithResponse request with arbitrary body returning *MoveUserResp
@@ -8543,6 +11158,15 @@ func (c *ClientWithResponses) SetGroupAccessWithResponse(ctx context.Context, gr
 	return ParseSetGroupAccessResp(rsp)
 }
 
+// CheckShareAccessWithResponse request returning *CheckShareAccessResp
+func (c *ClientWithResponses) CheckShareAccessWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *CheckShareAccessParams, reqEditors ...RequestEditorFn) (*CheckShareAccessResp, error) {
+	rsp, err := c.CheckShareAccess(ctx, groupNameParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCheckShareAccessResp(rsp)
+}
+
 // GetOneGroupMemberWithBodyWithResponse request with arbitrary body returning *GetOneGroupMemberResp
 func (c *ClientWithResponses) GetOneGroupMemberWithBodyWithResponse(ctx context.Context, groupNameParam GroupNameParam, params *GetOneGroupMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOneGroupMemberResp, error) {
 	rsp, err := c.GetOneGroupMemberWithBody(ctx, groupNameParam, params, contentType, body, reqEditors...)
@@ -8569,6 +11193,67 @@ func (c *ClientWithResponses) ListGroupMembershipWithResponse(ctx context.Contex
 	return ParseListGroupMembershipResp(rsp)
 }
 
+// GetNotificationsWithResponse request returning *GetNotificationsResp
+func (c *ClientWithResponses) GetNotificationsWithResponse(ctx context.Context, params *GetNotificationsParams, reqEditors ...RequestEditorFn) (*GetNotificationsResp, error) {
+	rsp, err := c.GetNotifications(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetNotificationsResp(rsp)
+}
+
+// CreateNotificationWithBodyWithResponse request with arbitrary body returning *CreateNotificationResp
+func (c *ClientWithResponses) CreateNotificationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateNotificationResp, error) {
+	rsp, err := c.CreateNotificationWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateNotificationResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateNotificationWithResponse(ctx context.Context, body CreateNotificationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateNotificationResp, error) {
+	rsp, err := c.CreateNotification(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateNotificationResp(rsp)
+}
+
+// GetNotificationCountWithResponse request returning *GetNotificationCountResp
+func (c *ClientWithResponses) GetNotificationCountWithResponse(ctx context.Context, params *GetNotificationCountParams, reqEditors ...RequestEditorFn) (*GetNotificationCountResp, error) {
+	rsp, err := c.GetNotificationCount(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetNotificationCountResp(rsp)
+}
+
+// DeleteNotificationWithResponse request returning *DeleteNotificationResp
+func (c *ClientWithResponses) DeleteNotificationWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteNotificationResp, error) {
+	rsp, err := c.DeleteNotification(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteNotificationResp(rsp)
+}
+
+// UpdateNotificationStatusWithBodyWithResponse request with arbitrary body returning *UpdateNotificationStatusResp
+func (c *ClientWithResponses) UpdateNotificationStatusWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateNotificationStatusResp, error) {
+	rsp, err := c.UpdateNotificationStatusWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateNotificationStatusResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateNotificationStatusWithResponse(ctx context.Context, id string, body UpdateNotificationStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateNotificationStatusResp, error) {
+	rsp, err := c.UpdateNotificationStatus(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateNotificationStatusResp(rsp)
+}
+
 // ListOrganizationsV2WithResponse request returning *ListOrganizationsV2Resp
 func (c *ClientWithResponses) ListOrganizationsV2WithResponse(ctx context.Context, params *ListOrganizationsV2Params, reqEditors ...RequestEditorFn) (*ListOrganizationsV2Resp, error) {
 	rsp, err := c.ListOrganizationsV2(ctx, params, reqEditors...)
@@ -8593,6 +11278,24 @@ func (c *ClientWithResponses) CreateOrganizationV2WithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseCreateOrganizationV2Resp(rsp)
+}
+
+// DeleteFhirOrganizationWithResponse request returning *DeleteFhirOrganizationResp
+func (c *ClientWithResponses) DeleteFhirOrganizationWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*DeleteFhirOrganizationResp, error) {
+	rsp, err := c.DeleteFhirOrganization(ctx, fhirId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFhirOrganizationResp(rsp)
+}
+
+// GetOrganizationByFhirIdWithResponse request returning *GetOrganizationByFhirIdResp
+func (c *ClientWithResponses) GetOrganizationByFhirIdWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*GetOrganizationByFhirIdResp, error) {
+	rsp, err := c.GetOrganizationByFhirId(ctx, fhirId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOrganizationByFhirIdResp(rsp)
 }
 
 // GetOrganizationByUserFacingIdV2WithResponse request returning *GetOrganizationByUserFacingIdV2Resp
@@ -8638,6 +11341,32 @@ func (c *ClientWithResponses) PodAccessOnDemandByUserFacingIdWithResponse(ctx co
 	return ParsePodAccessOnDemandByUserFacingIdResp(rsp)
 }
 
+// UpdateFhirOrganizationWithBodyWithResponse request with arbitrary body returning *UpdateFhirOrganizationResp
+func (c *ClientWithResponses) UpdateFhirOrganizationWithBodyWithResponse(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateFhirOrganizationResp, error) {
+	rsp, err := c.UpdateFhirOrganizationWithBody(ctx, fhirId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateFhirOrganizationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateFhirOrganizationWithResponse(ctx context.Context, fhirId openapi_types.UUID, params *UpdateFhirOrganizationParams, body UpdateFhirOrganizationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFhirOrganizationResp, error) {
+	rsp, err := c.UpdateFhirOrganization(ctx, fhirId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateFhirOrganizationResp(rsp)
+}
+
+// GetUserByFhirIdWithResponse request returning *GetUserByFhirIdResp
+func (c *ClientWithResponses) GetUserByFhirIdWithResponse(ctx context.Context, fhirId string, reqEditors ...RequestEditorFn) (*GetUserByFhirIdResp, error) {
+	rsp, err := c.GetUserByFhirId(ctx, fhirId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetUserByFhirIdResp(rsp)
+}
+
 // ListUserPodsWithResponse request returning *ListUserPodsResp
 func (c *ClientWithResponses) ListUserPodsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPodsResp, error) {
 	rsp, err := c.ListUserPods(ctx, reqEditors...)
@@ -8663,6 +11392,23 @@ func (c *ClientWithResponses) AcceptTermsOfServiceV2WithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseAcceptTermsOfServiceV2Resp(rsp)
+}
+
+// UpdateSelfReportedAffiliationWithBodyWithResponse request with arbitrary body returning *UpdateSelfReportedAffiliationResp
+func (c *ClientWithResponses) UpdateSelfReportedAffiliationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSelfReportedAffiliationResp, error) {
+	rsp, err := c.UpdateSelfReportedAffiliationWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSelfReportedAffiliationResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSelfReportedAffiliationWithResponse(ctx context.Context, body UpdateSelfReportedAffiliationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSelfReportedAffiliationResp, error) {
+	rsp, err := c.UpdateSelfReportedAffiliation(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSelfReportedAffiliationResp(rsp)
 }
 
 // GetOrganizationV2WithResponse request returning *GetOrganizationV2Resp
@@ -9357,6 +12103,133 @@ func ParseAddRoleResp(rsp *http.Response) (*AddRoleResp, error) {
 	return response, nil
 }
 
+// ParseBackfillAllGroupsResp parses an HTTP response from a BackfillAllGroupsWithResponse call
+func ParseBackfillAllGroupsResp(rsp *http.Response) (*BackfillAllGroupsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillAllGroupsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BackfillJobResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBackfillJobStatusResp parses an HTTP response from a GetBackfillJobStatusWithResponse call
+func ParseGetBackfillJobStatusResp(rsp *http.Response) (*GetBackfillJobStatusResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBackfillJobStatusResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BackfillJobStatusResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBackfillForGroupsResp parses an HTTP response from a BackfillForGroupsWithResponse call
+func ParseBackfillForGroupsResp(rsp *http.Response) (*BackfillForGroupsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BackfillForGroupsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BackfillAllowExternalMembersResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCleanupGrantsResp parses an HTTP response from a CleanupGrantsWithResponse call
 func ParseCleanupGrantsResp(rsp *http.Response) (*CleanupGrantsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9488,6 +12361,232 @@ func ParseListPodEnvironmentsResp(rsp *http.Response) (*ListPodEnvironmentsResp,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest PodEnvironmentList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMigrateUmOrganizationsToFhirResp parses an HTTP response from a MigrateUmOrganizationsToFhirWithResponse call
+func ParseMigrateUmOrganizationsToFhirResp(rsp *http.Response) (*MigrateUmOrganizationsToFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MigrateUmOrganizationsToFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMigrateSingleOrgToFhirResp parses an HTTP response from a MigrateSingleOrgToFhirWithResponse call
+func ParseMigrateSingleOrgToFhirResp(rsp *http.Response) (*MigrateSingleOrgToFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MigrateSingleOrgToFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMigrateUsersToFhirResp parses an HTTP response from a MigrateUsersToFhirWithResponse call
+func ParseMigrateUsersToFhirResp(rsp *http.Response) (*MigrateUsersToFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MigrateUsersToFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMigrateSingleUserToFhirResp parses an HTTP response from a MigrateSingleUserToFhirWithResponse call
+func ParseMigrateSingleUserToFhirResp(rsp *http.Response) (*MigrateSingleUserToFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MigrateSingleUserToFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMigrateSingleOrgUsersToFhirResp parses an HTTP response from a MigrateSingleOrgUsersToFhirWithResponse call
+func ParseMigrateSingleOrgUsersToFhirResp(rsp *http.Response) (*MigrateSingleOrgUsersToFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MigrateSingleOrgUsersToFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListOrganizationsFromDbResp parses an HTTP response from a ListOrganizationsFromDbWithResponse call
+func ParseListOrganizationsFromDbResp(rsp *http.Response) (*ListOrganizationsFromDbResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListOrganizationsFromDbResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OrganizationDescriptionListV2
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -9660,6 +12759,60 @@ func ParseGetPodAsAdminResp(rsp *http.Response) (*GetPodAsAdminResp, error) {
 	return response, nil
 }
 
+// ParseForceSyncOrganizationFromFhirResp parses an HTTP response from a ForceSyncOrganizationFromFhirWithResponse call
+func ParseForceSyncOrganizationFromFhirResp(rsp *http.Response) (*ForceSyncOrganizationFromFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ForceSyncOrganizationFromFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdminSyncOrganizationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseMovePodResp parses an HTTP response from a MovePodWithResponse call
 func ParseMovePodResp(rsp *http.Response) (*MovePodResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9801,6 +12954,121 @@ func ParseSendEmailResp(rsp *http.Response) (*SendEmailResp, error) {
 	return response, nil
 }
 
+// ParseDeleteFhirUserResp parses an HTTP response from a DeleteFhirUserWithResponse call
+func ParseDeleteFhirUserResp(rsp *http.Response) (*DeleteFhirUserResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteFhirUserResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest ErrorReport
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseForceSyncUserFromFhirResp parses an HTTP response from a ForceSyncUserFromFhirWithResponse call
+func ParseForceSyncUserFromFhirResp(rsp *http.Response) (*ForceSyncUserFromFhirResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ForceSyncUserFromFhirResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdminSyncUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ErrorReport
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest ErrorReport
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteUserResp parses an HTTP response from a DeleteUserWithResponse call
 func ParseDeleteUserResp(rsp *http.Response) (*DeleteUserResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9857,6 +13125,114 @@ func ParseGetUserByEmailResp(rsp *http.Response) (*GetUserByEmailResp, error) {
 	}
 
 	response := &GetUserByEmailResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeUserLicenseResp parses an HTTP response from a RevokeUserLicenseWithResponse call
+func ParseRevokeUserLicenseResp(rsp *http.Response) (*RevokeUserLicenseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeUserLicenseResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGrantUserLicenseResp parses an HTTP response from a GrantUserLicenseWithResponse call
+func ParseGrantUserLicenseResp(rsp *http.Response) (*GrantUserLicenseResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GrantUserLicenseResp{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -10245,6 +13621,53 @@ func ParseSetGroupAccessResp(rsp *http.Response) (*SetGroupAccessResp, error) {
 	return response, nil
 }
 
+// ParseCheckShareAccessResp parses an HTTP response from a CheckShareAccessWithResponse call
+func ParseCheckShareAccessResp(rsp *http.Response) (*CheckShareAccessResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CheckShareAccessResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetOneGroupMemberResp parses an HTTP response from a GetOneGroupMemberWithResponse call
 func ParseGetOneGroupMemberResp(rsp *http.Response) (*GetOneGroupMemberResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10315,6 +13738,270 @@ func ParseListGroupMembershipResp(rsp *http.Response) (*ListGroupMembershipResp,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest GroupMemberList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetNotificationsResp parses an HTTP response from a GetNotificationsWithResponse call
+func ParseGetNotificationsResp(rsp *http.Response) (*GetNotificationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetNotificationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Notifications *[]NotificationDescription `json:"notifications,omitempty"`
+			TotalCount    *int                       `json:"totalCount,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateNotificationResp parses an HTTP response from a CreateNotificationWithResponse call
+func ParseCreateNotificationResp(rsp *http.Response) (*CreateNotificationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateNotificationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NotificationDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetNotificationCountResp parses an HTTP response from a GetNotificationCountWithResponse call
+func ParseGetNotificationCountResp(rsp *http.Response) (*GetNotificationCountResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetNotificationCountResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Blocking Count of BLOCKING type notifications
+			Blocking *int `json:"blocking,omitempty"`
+
+			// Passive Count of PASSIVE type notifications
+			Passive *int `json:"passive,omitempty"`
+
+			// Total Total number of active notifications
+			Total *int `json:"total,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteNotificationResp parses an HTTP response from a DeleteNotificationWithResponse call
+func ParseDeleteNotificationResp(rsp *http.Response) (*DeleteNotificationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteNotificationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateNotificationStatusResp parses an HTTP response from a UpdateNotificationStatusWithResponse call
+func ParseUpdateNotificationStatusResp(rsp *http.Response) (*UpdateNotificationStatusResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateNotificationStatusResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -10434,6 +14121,107 @@ func ParseCreateOrganizationV2Resp(rsp *http.Response) (*CreateOrganizationV2Res
 			return nil, err
 		}
 		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteFhirOrganizationResp parses an HTTP response from a DeleteFhirOrganizationWithResponse call
+func ParseDeleteFhirOrganizationResp(rsp *http.Response) (*DeleteFhirOrganizationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteFhirOrganizationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOrganizationByFhirIdResp parses an HTTP response from a GetOrganizationByFhirIdWithResponse call
+func ParseGetOrganizationByFhirIdResp(rsp *http.Response) (*GetOrganizationByFhirIdResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOrganizationByFhirIdResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OrganizationDescriptionV2
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError
@@ -10595,6 +14383,114 @@ func ParsePodAccessOnDemandByUserFacingIdResp(rsp *http.Response) (*PodAccessOnD
 	return response, nil
 }
 
+// ParseUpdateFhirOrganizationResp parses an HTTP response from a UpdateFhirOrganizationWithResponse call
+func ParseUpdateFhirOrganizationResp(rsp *http.Response) (*UpdateFhirOrganizationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateFhirOrganizationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OrganizationDescriptionV2
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetUserByFhirIdResp parses an HTTP response from a GetUserByFhirIdWithResponse call
+func ParseGetUserByFhirIdResp(rsp *http.Response) (*GetUserByFhirIdResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetUserByFhirIdResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListUserPodsResp parses an HTTP response from a ListUserPodsWithResponse call
 func ParseListUserPodsResp(rsp *http.Response) (*ListUserPodsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10681,6 +14577,60 @@ func ParseAcceptTermsOfServiceV2Resp(rsp *http.Response) (*AcceptTermsOfServiceV
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSelfReportedAffiliationResp parses an HTTP response from a UpdateSelfReportedAffiliationWithResponse call
+func ParseUpdateSelfReportedAffiliationResp(rsp *http.Response) (*UpdateSelfReportedAffiliationResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSelfReportedAffiliationResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError

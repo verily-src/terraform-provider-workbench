@@ -6,8 +6,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	userClient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 func TestNewGroupIdentifier(t *testing.T) {
@@ -275,7 +275,7 @@ func TestNewGroupIamBindingModel(t *testing.T) {
 				},
 				{
 					Principal: user.Principal{
-						PublicPrincipal: client.Ptr(true),
+						PublicPrincipal: userClient.Ptr(true),
 					},
 					Roles: []user.GroupRole{
 						user.GroupRoleREADER,
@@ -583,7 +583,7 @@ func TestNewGroupIamPolicyModelIams(t *testing.T) {
 				},
 				{
 					Principal: user.Principal{
-						PublicPrincipal: client.Ptr(true),
+						PublicPrincipal: userClient.Ptr(true),
 					},
 					Roles: []user.GroupRole{
 						user.GroupRoleREADER,
@@ -611,7 +611,7 @@ func TestNewGroupIamPolicyModelIams(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewGroupIamPolicyModel("test-group", "test-org", client.Ptr(tt.members)).Iams
+			got := NewGroupIamPolicyModel("test-group", "test-org", userClient.Ptr(tt.members)).Iams
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("NewGroupIamPolicyModel() mismatch (-want +got):\n%s", diff)
 			}
@@ -935,7 +935,7 @@ func TestPrincipalMatchesTf(t *testing.T) {
 		{
 			name: "public principal matches",
 			principal: user.Principal{
-				PublicPrincipal: client.Ptr(true),
+				PublicPrincipal: userClient.Ptr(true),
 			},
 			tfPrincipal: groupPublicPrincipal(),
 			want:        true,

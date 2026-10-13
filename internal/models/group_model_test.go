@@ -8,8 +8,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	userClient "github.com/verily-src/terraform-provider-workbench/internal/user-manager/goclient"
 )
 
 func TestNewGroupModel(t *testing.T) {
@@ -26,8 +26,8 @@ func TestNewGroupModel(t *testing.T) {
 			group: &user.GroupDescriptionAndRoles{
 				GroupDescription: &user.GroupDescription{
 					GroupEmail:             "test-group@gmail.com",
-					GroupName:              client.Ptr("test-group"),
-					InternalName:           client.Ptr("test-group-internal"),
+					GroupName:              userClient.Ptr("test-group"),
+					InternalName:           userClient.Ptr("test-group-internal"),
 					OrgId:                  orgId,
 					OrgUfid:                orgUfid,
 					CreatedBy:              "test-user",
@@ -38,7 +38,7 @@ func TestNewGroupModel(t *testing.T) {
 					ExpirationNotification: boolPtr(true),
 					RequireGrantReason:     boolPtr(true),
 					SyncGroup:              true,
-					Description:            client.Ptr("This is a test group"),
+					Description:            userClient.Ptr("This is a test group"),
 				},
 			},
 			want: &GroupModel{

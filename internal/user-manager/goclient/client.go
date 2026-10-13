@@ -1,5 +1,5 @@
-// package client provides utilites for working with Workbench clients.
-package client
+// package goclient provides utilites for working with Workbench clients.
+package goclient
 
 import (
 	"context"

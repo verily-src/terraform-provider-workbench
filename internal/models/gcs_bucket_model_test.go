@@ -2,14 +2,15 @@ package models
 
 import (
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
-	"testing"
-	"time"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestBuildGcsBucketCreateRequest(t *testing.T) {
@@ -33,7 +34,7 @@ func TestBuildGcsBucketCreateRequest(t *testing.T) {
 				GcsBucket: wsm.GcpGcsBucketCreationParameters{},
 				Common: wsm.ControlledResourceCommonFields{
 					AccessScope:         wsm.SHAREDACCESS,
-					Name:                client.Ptr(wsm.Name("test-bucket")),
+					Name:                wsmClient.Ptr(wsm.Name("test-bucket")),
 					CloningInstructions: wsm.COPYNOTHING,
 					ManagedBy:           wsm.USER,
 				},
@@ -60,19 +61,19 @@ func TestBuildGcsBucketCreateRequest(t *testing.T) {
 			},
 			want: wsm.CreateControlledGcpGcsBucketRequestBody{
 				GcsBucket: wsm.GcpGcsBucketCreationParameters{
-					Name:                client.Ptr("project-123-test-bucket"),
-					Location:            client.Ptr("us-central1"),
-					DefaultStorageClass: client.Ptr(wsm.GcpGcsBucketDefaultStorageClass("STANDARD")),
+					Name:                wsmClient.Ptr("project-123-test-bucket"),
+					Location:            wsmClient.Ptr("us-central1"),
+					DefaultStorageClass: wsmClient.Ptr(wsm.GcpGcsBucketDefaultStorageClass("STANDARD")),
 				},
 				Common: wsm.ControlledResourceCommonFields{
 					AccessScope:         wsm.SHAREDACCESS,
-					Name:                client.Ptr(wsm.Name("test-bucket")),
-					DisplayName:         client.Ptr(wsm.Name("Test Bucket")),
-					Description:         client.Ptr("This is a test GCS bucket"),
+					Name:                wsmClient.Ptr(wsm.Name("test-bucket")),
+					DisplayName:         wsmClient.Ptr(wsm.Name("Test Bucket")),
+					Description:         wsmClient.Ptr("This is a test GCS bucket"),
 					CloningInstructions: wsm.COPYNOTHING,
 					ManagedBy:           wsm.USER,
-					FolderId:            client.Ptr(folderId),
-					Properties:          client.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
+					FolderId:            wsmClient.Ptr(folderId),
+					Properties:          wsmClient.Ptr([]wsm.Property{{Key: "key1", Value: "value1"}}),
 				},
 			},
 		},
@@ -186,13 +187,13 @@ func TestToUpdateControlledGcpGcsBucketRequestBody(t *testing.T) {
 				StorageClass: types.StringValue("NEARLINE"),
 			},
 			want: &wsm.UpdateControlledGcpGcsBucketRequestBody{
-				Description:    client.Ptr("This is an updated test GCS bucket"),
-				DisplayName:    client.Ptr(wsm.Name("Updated Bucket")),
-				Name:           client.Ptr(wsm.Name("updated-bucket")),
-				UpdateFolderId: &wsm.UpdateFolderId{FolderId: client.Ptr(newFolderId)},
+				Description:    wsmClient.Ptr("This is an updated test GCS bucket"),
+				DisplayName:    wsmClient.Ptr(wsm.Name("Updated Bucket")),
+				Name:           wsmClient.Ptr(wsm.Name("updated-bucket")),
+				UpdateFolderId: &wsm.UpdateFolderId{FolderId: wsmClient.Ptr(newFolderId)},
 				UpdateParameters: &wsm.GcpGcsBucketUpdateParameters{
-					DefaultStorageClass: client.Ptr(wsm.GcpGcsBucketDefaultStorageClass("NEARLINE")),
-					CloningInstructions: client.Ptr(wsm.COPYREFERENCE),
+					DefaultStorageClass: wsmClient.Ptr(wsm.GcpGcsBucketDefaultStorageClass("NEARLINE")),
+					CloningInstructions: wsmClient.Ptr(wsm.COPYREFERENCE),
 				},
 			},
 		},
@@ -227,7 +228,7 @@ func TestToUpdateControlledGcpGcsBucketRequestBody(t *testing.T) {
 				StorageClass: types.StringValue("STANDARD"),
 			},
 			want: &wsm.UpdateControlledGcpGcsBucketRequestBody{
-				Name: client.Ptr(wsm.Name("update-bucket")),
+				Name: wsmClient.Ptr(wsm.Name("update-bucket")),
 			},
 		},
 		{

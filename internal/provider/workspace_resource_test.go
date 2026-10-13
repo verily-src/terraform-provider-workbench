@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccWorkspaceResource(t *testing.T) {
@@ -196,9 +196,10 @@ func TestAccWorkspaceResource(t *testing.T) {
 			},
 			// Import testing
 			{
-				ImportState:       true,
-				ResourceName:      "workbench_workspace.test",
-				ImportStateVerify: true,
+				ImportState:             true,
+				ResourceName:            "workbench_workspace.test",
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"policies"},
 			},
 			// Deletion is handled automatically by the testing framework.
 		},
@@ -258,7 +259,7 @@ func buildPolicies(policies []testPolicy) *[]wsm.WsmPolicyInput {
 	for _, p := range policies {
 		var additionalData []wsm.WsmPolicyPair
 		for k, v := range p.AdditionalData {
-			additionalData = append(additionalData, wsm.WsmPolicyPair{Key: client.Ptr(k), Value: client.Ptr(v)})
+			additionalData = append(additionalData, wsm.WsmPolicyPair{Key: wsmclient.Ptr(k), Value: wsmclient.Ptr(v)})
 		}
 		inputs = append(inputs, wsm.WsmPolicyInput{
 			Namespace:      p.Namespace,

@@ -116,9 +116,6 @@ type ClientInterface interface {
 
 	BackfillWorkspaceApplications(ctx context.Context, body BackfillWorkspaceApplicationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BackfillCromwellRunsForAllWorkspaces request
-	BackfillCromwellRunsForAllWorkspaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// BackfillWorkspaceLabels request
 	BackfillWorkspaceLabels(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -137,19 +134,33 @@ type ClientInterface interface {
 	// GetWorkspaceByUfid request
 	GetWorkspaceByUfid(ctx context.Context, workspaceUserFacingIdParam WorkspaceUserFacingIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BackfillResourceProperties request
-	BackfillResourceProperties(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// SyncIamRoles request
 	SyncIamRoles(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AodOperationWithBody request with any body
-	AodOperationWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// AdminFilterWorkspacesWithBody request with any body
+	AdminFilterWorkspacesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AodOperation(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AodOperationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AdminFilterWorkspaces(ctx context.Context, body AdminFilterWorkspacesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWorkspaceDescription request
+	GetWorkspaceDescription(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FixStudyMapping request
+	FixStudyMapping(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixStudyMappingParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FixWorkspaceStudy request
+	FixWorkspaceStudy(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixWorkspaceStudyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AddWorkspaceOwner request
 	AddWorkspaceOwner(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdminReplacePolicyWithBody request with any body
+	AdminReplacePolicyWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AdminReplacePolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AdminReplacePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdminResetWorkspaceState request
+	AdminResetWorkspaceState(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RetrieveJob request
 	RetrieveJob(ctx context.Context, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -191,9 +202,6 @@ type ClientInterface interface {
 
 	UpdateWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ListAccessRequirements request
-	ListAccessRequirements(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ListWorkspaceApplications request
 	ListWorkspaceApplications(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -205,22 +213,6 @@ type ClientInterface interface {
 
 	// EnableWorkspaceApplication request
 	EnableWorkspaceApplication(ctx context.Context, workspaceIdParam WorkspaceIdParam, applicationIdParam ApplicationIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CloneWorkspaceWithBody request with any body
-	CloneWorkspaceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CloneWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CloneWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetCloneWorkspaceResult request
-	GetCloneWorkspaceResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateCloudContextWithBody request with any body
-	CreateCloudContextWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateCloudContext(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateCloudContextJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetCreateCloudContextResult request
-	GetCreateCloudContextResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DescribeWorkspace request
 	DescribeWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -268,10 +260,20 @@ type ClientInterface interface {
 	// ListValidRegions request
 	ListValidRegions(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListValidRegionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// EnableMultiRegionApiAccessWithBody request with any body
+	EnableMultiRegionApiAccessWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EnableMultiRegionApiAccess(ctx context.Context, workspaceIdParam WorkspaceIdParam, body EnableMultiRegionApiAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UpdatePoliciesWithBody request with any body
 	UpdatePoliciesWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdatePolicies(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BatchMergeCheckWithBody request with any body
+	BatchMergeCheckWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BatchMergeCheck(ctx context.Context, workspaceIdParam WorkspaceIdParam, body BatchMergeCheckJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ExplainPolicies request
 	ExplainPolicies(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ExplainPoliciesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -294,6 +296,9 @@ type ClientInterface interface {
 	// EnumerateResources request
 	EnumerateResources(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// EnumerateApps request
+	EnumerateApps(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateAppsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateFlexibleResourceWithBody request with any body
 	CreateFlexibleResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -314,6 +319,27 @@ type ClientInterface interface {
 	CloneFlexibleResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CloneFlexibleResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSecretWithBody request with any body
+	CreateSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSecret request
+	DeleteSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSecret request
+	GetSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSecretWithBody request with any body
+	UpdateSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CloneSecretWithBody request with any body
+	CloneSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CloneSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateControlledAwsAuroraDatabaseWithBody request with any body
 	CreateControlledAwsAuroraDatabaseWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -694,6 +720,9 @@ type ClientInterface interface {
 
 	CloneAwsAuroraDatabaseReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAuroraDatabaseReferenceCredential request
+	GetAuroraDatabaseReferenceCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAuroraDatabaseReferenceCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateS3ExternalBucketReferenceWithBody request with any body
 	CreateS3ExternalBucketReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -880,6 +909,30 @@ type ClientInterface interface {
 
 	CloneGitRepoReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneGitRepoReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateSecretReferenceWithBody request with any body
+	CreateSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSecretReferenceByName request
+	GetSecretReferenceByName(ctx context.Context, workspaceIdParam WorkspaceIdParam, nameParam NameParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSecretReference request
+	DeleteSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSecretReference request
+	GetSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSecretReferenceWithBody request with any body
+	UpdateSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CloneSecretReferenceWithBody request with any body
+	CloneSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CloneSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateTerraWorkspaceReferenceWithBody request with any body
 	CreateTerraWorkspaceReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -936,6 +989,21 @@ type ClientInterface interface {
 	// RemoveRole request
 	RemoveRole(ctx context.Context, workspaceIdParam WorkspaceIdParam, roleParam RoleParam, memberEmailParam MemberEmailParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RegisterKeyWithBody request with any body
+	RegisterKeyWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RegisterKey(ctx context.Context, workspaceIdParam WorkspaceIdParam, body RegisterKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GenerateChallengeWithBody request with any body
+	GenerateChallengeWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GenerateChallenge(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body GenerateChallengeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadSecretWithBody request with any body
+	ReadSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ReadSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body ReadSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateWorkspaceV2WithBody request with any body
 	CreateWorkspaceV2WithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -976,14 +1044,6 @@ type ClientInterface interface {
 	// GetCloneWorkspaceV2Result request
 	GetCloneWorkspaceV2Result(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetDeleteCloudContextV2Result request
-	GetDeleteCloudContextV2Result(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// DeleteCloudContextV2WithBody request with any body
-	DeleteCloudContextV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	DeleteCloudContextV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, body DeleteCloudContextV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// DeleteWorkspaceV2WithBody request with any body
 	DeleteWorkspaceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -992,6 +1052,16 @@ type ClientInterface interface {
 	// GetDeleteWorkspaceV2Result request
 	GetDeleteWorkspaceV2Result(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// LockWorkspaceWithBody request with any body
+	LockWorkspaceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	LockWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body LockWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateAwsEc2InstanceV2WithBody request with any body
+	CreateAwsEc2InstanceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAwsEc2InstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DescribeAwsEc2InstanceV2 request
 	DescribeAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -999,6 +1069,9 @@ type ClientInterface interface {
 	CreateGceInstanceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CreateGceInstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateGceInstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnlockWorkspace request
+	UnlockWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ServiceStatus request
 	ServiceStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1127,18 +1200,6 @@ func (c *Client) BackfillWorkspaceApplications(ctx context.Context, body Backfil
 	return c.Client.Do(req)
 }
 
-func (c *Client) BackfillCromwellRunsForAllWorkspaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBackfillCromwellRunsForAllWorkspacesRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) BackfillWorkspaceLabels(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBackfillWorkspaceLabelsRequest(c.Server)
 	if err != nil {
@@ -1211,18 +1272,6 @@ func (c *Client) GetWorkspaceByUfid(ctx context.Context, workspaceUserFacingIdPa
 	return c.Client.Do(req)
 }
 
-func (c *Client) BackfillResourceProperties(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBackfillResourcePropertiesRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) SyncIamRoles(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSyncIamRolesRequest(c.Server, params)
 	if err != nil {
@@ -1235,8 +1284,8 @@ func (c *Client) SyncIamRoles(ctx context.Context, params *SyncIamRolesParams, r
 	return c.Client.Do(req)
 }
 
-func (c *Client) AodOperationWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAodOperationRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+func (c *Client) AdminFilterWorkspacesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminFilterWorkspacesRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1247,8 +1296,44 @@ func (c *Client) AodOperationWithBody(ctx context.Context, workspaceIdParam Work
 	return c.Client.Do(req)
 }
 
-func (c *Client) AodOperation(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AodOperationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAodOperationRequest(c.Server, workspaceIdParam, body)
+func (c *Client) AdminFilterWorkspaces(ctx context.Context, body AdminFilterWorkspacesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminFilterWorkspacesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWorkspaceDescription(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWorkspaceDescriptionRequest(c.Server, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FixStudyMapping(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixStudyMappingParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFixStudyMappingRequest(c.Server, workspaceIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FixWorkspaceStudy(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixWorkspaceStudyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFixWorkspaceStudyRequest(c.Server, workspaceIdParam, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1261,6 +1346,42 @@ func (c *Client) AodOperation(ctx context.Context, workspaceIdParam WorkspaceIdP
 
 func (c *Client) AddWorkspaceOwner(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddWorkspaceOwnerRequest(c.Server, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminReplacePolicyWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminReplacePolicyRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminReplacePolicy(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AdminReplacePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminReplacePolicyRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminResetWorkspaceState(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminResetWorkspaceStateRequest(c.Server, workspaceIdParam)
 	if err != nil {
 		return nil, err
 	}
@@ -1439,18 +1560,6 @@ func (c *Client) UpdateWorkspace(ctx context.Context, workspaceIdParam Workspace
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListAccessRequirements(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListAccessRequirementsRequest(c.Server, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) ListWorkspaceApplications(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListWorkspaceApplicationsRequest(c.Server, workspaceIdParam, params)
 	if err != nil {
@@ -1489,78 +1598,6 @@ func (c *Client) DisableWorkspaceApplication(ctx context.Context, workspaceIdPar
 
 func (c *Client) EnableWorkspaceApplication(ctx context.Context, workspaceIdParam WorkspaceIdParam, applicationIdParam ApplicationIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEnableWorkspaceApplicationRequest(c.Server, workspaceIdParam, applicationIdParam)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CloneWorkspaceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCloneWorkspaceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CloneWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CloneWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCloneWorkspaceRequest(c.Server, workspaceIdParam, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetCloneWorkspaceResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetCloneWorkspaceResultRequest(c.Server, workspaceIdParam, jobIdParam)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateCloudContextWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateCloudContextRequestWithBody(c.Server, workspaceIdParam, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateCloudContext(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateCloudContextJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateCloudContextRequest(c.Server, workspaceIdParam, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetCreateCloudContextResult(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetCreateCloudContextResultRequest(c.Server, workspaceIdParam, jobIdParam)
 	if err != nil {
 		return nil, err
 	}
@@ -1775,6 +1812,30 @@ func (c *Client) ListValidRegions(ctx context.Context, workspaceIdParam Workspac
 	return c.Client.Do(req)
 }
 
+func (c *Client) EnableMultiRegionApiAccessWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnableMultiRegionApiAccessRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EnableMultiRegionApiAccess(ctx context.Context, workspaceIdParam WorkspaceIdParam, body EnableMultiRegionApiAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnableMultiRegionApiAccessRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) UpdatePoliciesWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdatePoliciesRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -1789,6 +1850,30 @@ func (c *Client) UpdatePoliciesWithBody(ctx context.Context, workspaceIdParam Wo
 
 func (c *Client) UpdatePolicies(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdatePoliciesRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BatchMergeCheckWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBatchMergeCheckRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BatchMergeCheck(ctx context.Context, workspaceIdParam WorkspaceIdParam, body BatchMergeCheckJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBatchMergeCheckRequest(c.Server, workspaceIdParam, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1895,6 +1980,18 @@ func (c *Client) EnumerateResources(ctx context.Context, workspaceIdParam Worksp
 	return c.Client.Do(req)
 }
 
+func (c *Client) EnumerateApps(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateAppsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnumerateAppsRequest(c.Server, workspaceIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateFlexibleResourceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateFlexibleResourceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -1981,6 +2078,102 @@ func (c *Client) CloneFlexibleResourceWithBody(ctx context.Context, workspaceIdP
 
 func (c *Client) CloneFlexibleResource(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCloneFlexibleResourceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSecretRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSecretRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneSecretRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneSecretRequest(c.Server, workspaceIdParam, resourceIdParam, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3707,6 +3900,18 @@ func (c *Client) CloneAwsAuroraDatabaseReference(ctx context.Context, workspaceI
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetAuroraDatabaseReferenceCredential(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAuroraDatabaseReferenceCredentialParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAuroraDatabaseReferenceCredentialRequest(c.Server, workspaceIdParam, resourceIdParam, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateS3ExternalBucketReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateS3ExternalBucketReferenceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -4547,6 +4752,114 @@ func (c *Client) CloneGitRepoReference(ctx context.Context, workspaceIdParam Wor
 	return c.Client.Do(req)
 }
 
+func (c *Client) CreateSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretReferenceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretReferenceRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSecretReferenceByName(ctx context.Context, workspaceIdParam WorkspaceIdParam, nameParam NameParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSecretReferenceByNameRequest(c.Server, workspaceIdParam, nameParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSecretReferenceRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSecretReferenceRequest(c.Server, workspaceIdParam, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretReferenceRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretReferenceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneSecretReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneSecretReferenceRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CloneSecretReference(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCloneSecretReferenceRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateTerraWorkspaceReferenceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateTerraWorkspaceReferenceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -4799,6 +5112,78 @@ func (c *Client) RemoveRole(ctx context.Context, workspaceIdParam WorkspaceIdPar
 	return c.Client.Do(req)
 }
 
+func (c *Client) RegisterKeyWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterKeyRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegisterKey(ctx context.Context, workspaceIdParam WorkspaceIdParam, body RegisterKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterKeyRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GenerateChallengeWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGenerateChallengeRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GenerateChallenge(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body GenerateChallengeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGenerateChallengeRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadSecretWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadSecretRequestWithBody(c.Server, workspaceIdParam, resourceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadSecret(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body ReadSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadSecretRequest(c.Server, workspaceIdParam, resourceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateWorkspaceV2WithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateWorkspaceV2RequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -4979,42 +5364,6 @@ func (c *Client) GetCloneWorkspaceV2Result(ctx context.Context, workspaceIdParam
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetDeleteCloudContextV2Result(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetDeleteCloudContextV2ResultRequest(c.Server, workspaceIdParam, jobIdParam)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteCloudContextV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteCloudContextV2RequestWithBody(c.Server, workspaceIdParam, cloudContextParam, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteCloudContextV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, body DeleteCloudContextV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteCloudContextV2Request(c.Server, workspaceIdParam, cloudContextParam, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) DeleteWorkspaceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteWorkspaceV2RequestWithBody(c.Server, workspaceIdParam, contentType, body)
 	if err != nil {
@@ -5051,6 +5400,54 @@ func (c *Client) GetDeleteWorkspaceV2Result(ctx context.Context, workspaceIdPara
 	return c.Client.Do(req)
 }
 
+func (c *Client) LockWorkspaceWithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLockWorkspaceRequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) LockWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, body LockWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLockWorkspaceRequest(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAwsEc2InstanceV2WithBody(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAwsEc2InstanceV2RequestWithBody(c.Server, workspaceIdParam, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAwsEc2InstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAwsEc2InstanceV2Request(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DescribeAwsEc2InstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDescribeAwsEc2InstanceV2Request(c.Server, workspaceIdParam, resourceIdParam)
 	if err != nil {
@@ -5077,6 +5474,18 @@ func (c *Client) CreateGceInstanceV2WithBody(ctx context.Context, workspaceIdPar
 
 func (c *Client) CreateGceInstanceV2(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateGceInstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateGceInstanceV2Request(c.Server, workspaceIdParam, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnlockWorkspace(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnlockWorkspaceRequest(c.Server, workspaceIdParam)
 	if err != nil {
 		return nil, err
 	}
@@ -5425,33 +5834,6 @@ func NewBackfillWorkspaceApplicationsRequestWithBody(server string, contentType 
 	return req, nil
 }
 
-// NewBackfillCromwellRunsForAllWorkspacesRequest generates requests for BackfillCromwellRunsForAllWorkspaces
-func NewBackfillCromwellRunsForAllWorkspacesRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/backfillCromwellRunsForAllWorkspaces")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewBackfillWorkspaceLabelsRequest generates requests for BackfillWorkspaceLabels
 func NewBackfillWorkspaceLabelsRequest(server string) (*http.Request, error) {
 	var err error
@@ -5646,55 +6028,6 @@ func NewGetWorkspaceByUfidRequest(server string, workspaceUserFacingIdParam Work
 	return req, nil
 }
 
-// NewBackfillResourcePropertiesRequest generates requests for BackfillResourceProperties
-func NewBackfillResourcePropertiesRequest(server string, params *BackfillResourcePropertiesParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/cloudcontexts/backfillResourceProperties")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.WetRunParam != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "wetRun", runtime.ParamLocationQuery, *params.WetRunParam); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewSyncIamRolesRequest generates requests for SyncIamRoles
 func NewSyncIamRolesRequest(server string, params *SyncIamRolesParams) (*http.Request, error) {
 	var err error
@@ -5744,34 +6077,27 @@ func NewSyncIamRolesRequest(server string, params *SyncIamRolesParams) (*http.Re
 	return req, nil
 }
 
-// NewAodOperationRequest calls the generic AodOperation builder with application/json body
-func NewAodOperationRequest(server string, workspaceIdParam WorkspaceIdParam, body AodOperationJSONRequestBody) (*http.Request, error) {
+// NewAdminFilterWorkspacesRequest calls the generic AdminFilterWorkspaces builder with application/json body
+func NewAdminFilterWorkspacesRequest(server string, body AdminFilterWorkspacesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewAodOperationRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+	return NewAdminFilterWorkspacesRequestWithBody(server, "application/json", bodyReader)
 }
 
-// NewAodOperationRequestWithBody generates requests for AodOperation with any type of body
-func NewAodOperationRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+// NewAdminFilterWorkspacesRequestWithBody generates requests for AdminFilterWorkspaces with any type of body
+func NewAdminFilterWorkspacesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
 
 	serverURL, err := url.Parse(server)
 	if err != nil {
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s/aod", pathParam0)
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/filtered")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -5787,6 +6113,152 @@ func NewAodOperationRequestWithBody(server string, workspaceIdParam WorkspaceIdP
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWorkspaceDescriptionRequest generates requests for GetWorkspaceDescription
+func NewGetWorkspaceDescriptionRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFixStudyMappingRequest generates requests for FixStudyMapping
+func NewFixStudyMappingRequest(server string, workspaceIdParam WorkspaceIdParam, params *FixStudyMappingParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s/fixStudyMapping", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.WetRunParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "wetRun", runtime.ParamLocationQuery, *params.WetRunParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFixWorkspaceStudyRequest generates requests for FixWorkspaceStudy
+func NewFixWorkspaceStudyRequest(server string, workspaceIdParam WorkspaceIdParam, params *FixWorkspaceStudyParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s/fixWorkspaceStudy", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.WetRunParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "wetRun", runtime.ParamLocationQuery, *params.WetRunParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -5818,6 +6290,87 @@ func NewAddWorkspaceOwnerRequest(server string, workspaceIdParam WorkspaceIdPara
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAdminReplacePolicyRequest calls the generic AdminReplacePolicy builder with application/json body
+func NewAdminReplacePolicyRequest(server string, workspaceIdParam WorkspaceIdParam, body AdminReplacePolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAdminReplacePolicyRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewAdminReplacePolicyRequestWithBody generates requests for AdminReplacePolicy with any type of body
+func NewAdminReplacePolicyRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s/replacePolicy", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAdminResetWorkspaceStateRequest generates requests for AdminResetWorkspaceState
+func NewAdminResetWorkspaceStateRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/admin/v1/workspaces/%s/resetState", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -6617,40 +7170,6 @@ func NewUpdateWorkspaceRequestWithBody(server string, workspaceIdParam Workspace
 	return req, nil
 }
 
-// NewListAccessRequirementsRequest generates requests for ListAccessRequirements
-func NewListAccessRequirementsRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/access-requirements", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewListWorkspaceApplicationsRequest generates requests for ListWorkspaceApplications
 func NewListWorkspaceApplicationsRequest(server string, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams) (*http.Request, error) {
 	var err error
@@ -6839,182 +7358,6 @@ func NewEnableWorkspaceApplicationRequest(server string, workspaceIdParam Worksp
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewCloneWorkspaceRequest calls the generic CloneWorkspace builder with application/json body
-func NewCloneWorkspaceRequest(server string, workspaceIdParam WorkspaceIdParam, body CloneWorkspaceJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCloneWorkspaceRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
-}
-
-// NewCloneWorkspaceRequestWithBody generates requests for CloneWorkspace with any type of body
-func NewCloneWorkspaceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/clone", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewGetCloneWorkspaceResultRequest generates requests for GetCloneWorkspaceResult
-func NewGetCloneWorkspaceResultRequest(server string, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/clone-result/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewCreateCloudContextRequest calls the generic CreateCloudContext builder with application/json body
-func NewCreateCloudContextRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateCloudContextJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateCloudContextRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
-}
-
-// NewCreateCloudContextRequestWithBody generates requests for CreateCloudContext with any type of body
-func NewCreateCloudContextRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/cloudcontexts", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewGetCreateCloudContextResultRequest generates requests for GetCreateCloudContextResult
-func NewGetCreateCloudContextResultRequest(server string, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/cloudcontexts/result/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -7562,6 +7905,53 @@ func NewListValidRegionsRequest(server string, workspaceIdParam WorkspaceIdParam
 	return req, nil
 }
 
+// NewEnableMultiRegionApiAccessRequest calls the generic EnableMultiRegionApiAccess builder with application/json body
+func NewEnableMultiRegionApiAccessRequest(server string, workspaceIdParam WorkspaceIdParam, body EnableMultiRegionApiAccessJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEnableMultiRegionApiAccessRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewEnableMultiRegionApiAccessRequestWithBody generates requests for EnableMultiRegionApiAccess with any type of body
+func NewEnableMultiRegionApiAccessRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/multiRegionApiAccess/enable", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewUpdatePoliciesRequest calls the generic UpdatePolicies builder with application/json body
 func NewUpdatePoliciesRequest(server string, workspaceIdParam WorkspaceIdParam, body UpdatePoliciesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -7600,6 +7990,53 @@ func NewUpdatePoliciesRequestWithBody(server string, workspaceIdParam WorkspaceI
 	}
 
 	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBatchMergeCheckRequest calls the generic BatchMergeCheck builder with application/json body
+func NewBatchMergeCheckRequest(server string, workspaceIdParam WorkspaceIdParam, body BatchMergeCheckJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBatchMergeCheckRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewBatchMergeCheckRequestWithBody generates requests for BatchMergeCheck with any type of body
+func NewBatchMergeCheckRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/policies/batchMergeCheck", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -7926,6 +8363,78 @@ func NewEnumerateResourcesRequest(server string, workspaceIdParam WorkspaceIdPar
 	return req, nil
 }
 
+// NewEnumerateAppsRequest generates requests for EnumerateApps
+func NewEnumerateAppsRequest(server string, workspaceIdParam WorkspaceIdParam, params *EnumerateAppsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/apps", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.OffsetParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.OffsetParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.LimitParam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.LimitParam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateFlexibleResourceRequest calls the generic CreateFlexibleResource builder with application/json body
 func NewCreateFlexibleResourceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateFlexibleResourceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -8144,6 +8653,243 @@ func NewCloneFlexibleResourceRequestWithBody(server string, workspaceIdParam Wor
 	}
 
 	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/flexibleResources/%s/clone", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateSecretRequest calls the generic CreateSecret builder with application/json body
+func NewCreateSecretRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSecretRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewCreateSecretRequestWithBody generates requests for CreateSecret with any type of body
+func NewCreateSecretRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/secrets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSecretRequest generates requests for DeleteSecret
+func NewDeleteSecretRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSecretRequest generates requests for GetSecret
+func NewGetSecretRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateSecretRequest calls the generic UpdateSecret builder with application/json body
+func NewUpdateSecretRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSecretRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewUpdateSecretRequestWithBody generates requests for UpdateSecret with any type of body
+func NewUpdateSecretRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCloneSecretRequest calls the generic CloneSecret builder with application/json body
+func NewCloneSecretRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCloneSecretRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewCloneSecretRequestWithBody generates requests for CloneSecret with any type of body
+func NewCloneSecretRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/controlled/any/secrets/%s/clone", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -12750,6 +13496,77 @@ func NewCloneAwsAuroraDatabaseReferenceRequestWithBody(server string, workspaceI
 	return req, nil
 }
 
+// NewGetAuroraDatabaseReferenceCredentialRequest generates requests for GetAuroraDatabaseReferenceCredential
+func NewGetAuroraDatabaseReferenceCredentialRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAuroraDatabaseReferenceCredentialParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/aws/auroraDatabase/%s/credential", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "accessScope", runtime.ParamLocationQuery, params.AwsCredentialAccessScopeParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "durationSeconds", runtime.ParamLocationQuery, params.AwsCredentialDurationSecondsParam); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateS3ExternalBucketReferenceRequest calls the generic CreateS3ExternalBucketReference builder with application/json body
 func NewCreateS3ExternalBucketReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateS3ExternalBucketReferenceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -14922,6 +15739,284 @@ func NewCloneGitRepoReferenceRequestWithBody(server string, workspaceIdParam Wor
 	return req, nil
 }
 
+// NewCreateSecretReferenceRequest calls the generic CreateSecretReference builder with application/json body
+func NewCreateSecretReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateSecretReferenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSecretReferenceRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewCreateSecretReferenceRequestWithBody generates requests for CreateSecretReference with any type of body
+func NewCreateSecretReferenceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetSecretReferenceByNameRequest generates requests for GetSecretReferenceByName
+func NewGetSecretReferenceByNameRequest(server string, workspaceIdParam WorkspaceIdParam, nameParam NameParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "name", runtime.ParamLocationPath, nameParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets/name/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteSecretReferenceRequest generates requests for DeleteSecretReference
+func NewDeleteSecretReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSecretReferenceRequest generates requests for GetSecretReference
+func NewGetSecretReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateSecretReferenceRequest calls the generic UpdateSecretReference builder with application/json body
+func NewUpdateSecretReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretReferenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSecretReferenceRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewUpdateSecretReferenceRequestWithBody generates requests for UpdateSecretReference with any type of body
+func NewUpdateSecretReferenceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCloneSecretReferenceRequest calls the generic CloneSecretReference builder with application/json body
+func NewCloneSecretReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretReferenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCloneSecretReferenceRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewCloneSecretReferenceRequestWithBody generates requests for CloneSecretReference with any type of body
+func NewCloneSecretReferenceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/resources/referenced/secrets/%s/clone", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateTerraWorkspaceReferenceRequest calls the generic CreateTerraWorkspaceReference builder with application/json body
 func NewCreateTerraWorkspaceReferenceRequest(server string, workspaceIdParam WorkspaceIdParam, body CreateTerraWorkspaceReferenceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -15595,6 +16690,161 @@ func NewRemoveRoleRequest(server string, workspaceIdParam WorkspaceIdParam, role
 	return req, nil
 }
 
+// NewRegisterKeyRequest calls the generic RegisterKey builder with application/json body
+func NewRegisterKeyRequest(server string, workspaceIdParam WorkspaceIdParam, body RegisterKeyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterKeyRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewRegisterKeyRequestWithBody generates requests for RegisterKey with any type of body
+func NewRegisterKeyRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/secrets/registerKey", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGenerateChallengeRequest calls the generic GenerateChallenge builder with application/json body
+func NewGenerateChallengeRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body GenerateChallengeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGenerateChallengeRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewGenerateChallengeRequestWithBody generates requests for GenerateChallenge with any type of body
+func NewGenerateChallengeRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/secrets/%s/challenge", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReadSecretRequest calls the generic ReadSecret builder with application/json body
+func NewReadSecretRequest(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body ReadSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReadSecretRequestWithBody(server, workspaceIdParam, resourceIdParam, "application/json", bodyReader)
+}
+
+// NewReadSecretRequestWithBody generates requests for ReadSecret with any type of body
+func NewReadSecretRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "resourceId", runtime.ParamLocationPath, resourceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v1/%s/secrets/%s/read", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateWorkspaceV2Request calls the generic CreateWorkspaceV2 builder with application/json body
 func NewCreateWorkspaceV2Request(server string, body CreateWorkspaceV2JSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -15993,101 +17243,6 @@ func NewGetCloneWorkspaceV2ResultRequest(server string, workspaceIdParam Workspa
 	return req, nil
 }
 
-// NewGetDeleteCloudContextV2ResultRequest generates requests for GetDeleteCloudContextV2Result
-func NewGetDeleteCloudContextV2ResultRequest(server string, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "jobId", runtime.ParamLocationPath, jobIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/cloudcontexts/delete-result/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewDeleteCloudContextV2Request calls the generic DeleteCloudContextV2 builder with application/json body
-func NewDeleteCloudContextV2Request(server string, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, body DeleteCloudContextV2JSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewDeleteCloudContextV2RequestWithBody(server, workspaceIdParam, cloudContextParam, "application/json", bodyReader)
-}
-
-// NewDeleteCloudContextV2RequestWithBody generates requests for DeleteCloudContextV2 with any type of body
-func NewDeleteCloudContextV2RequestWithBody(server string, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "cloudContext", runtime.ParamLocationPath, cloudContextParam)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/cloudcontexts/%s/delete", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewDeleteWorkspaceV2Request calls the generic DeleteWorkspaceV2 builder with application/json body
 func NewDeleteWorkspaceV2Request(server string, workspaceIdParam WorkspaceIdParam, body DeleteWorkspaceV2JSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -16176,6 +17331,100 @@ func NewGetDeleteWorkspaceV2ResultRequest(server string, workspaceIdParam Worksp
 	return req, nil
 }
 
+// NewLockWorkspaceRequest calls the generic LockWorkspace builder with application/json body
+func NewLockWorkspaceRequest(server string, workspaceIdParam WorkspaceIdParam, body LockWorkspaceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewLockWorkspaceRequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewLockWorkspaceRequestWithBody generates requests for LockWorkspace with any type of body
+func NewLockWorkspaceRequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/lock", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateAwsEc2InstanceV2Request calls the generic CreateAwsEc2InstanceV2 builder with application/json body
+func NewCreateAwsEc2InstanceV2Request(server string, workspaceIdParam WorkspaceIdParam, body CreateAwsEc2InstanceV2JSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateAwsEc2InstanceV2RequestWithBody(server, workspaceIdParam, "application/json", bodyReader)
+}
+
+// NewCreateAwsEc2InstanceV2RequestWithBody generates requests for CreateAwsEc2InstanceV2 with any type of body
+func NewCreateAwsEc2InstanceV2RequestWithBody(server string, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/resources/controlled/aws/instances", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDescribeAwsEc2InstanceV2Request generates requests for DescribeAwsEc2InstanceV2
 func NewDescribeAwsEc2InstanceV2Request(server string, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam) (*http.Request, error) {
 	var err error
@@ -16260,6 +17509,40 @@ func NewCreateGceInstanceV2RequestWithBody(server string, workspaceIdParam Works
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnlockWorkspaceRequest generates requests for UnlockWorkspace
+func NewUnlockWorkspaceRequest(server string, workspaceIdParam WorkspaceIdParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "workspaceId", runtime.ParamLocationPath, workspaceIdParam)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/workspaces/v2/%s/unlock", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -16388,9 +17671,6 @@ type ClientWithResponsesInterface interface {
 
 	BackfillWorkspaceApplicationsWithResponse(ctx context.Context, body BackfillWorkspaceApplicationsJSONRequestBody, reqEditors ...RequestEditorFn) (*BackfillWorkspaceApplicationsResp, error)
 
-	// BackfillCromwellRunsForAllWorkspacesWithResponse request
-	BackfillCromwellRunsForAllWorkspacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillCromwellRunsForAllWorkspacesResp, error)
-
 	// BackfillWorkspaceLabelsWithResponse request
 	BackfillWorkspaceLabelsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillWorkspaceLabelsResp, error)
 
@@ -16409,19 +17689,33 @@ type ClientWithResponsesInterface interface {
 	// GetWorkspaceByUfidWithResponse request
 	GetWorkspaceByUfidWithResponse(ctx context.Context, workspaceUserFacingIdParam WorkspaceUserFacingIdParam, reqEditors ...RequestEditorFn) (*GetWorkspaceByUfidResp, error)
 
-	// BackfillResourcePropertiesWithResponse request
-	BackfillResourcePropertiesWithResponse(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*BackfillResourcePropertiesResp, error)
-
 	// SyncIamRolesWithResponse request
 	SyncIamRolesWithResponse(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*SyncIamRolesResp, error)
 
-	// AodOperationWithBodyWithResponse request with any body
-	AodOperationWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AodOperationResp, error)
+	// AdminFilterWorkspacesWithBodyWithResponse request with any body
+	AdminFilterWorkspacesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminFilterWorkspacesResp, error)
 
-	AodOperationWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AodOperationJSONRequestBody, reqEditors ...RequestEditorFn) (*AodOperationResp, error)
+	AdminFilterWorkspacesWithResponse(ctx context.Context, body AdminFilterWorkspacesJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminFilterWorkspacesResp, error)
+
+	// GetWorkspaceDescriptionWithResponse request
+	GetWorkspaceDescriptionWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*GetWorkspaceDescriptionResp, error)
+
+	// FixStudyMappingWithResponse request
+	FixStudyMappingWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixStudyMappingParams, reqEditors ...RequestEditorFn) (*FixStudyMappingResp, error)
+
+	// FixWorkspaceStudyWithResponse request
+	FixWorkspaceStudyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixWorkspaceStudyParams, reqEditors ...RequestEditorFn) (*FixWorkspaceStudyResp, error)
 
 	// AddWorkspaceOwnerWithResponse request
 	AddWorkspaceOwnerWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*AddWorkspaceOwnerResp, error)
+
+	// AdminReplacePolicyWithBodyWithResponse request with any body
+	AdminReplacePolicyWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminReplacePolicyResp, error)
+
+	AdminReplacePolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AdminReplacePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminReplacePolicyResp, error)
+
+	// AdminResetWorkspaceStateWithResponse request
+	AdminResetWorkspaceStateWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*AdminResetWorkspaceStateResp, error)
 
 	// RetrieveJobWithResponse request
 	RetrieveJobWithResponse(ctx context.Context, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*RetrieveJobResp, error)
@@ -16463,9 +17757,6 @@ type ClientWithResponsesInterface interface {
 
 	UpdateWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkspaceResp, error)
 
-	// ListAccessRequirementsWithResponse request
-	ListAccessRequirementsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*ListAccessRequirementsResp, error)
-
 	// ListWorkspaceApplicationsWithResponse request
 	ListWorkspaceApplicationsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*ListWorkspaceApplicationsResp, error)
 
@@ -16477,22 +17768,6 @@ type ClientWithResponsesInterface interface {
 
 	// EnableWorkspaceApplicationWithResponse request
 	EnableWorkspaceApplicationWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, applicationIdParam ApplicationIdParam, reqEditors ...RequestEditorFn) (*EnableWorkspaceApplicationResp, error)
-
-	// CloneWorkspaceWithBodyWithResponse request with any body
-	CloneWorkspaceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneWorkspaceResp, error)
-
-	CloneWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CloneWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneWorkspaceResp, error)
-
-	// GetCloneWorkspaceResultWithResponse request
-	GetCloneWorkspaceResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCloneWorkspaceResultResp, error)
-
-	// CreateCloudContextWithBodyWithResponse request with any body
-	CreateCloudContextWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCloudContextResp, error)
-
-	CreateCloudContextWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateCloudContextJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCloudContextResp, error)
-
-	// GetCreateCloudContextResultWithResponse request
-	GetCreateCloudContextResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCreateCloudContextResultResp, error)
 
 	// DescribeWorkspaceWithResponse request
 	DescribeWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*DescribeWorkspaceResp, error)
@@ -16540,10 +17815,20 @@ type ClientWithResponsesInterface interface {
 	// ListValidRegionsWithResponse request
 	ListValidRegionsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListValidRegionsParams, reqEditors ...RequestEditorFn) (*ListValidRegionsResp, error)
 
+	// EnableMultiRegionApiAccessWithBodyWithResponse request with any body
+	EnableMultiRegionApiAccessWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableMultiRegionApiAccessResp, error)
+
+	EnableMultiRegionApiAccessWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body EnableMultiRegionApiAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableMultiRegionApiAccessResp, error)
+
 	// UpdatePoliciesWithBodyWithResponse request with any body
 	UpdatePoliciesWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePoliciesResp, error)
 
 	UpdatePoliciesWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body UpdatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePoliciesResp, error)
+
+	// BatchMergeCheckWithBodyWithResponse request with any body
+	BatchMergeCheckWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BatchMergeCheckResp, error)
+
+	BatchMergeCheckWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body BatchMergeCheckJSONRequestBody, reqEditors ...RequestEditorFn) (*BatchMergeCheckResp, error)
 
 	// ExplainPoliciesWithResponse request
 	ExplainPoliciesWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ExplainPoliciesParams, reqEditors ...RequestEditorFn) (*ExplainPoliciesResp, error)
@@ -16566,6 +17851,9 @@ type ClientWithResponsesInterface interface {
 	// EnumerateResourcesWithResponse request
 	EnumerateResourcesWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateResourcesParams, reqEditors ...RequestEditorFn) (*EnumerateResourcesResp, error)
 
+	// EnumerateAppsWithResponse request
+	EnumerateAppsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateAppsParams, reqEditors ...RequestEditorFn) (*EnumerateAppsResp, error)
+
 	// CreateFlexibleResourceWithBodyWithResponse request with any body
 	CreateFlexibleResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateFlexibleResourceResp, error)
 
@@ -16586,6 +17874,27 @@ type ClientWithResponsesInterface interface {
 	CloneFlexibleResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneFlexibleResourceResp, error)
 
 	CloneFlexibleResourceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneFlexibleResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneFlexibleResourceResp, error)
+
+	// CreateSecretWithBodyWithResponse request with any body
+	CreateSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretResp, error)
+
+	CreateSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretResp, error)
+
+	// DeleteSecretWithResponse request
+	DeleteSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteSecretResp, error)
+
+	// GetSecretWithResponse request
+	GetSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetSecretResp, error)
+
+	// UpdateSecretWithBodyWithResponse request with any body
+	UpdateSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretResp, error)
+
+	UpdateSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretResp, error)
+
+	// CloneSecretWithBodyWithResponse request with any body
+	CloneSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneSecretResp, error)
+
+	CloneSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneSecretResp, error)
 
 	// CreateControlledAwsAuroraDatabaseWithBodyWithResponse request with any body
 	CreateControlledAwsAuroraDatabaseWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateControlledAwsAuroraDatabaseResp, error)
@@ -16966,6 +18275,9 @@ type ClientWithResponsesInterface interface {
 
 	CloneAwsAuroraDatabaseReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneAwsAuroraDatabaseReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneAwsAuroraDatabaseReferenceResp, error)
 
+	// GetAuroraDatabaseReferenceCredentialWithResponse request
+	GetAuroraDatabaseReferenceCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAuroraDatabaseReferenceCredentialParams, reqEditors ...RequestEditorFn) (*GetAuroraDatabaseReferenceCredentialResp, error)
+
 	// CreateS3ExternalBucketReferenceWithBodyWithResponse request with any body
 	CreateS3ExternalBucketReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateS3ExternalBucketReferenceResp, error)
 
@@ -17152,6 +18464,30 @@ type ClientWithResponsesInterface interface {
 
 	CloneGitRepoReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneGitRepoReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneGitRepoReferenceResp, error)
 
+	// CreateSecretReferenceWithBodyWithResponse request with any body
+	CreateSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretReferenceResp, error)
+
+	CreateSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretReferenceResp, error)
+
+	// GetSecretReferenceByNameWithResponse request
+	GetSecretReferenceByNameWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, nameParam NameParam, reqEditors ...RequestEditorFn) (*GetSecretReferenceByNameResp, error)
+
+	// DeleteSecretReferenceWithResponse request
+	DeleteSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteSecretReferenceResp, error)
+
+	// GetSecretReferenceWithResponse request
+	GetSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetSecretReferenceResp, error)
+
+	// UpdateSecretReferenceWithBodyWithResponse request with any body
+	UpdateSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretReferenceResp, error)
+
+	UpdateSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretReferenceResp, error)
+
+	// CloneSecretReferenceWithBodyWithResponse request with any body
+	CloneSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneSecretReferenceResp, error)
+
+	CloneSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneSecretReferenceResp, error)
+
 	// CreateTerraWorkspaceReferenceWithBodyWithResponse request with any body
 	CreateTerraWorkspaceReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTerraWorkspaceReferenceResp, error)
 
@@ -17208,6 +18544,21 @@ type ClientWithResponsesInterface interface {
 	// RemoveRoleWithResponse request
 	RemoveRoleWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, roleParam RoleParam, memberEmailParam MemberEmailParam, reqEditors ...RequestEditorFn) (*RemoveRoleResp, error)
 
+	// RegisterKeyWithBodyWithResponse request with any body
+	RegisterKeyWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterKeyResp, error)
+
+	RegisterKeyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body RegisterKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterKeyResp, error)
+
+	// GenerateChallengeWithBodyWithResponse request with any body
+	GenerateChallengeWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GenerateChallengeResp, error)
+
+	GenerateChallengeWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body GenerateChallengeJSONRequestBody, reqEditors ...RequestEditorFn) (*GenerateChallengeResp, error)
+
+	// ReadSecretWithBodyWithResponse request with any body
+	ReadSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReadSecretResp, error)
+
+	ReadSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body ReadSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*ReadSecretResp, error)
+
 	// CreateWorkspaceV2WithBodyWithResponse request with any body
 	CreateWorkspaceV2WithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkspaceV2Resp, error)
 
@@ -17248,14 +18599,6 @@ type ClientWithResponsesInterface interface {
 	// GetCloneWorkspaceV2ResultWithResponse request
 	GetCloneWorkspaceV2ResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCloneWorkspaceV2ResultResp, error)
 
-	// GetDeleteCloudContextV2ResultWithResponse request
-	GetDeleteCloudContextV2ResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteCloudContextV2ResultResp, error)
-
-	// DeleteCloudContextV2WithBodyWithResponse request with any body
-	DeleteCloudContextV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteCloudContextV2Resp, error)
-
-	DeleteCloudContextV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, body DeleteCloudContextV2JSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteCloudContextV2Resp, error)
-
 	// DeleteWorkspaceV2WithBodyWithResponse request with any body
 	DeleteWorkspaceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteWorkspaceV2Resp, error)
 
@@ -17264,6 +18607,16 @@ type ClientWithResponsesInterface interface {
 	// GetDeleteWorkspaceV2ResultWithResponse request
 	GetDeleteWorkspaceV2ResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteWorkspaceV2ResultResp, error)
 
+	// LockWorkspaceWithBodyWithResponse request with any body
+	LockWorkspaceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LockWorkspaceResp, error)
+
+	LockWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body LockWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*LockWorkspaceResp, error)
+
+	// CreateAwsEc2InstanceV2WithBodyWithResponse request with any body
+	CreateAwsEc2InstanceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsEc2InstanceV2Resp, error)
+
+	CreateAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAwsEc2InstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAwsEc2InstanceV2Resp, error)
+
 	// DescribeAwsEc2InstanceV2WithResponse request
 	DescribeAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DescribeAwsEc2InstanceV2Resp, error)
 
@@ -17271,6 +18624,9 @@ type ClientWithResponsesInterface interface {
 	CreateGceInstanceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGceInstanceV2Resp, error)
 
 	CreateGceInstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateGceInstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGceInstanceV2Resp, error)
+
+	// UnlockWorkspaceWithResponse request
+	UnlockWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*UnlockWorkspaceResp, error)
 
 	// ServiceStatusWithResponse request
 	ServiceStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ServiceStatusResp, error)
@@ -17459,31 +18815,6 @@ func (r BackfillWorkspaceApplicationsResp) StatusCode() int {
 	return 0
 }
 
-type BackfillCromwellRunsForAllWorkspacesResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *JobResultResponse
-	JSON202      *JobResultResponse
-	JSON403      *PermissionDenied
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r BackfillCromwellRunsForAllWorkspacesResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BackfillCromwellRunsForAllWorkspacesResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type BackfillWorkspaceLabelsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -17631,31 +18962,6 @@ func (r GetWorkspaceByUfidResp) StatusCode() int {
 	return 0
 }
 
-type BackfillResourcePropertiesResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *JobResultResponse
-	JSON202      *JobResultResponse
-	JSON403      *PermissionDenied
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r BackfillResourcePropertiesResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BackfillResourcePropertiesResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type SyncIamRolesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -17681,16 +18987,17 @@ func (r SyncIamRolesResp) StatusCode() int {
 	return 0
 }
 
-type AodOperationResp struct {
+type AdminFilterWorkspacesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *WorkspaceDescriptionList
+	JSON400      *BadRequest
 	JSON403      *PermissionDenied
-	JSON404      *NotFound
 	JSON500      *ServerError
 }
 
 // Status returns HTTPResponse.Status
-func (r AodOperationResp) Status() string {
+func (r AdminFilterWorkspacesResp) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -17698,7 +19005,87 @@ func (r AodOperationResp) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AodOperationResp) StatusCode() int {
+func (r AdminFilterWorkspacesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWorkspaceDescriptionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkspaceDescription
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWorkspaceDescriptionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWorkspaceDescriptionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type FixStudyMappingResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *JobResultResponse
+	JSON202      *JobResultResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r FixStudyMappingResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FixStudyMappingResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type FixWorkspaceStudyResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *JobResultResponse
+	JSON202      *JobResultResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r FixWorkspaceStudyResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FixWorkspaceStudyResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17722,6 +19109,56 @@ func (r AddWorkspaceOwnerResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AddWorkspaceOwnerResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminReplacePolicyResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminReplacePolicyResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminReplacePolicyResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminResetWorkspaceStateResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminResetWorkspaceStateResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminResetWorkspaceStateResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -18032,31 +19469,6 @@ func (r UpdateWorkspaceResp) StatusCode() int {
 	return 0
 }
 
-type ListAccessRequirementsResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *AccessRequirementList
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r ListAccessRequirementsResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListAccessRequirementsResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type ListWorkspaceApplicationsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18151,113 +19563,6 @@ func (r EnableWorkspaceApplicationResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r EnableWorkspaceApplicationResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CloneWorkspaceResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *CloneWorkspaceResponse
-	JSON202      *CloneWorkspaceResponse
-	JSON400      *BadRequest
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r CloneWorkspaceResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CloneWorkspaceResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetCloneWorkspaceResultResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *CloneWorkspaceResponse
-	JSON202      *CloneWorkspaceResponse
-	JSON403      *PermissionDenied
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r GetCloneWorkspaceResultResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetCloneWorkspaceResultResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateCloudContextResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *CreateCloudContextResultResponse
-	JSON202      *CreateCloudContextResultResponse
-	JSON400      *BadRequest
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateCloudContextResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateCloudContextResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetCreateCloudContextResultResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *CreateCloudContextResultResponse
-	JSON202      *CreateCloudContextResultResponse
-	JSON400      *BadRequest
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON409      *Conflict
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r GetCreateCloudContextResultResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetCreateCloudContextResultResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -18565,6 +19870,34 @@ func (r ListValidRegionsResp) StatusCode() int {
 	return 0
 }
 
+type EnableMultiRegionApiAccessResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *JobResultResponse
+	JSON202      *JobResultResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r EnableMultiRegionApiAccessResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnableMultiRegionApiAccessResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type UpdatePoliciesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18586,6 +19919,31 @@ func (r UpdatePoliciesResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdatePoliciesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BatchMergeCheckResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BatchMergeCheckResult
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r BatchMergeCheckResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BatchMergeCheckResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -18717,6 +20075,32 @@ func (r EnumerateResourcesResp) StatusCode() int {
 	return 0
 }
 
+type EnumerateAppsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ResourceList
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r EnumerateAppsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnumerateAppsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateFlexibleResourceResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18835,6 +20219,129 @@ func (r CloneFlexibleResourceResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CloneFlexibleResourceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreatedControlledSecret
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSecretResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSecretResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ControlledSecretResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSecretResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ControlledSecretResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSecretResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CloneSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CloneControlledSecretResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CloneSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CloneSecretResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -21214,6 +22721,32 @@ func (r CloneAwsAuroraDatabaseReferenceResp) StatusCode() int {
 	return 0
 }
 
+type GetAuroraDatabaseReferenceCredentialResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetControlledAwsResourceCredentialResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAuroraDatabaseReferenceCredentialResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAuroraDatabaseReferenceCredentialResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateS3ExternalBucketReferenceResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -22378,6 +23911,157 @@ func (r CloneGitRepoReferenceResp) StatusCode() int {
 	return 0
 }
 
+type CreateSecretReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SecretReferenceResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSecretReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSecretReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSecretReferenceByNameResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SecretReferenceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSecretReferenceByNameResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSecretReferenceByNameResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSecretReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSecretReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSecretReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSecretReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SecretReferenceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSecretReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSecretReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSecretReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SecretReferenceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSecretReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSecretReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CloneSecretReferenceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CloneReferencedSecretResourceResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CloneSecretReferenceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CloneSecretReferenceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateTerraWorkspaceReferenceResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -22726,6 +24410,80 @@ func (r RemoveRoleResp) StatusCode() int {
 	return 0
 }
 
+type RegisterKeyResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterKeyResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterKeyResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GenerateChallengeResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GenerateChallengeResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r GenerateChallengeResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GenerateChallengeResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReadSecretResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ReadSecretResponse
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadSecretResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadSecretResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateWorkspaceV2Resp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -22987,58 +24745,6 @@ func (r GetCloneWorkspaceV2ResultResp) StatusCode() int {
 	return 0
 }
 
-type GetDeleteCloudContextV2ResultResp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *JobResultResponse
-	JSON202      *JobResultResponse
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r GetDeleteCloudContextV2ResultResp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetDeleteCloudContextV2ResultResp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeleteCloudContextV2Resp struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *JobResultResponse
-	JSON202      *JobResultResponse
-	JSON403      *PermissionDenied
-	JSON404      *NotFound
-	JSON500      *ServerError
-}
-
-// Status returns HTTPResponse.Status
-func (r DeleteCloudContextV2Resp) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeleteCloudContextV2Resp) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type DeleteWorkspaceV2Resp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -23091,6 +24797,57 @@ func (r GetDeleteWorkspaceV2ResultResp) StatusCode() int {
 	return 0
 }
 
+type LockWorkspaceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r LockWorkspaceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r LockWorkspaceResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateAwsEc2InstanceV2Resp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreateControlledAwsEc2InstanceResponse
+	JSON202      *CreateControlledAwsEc2InstanceResponse
+	JSON400      *BadRequest
+	JSON403      *PermissionDenied
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateAwsEc2InstanceV2Resp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateAwsEc2InstanceV2Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DescribeAwsEc2InstanceV2Resp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -23137,6 +24894,31 @@ func (r CreateGceInstanceV2Resp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateGceInstanceV2Resp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnlockWorkspaceResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON403      *PermissionDenied
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON500      *ServerError
+}
+
+// Status returns HTTPResponse.Status
+func (r UnlockWorkspaceResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnlockWorkspaceResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -23273,15 +25055,6 @@ func (c *ClientWithResponses) BackfillWorkspaceApplicationsWithResponse(ctx cont
 	return ParseBackfillWorkspaceApplicationsResp(rsp)
 }
 
-// BackfillCromwellRunsForAllWorkspacesWithResponse request returning *BackfillCromwellRunsForAllWorkspacesResp
-func (c *ClientWithResponses) BackfillCromwellRunsForAllWorkspacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillCromwellRunsForAllWorkspacesResp, error) {
-	rsp, err := c.BackfillCromwellRunsForAllWorkspaces(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBackfillCromwellRunsForAllWorkspacesResp(rsp)
-}
-
 // BackfillWorkspaceLabelsWithResponse request returning *BackfillWorkspaceLabelsResp
 func (c *ClientWithResponses) BackfillWorkspaceLabelsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BackfillWorkspaceLabelsResp, error) {
 	rsp, err := c.BackfillWorkspaceLabels(ctx, reqEditors...)
@@ -23336,15 +25109,6 @@ func (c *ClientWithResponses) GetWorkspaceByUfidWithResponse(ctx context.Context
 	return ParseGetWorkspaceByUfidResp(rsp)
 }
 
-// BackfillResourcePropertiesWithResponse request returning *BackfillResourcePropertiesResp
-func (c *ClientWithResponses) BackfillResourcePropertiesWithResponse(ctx context.Context, params *BackfillResourcePropertiesParams, reqEditors ...RequestEditorFn) (*BackfillResourcePropertiesResp, error) {
-	rsp, err := c.BackfillResourceProperties(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBackfillResourcePropertiesResp(rsp)
-}
-
 // SyncIamRolesWithResponse request returning *SyncIamRolesResp
 func (c *ClientWithResponses) SyncIamRolesWithResponse(ctx context.Context, params *SyncIamRolesParams, reqEditors ...RequestEditorFn) (*SyncIamRolesResp, error) {
 	rsp, err := c.SyncIamRoles(ctx, params, reqEditors...)
@@ -23354,21 +25118,48 @@ func (c *ClientWithResponses) SyncIamRolesWithResponse(ctx context.Context, para
 	return ParseSyncIamRolesResp(rsp)
 }
 
-// AodOperationWithBodyWithResponse request with arbitrary body returning *AodOperationResp
-func (c *ClientWithResponses) AodOperationWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AodOperationResp, error) {
-	rsp, err := c.AodOperationWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+// AdminFilterWorkspacesWithBodyWithResponse request with arbitrary body returning *AdminFilterWorkspacesResp
+func (c *ClientWithResponses) AdminFilterWorkspacesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminFilterWorkspacesResp, error) {
+	rsp, err := c.AdminFilterWorkspacesWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAodOperationResp(rsp)
+	return ParseAdminFilterWorkspacesResp(rsp)
 }
 
-func (c *ClientWithResponses) AodOperationWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AodOperationJSONRequestBody, reqEditors ...RequestEditorFn) (*AodOperationResp, error) {
-	rsp, err := c.AodOperation(ctx, workspaceIdParam, body, reqEditors...)
+func (c *ClientWithResponses) AdminFilterWorkspacesWithResponse(ctx context.Context, body AdminFilterWorkspacesJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminFilterWorkspacesResp, error) {
+	rsp, err := c.AdminFilterWorkspaces(ctx, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAodOperationResp(rsp)
+	return ParseAdminFilterWorkspacesResp(rsp)
+}
+
+// GetWorkspaceDescriptionWithResponse request returning *GetWorkspaceDescriptionResp
+func (c *ClientWithResponses) GetWorkspaceDescriptionWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*GetWorkspaceDescriptionResp, error) {
+	rsp, err := c.GetWorkspaceDescription(ctx, workspaceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWorkspaceDescriptionResp(rsp)
+}
+
+// FixStudyMappingWithResponse request returning *FixStudyMappingResp
+func (c *ClientWithResponses) FixStudyMappingWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixStudyMappingParams, reqEditors ...RequestEditorFn) (*FixStudyMappingResp, error) {
+	rsp, err := c.FixStudyMapping(ctx, workspaceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFixStudyMappingResp(rsp)
+}
+
+// FixWorkspaceStudyWithResponse request returning *FixWorkspaceStudyResp
+func (c *ClientWithResponses) FixWorkspaceStudyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *FixWorkspaceStudyParams, reqEditors ...RequestEditorFn) (*FixWorkspaceStudyResp, error) {
+	rsp, err := c.FixWorkspaceStudy(ctx, workspaceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFixWorkspaceStudyResp(rsp)
 }
 
 // AddWorkspaceOwnerWithResponse request returning *AddWorkspaceOwnerResp
@@ -23378,6 +25169,32 @@ func (c *ClientWithResponses) AddWorkspaceOwnerWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseAddWorkspaceOwnerResp(rsp)
+}
+
+// AdminReplacePolicyWithBodyWithResponse request with arbitrary body returning *AdminReplacePolicyResp
+func (c *ClientWithResponses) AdminReplacePolicyWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminReplacePolicyResp, error) {
+	rsp, err := c.AdminReplacePolicyWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminReplacePolicyResp(rsp)
+}
+
+func (c *ClientWithResponses) AdminReplacePolicyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body AdminReplacePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminReplacePolicyResp, error) {
+	rsp, err := c.AdminReplacePolicy(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminReplacePolicyResp(rsp)
+}
+
+// AdminResetWorkspaceStateWithResponse request returning *AdminResetWorkspaceStateResp
+func (c *ClientWithResponses) AdminResetWorkspaceStateWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*AdminResetWorkspaceStateResp, error) {
+	rsp, err := c.AdminResetWorkspaceState(ctx, workspaceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminResetWorkspaceStateResp(rsp)
 }
 
 // RetrieveJobWithResponse request returning *RetrieveJobResp
@@ -23504,15 +25321,6 @@ func (c *ClientWithResponses) UpdateWorkspaceWithResponse(ctx context.Context, w
 	return ParseUpdateWorkspaceResp(rsp)
 }
 
-// ListAccessRequirementsWithResponse request returning *ListAccessRequirementsResp
-func (c *ClientWithResponses) ListAccessRequirementsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*ListAccessRequirementsResp, error) {
-	rsp, err := c.ListAccessRequirements(ctx, workspaceIdParam, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListAccessRequirementsResp(rsp)
-}
-
 // ListWorkspaceApplicationsWithResponse request returning *ListWorkspaceApplicationsResp
 func (c *ClientWithResponses) ListWorkspaceApplicationsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *ListWorkspaceApplicationsParams, reqEditors ...RequestEditorFn) (*ListWorkspaceApplicationsResp, error) {
 	rsp, err := c.ListWorkspaceApplications(ctx, workspaceIdParam, params, reqEditors...)
@@ -23547,58 +25355,6 @@ func (c *ClientWithResponses) EnableWorkspaceApplicationWithResponse(ctx context
 		return nil, err
 	}
 	return ParseEnableWorkspaceApplicationResp(rsp)
-}
-
-// CloneWorkspaceWithBodyWithResponse request with arbitrary body returning *CloneWorkspaceResp
-func (c *ClientWithResponses) CloneWorkspaceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneWorkspaceResp, error) {
-	rsp, err := c.CloneWorkspaceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCloneWorkspaceResp(rsp)
-}
-
-func (c *ClientWithResponses) CloneWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CloneWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneWorkspaceResp, error) {
-	rsp, err := c.CloneWorkspace(ctx, workspaceIdParam, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCloneWorkspaceResp(rsp)
-}
-
-// GetCloneWorkspaceResultWithResponse request returning *GetCloneWorkspaceResultResp
-func (c *ClientWithResponses) GetCloneWorkspaceResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCloneWorkspaceResultResp, error) {
-	rsp, err := c.GetCloneWorkspaceResult(ctx, workspaceIdParam, jobIdParam, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetCloneWorkspaceResultResp(rsp)
-}
-
-// CreateCloudContextWithBodyWithResponse request with arbitrary body returning *CreateCloudContextResp
-func (c *ClientWithResponses) CreateCloudContextWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCloudContextResp, error) {
-	rsp, err := c.CreateCloudContextWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateCloudContextResp(rsp)
-}
-
-func (c *ClientWithResponses) CreateCloudContextWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateCloudContextJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCloudContextResp, error) {
-	rsp, err := c.CreateCloudContext(ctx, workspaceIdParam, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateCloudContextResp(rsp)
-}
-
-// GetCreateCloudContextResultWithResponse request returning *GetCreateCloudContextResultResp
-func (c *ClientWithResponses) GetCreateCloudContextResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetCreateCloudContextResultResp, error) {
-	rsp, err := c.GetCreateCloudContextResult(ctx, workspaceIdParam, jobIdParam, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetCreateCloudContextResultResp(rsp)
 }
 
 // DescribeWorkspaceWithResponse request returning *DescribeWorkspaceResp
@@ -23749,6 +25505,23 @@ func (c *ClientWithResponses) ListValidRegionsWithResponse(ctx context.Context, 
 	return ParseListValidRegionsResp(rsp)
 }
 
+// EnableMultiRegionApiAccessWithBodyWithResponse request with arbitrary body returning *EnableMultiRegionApiAccessResp
+func (c *ClientWithResponses) EnableMultiRegionApiAccessWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableMultiRegionApiAccessResp, error) {
+	rsp, err := c.EnableMultiRegionApiAccessWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableMultiRegionApiAccessResp(rsp)
+}
+
+func (c *ClientWithResponses) EnableMultiRegionApiAccessWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body EnableMultiRegionApiAccessJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableMultiRegionApiAccessResp, error) {
+	rsp, err := c.EnableMultiRegionApiAccess(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableMultiRegionApiAccessResp(rsp)
+}
+
 // UpdatePoliciesWithBodyWithResponse request with arbitrary body returning *UpdatePoliciesResp
 func (c *ClientWithResponses) UpdatePoliciesWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePoliciesResp, error) {
 	rsp, err := c.UpdatePoliciesWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -23764,6 +25537,23 @@ func (c *ClientWithResponses) UpdatePoliciesWithResponse(ctx context.Context, wo
 		return nil, err
 	}
 	return ParseUpdatePoliciesResp(rsp)
+}
+
+// BatchMergeCheckWithBodyWithResponse request with arbitrary body returning *BatchMergeCheckResp
+func (c *ClientWithResponses) BatchMergeCheckWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BatchMergeCheckResp, error) {
+	rsp, err := c.BatchMergeCheckWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBatchMergeCheckResp(rsp)
+}
+
+func (c *ClientWithResponses) BatchMergeCheckWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body BatchMergeCheckJSONRequestBody, reqEditors ...RequestEditorFn) (*BatchMergeCheckResp, error) {
+	rsp, err := c.BatchMergeCheck(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBatchMergeCheckResp(rsp)
 }
 
 // ExplainPoliciesWithResponse request returning *ExplainPoliciesResp
@@ -23835,6 +25625,15 @@ func (c *ClientWithResponses) EnumerateResourcesWithResponse(ctx context.Context
 	return ParseEnumerateResourcesResp(rsp)
 }
 
+// EnumerateAppsWithResponse request returning *EnumerateAppsResp
+func (c *ClientWithResponses) EnumerateAppsWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, params *EnumerateAppsParams, reqEditors ...RequestEditorFn) (*EnumerateAppsResp, error) {
+	rsp, err := c.EnumerateApps(ctx, workspaceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnumerateAppsResp(rsp)
+}
+
 // CreateFlexibleResourceWithBodyWithResponse request with arbitrary body returning *CreateFlexibleResourceResp
 func (c *ClientWithResponses) CreateFlexibleResourceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateFlexibleResourceResp, error) {
 	rsp, err := c.CreateFlexibleResourceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -23902,6 +25701,75 @@ func (c *ClientWithResponses) CloneFlexibleResourceWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseCloneFlexibleResourceResp(rsp)
+}
+
+// CreateSecretWithBodyWithResponse request with arbitrary body returning *CreateSecretResp
+func (c *ClientWithResponses) CreateSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretResp, error) {
+	rsp, err := c.CreateSecretWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretResp, error) {
+	rsp, err := c.CreateSecret(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretResp(rsp)
+}
+
+// DeleteSecretWithResponse request returning *DeleteSecretResp
+func (c *ClientWithResponses) DeleteSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteSecretResp, error) {
+	rsp, err := c.DeleteSecret(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSecretResp(rsp)
+}
+
+// GetSecretWithResponse request returning *GetSecretResp
+func (c *ClientWithResponses) GetSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetSecretResp, error) {
+	rsp, err := c.GetSecret(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSecretResp(rsp)
+}
+
+// UpdateSecretWithBodyWithResponse request with arbitrary body returning *UpdateSecretResp
+func (c *ClientWithResponses) UpdateSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretResp, error) {
+	rsp, err := c.UpdateSecretWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretResp, error) {
+	rsp, err := c.UpdateSecret(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretResp(rsp)
+}
+
+// CloneSecretWithBodyWithResponse request with arbitrary body returning *CloneSecretResp
+func (c *ClientWithResponses) CloneSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneSecretResp, error) {
+	rsp, err := c.CloneSecretWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) CloneSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneSecretResp, error) {
+	rsp, err := c.CloneSecret(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneSecretResp(rsp)
 }
 
 // CreateControlledAwsAuroraDatabaseWithBodyWithResponse request with arbitrary body returning *CreateControlledAwsAuroraDatabaseResp
@@ -25141,6 +27009,15 @@ func (c *ClientWithResponses) CloneAwsAuroraDatabaseReferenceWithResponse(ctx co
 	return ParseCloneAwsAuroraDatabaseReferenceResp(rsp)
 }
 
+// GetAuroraDatabaseReferenceCredentialWithResponse request returning *GetAuroraDatabaseReferenceCredentialResp
+func (c *ClientWithResponses) GetAuroraDatabaseReferenceCredentialWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, params *GetAuroraDatabaseReferenceCredentialParams, reqEditors ...RequestEditorFn) (*GetAuroraDatabaseReferenceCredentialResp, error) {
+	rsp, err := c.GetAuroraDatabaseReferenceCredential(ctx, workspaceIdParam, resourceIdParam, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAuroraDatabaseReferenceCredentialResp(rsp)
+}
+
 // CreateS3ExternalBucketReferenceWithBodyWithResponse request with arbitrary body returning *CreateS3ExternalBucketReferenceResp
 func (c *ClientWithResponses) CreateS3ExternalBucketReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateS3ExternalBucketReferenceResp, error) {
 	rsp, err := c.CreateS3ExternalBucketReferenceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -25747,6 +27624,84 @@ func (c *ClientWithResponses) CloneGitRepoReferenceWithResponse(ctx context.Cont
 	return ParseCloneGitRepoReferenceResp(rsp)
 }
 
+// CreateSecretReferenceWithBodyWithResponse request with arbitrary body returning *CreateSecretReferenceResp
+func (c *ClientWithResponses) CreateSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretReferenceResp, error) {
+	rsp, err := c.CreateSecretReferenceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretReferenceResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretReferenceResp, error) {
+	rsp, err := c.CreateSecretReference(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretReferenceResp(rsp)
+}
+
+// GetSecretReferenceByNameWithResponse request returning *GetSecretReferenceByNameResp
+func (c *ClientWithResponses) GetSecretReferenceByNameWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, nameParam NameParam, reqEditors ...RequestEditorFn) (*GetSecretReferenceByNameResp, error) {
+	rsp, err := c.GetSecretReferenceByName(ctx, workspaceIdParam, nameParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSecretReferenceByNameResp(rsp)
+}
+
+// DeleteSecretReferenceWithResponse request returning *DeleteSecretReferenceResp
+func (c *ClientWithResponses) DeleteSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DeleteSecretReferenceResp, error) {
+	rsp, err := c.DeleteSecretReference(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSecretReferenceResp(rsp)
+}
+
+// GetSecretReferenceWithResponse request returning *GetSecretReferenceResp
+func (c *ClientWithResponses) GetSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*GetSecretReferenceResp, error) {
+	rsp, err := c.GetSecretReference(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSecretReferenceResp(rsp)
+}
+
+// UpdateSecretReferenceWithBodyWithResponse request with arbitrary body returning *UpdateSecretReferenceResp
+func (c *ClientWithResponses) UpdateSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretReferenceResp, error) {
+	rsp, err := c.UpdateSecretReferenceWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretReferenceResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body UpdateSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretReferenceResp, error) {
+	rsp, err := c.UpdateSecretReference(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretReferenceResp(rsp)
+}
+
+// CloneSecretReferenceWithBodyWithResponse request with arbitrary body returning *CloneSecretReferenceResp
+func (c *ClientWithResponses) CloneSecretReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CloneSecretReferenceResp, error) {
+	rsp, err := c.CloneSecretReferenceWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneSecretReferenceResp(rsp)
+}
+
+func (c *ClientWithResponses) CloneSecretReferenceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body CloneSecretReferenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CloneSecretReferenceResp, error) {
+	rsp, err := c.CloneSecretReference(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCloneSecretReferenceResp(rsp)
+}
+
 // CreateTerraWorkspaceReferenceWithBodyWithResponse request with arbitrary body returning *CreateTerraWorkspaceReferenceResp
 func (c *ClientWithResponses) CreateTerraWorkspaceReferenceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTerraWorkspaceReferenceResp, error) {
 	rsp, err := c.CreateTerraWorkspaceReferenceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -25929,6 +27884,57 @@ func (c *ClientWithResponses) RemoveRoleWithResponse(ctx context.Context, worksp
 	return ParseRemoveRoleResp(rsp)
 }
 
+// RegisterKeyWithBodyWithResponse request with arbitrary body returning *RegisterKeyResp
+func (c *ClientWithResponses) RegisterKeyWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterKeyResp, error) {
+	rsp, err := c.RegisterKeyWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterKeyResp(rsp)
+}
+
+func (c *ClientWithResponses) RegisterKeyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body RegisterKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterKeyResp, error) {
+	rsp, err := c.RegisterKey(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterKeyResp(rsp)
+}
+
+// GenerateChallengeWithBodyWithResponse request with arbitrary body returning *GenerateChallengeResp
+func (c *ClientWithResponses) GenerateChallengeWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GenerateChallengeResp, error) {
+	rsp, err := c.GenerateChallengeWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGenerateChallengeResp(rsp)
+}
+
+func (c *ClientWithResponses) GenerateChallengeWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body GenerateChallengeJSONRequestBody, reqEditors ...RequestEditorFn) (*GenerateChallengeResp, error) {
+	rsp, err := c.GenerateChallenge(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGenerateChallengeResp(rsp)
+}
+
+// ReadSecretWithBodyWithResponse request with arbitrary body returning *ReadSecretResp
+func (c *ClientWithResponses) ReadSecretWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReadSecretResp, error) {
+	rsp, err := c.ReadSecretWithBody(ctx, workspaceIdParam, resourceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadSecretResp(rsp)
+}
+
+func (c *ClientWithResponses) ReadSecretWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, body ReadSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*ReadSecretResp, error) {
+	rsp, err := c.ReadSecret(ctx, workspaceIdParam, resourceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadSecretResp(rsp)
+}
+
 // CreateWorkspaceV2WithBodyWithResponse request with arbitrary body returning *CreateWorkspaceV2Resp
 func (c *ClientWithResponses) CreateWorkspaceV2WithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkspaceV2Resp, error) {
 	rsp, err := c.CreateWorkspaceV2WithBody(ctx, contentType, body, reqEditors...)
@@ -26059,32 +28065,6 @@ func (c *ClientWithResponses) GetCloneWorkspaceV2ResultWithResponse(ctx context.
 	return ParseGetCloneWorkspaceV2ResultResp(rsp)
 }
 
-// GetDeleteCloudContextV2ResultWithResponse request returning *GetDeleteCloudContextV2ResultResp
-func (c *ClientWithResponses) GetDeleteCloudContextV2ResultWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, jobIdParam JobIdParam, reqEditors ...RequestEditorFn) (*GetDeleteCloudContextV2ResultResp, error) {
-	rsp, err := c.GetDeleteCloudContextV2Result(ctx, workspaceIdParam, jobIdParam, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetDeleteCloudContextV2ResultResp(rsp)
-}
-
-// DeleteCloudContextV2WithBodyWithResponse request with arbitrary body returning *DeleteCloudContextV2Resp
-func (c *ClientWithResponses) DeleteCloudContextV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteCloudContextV2Resp, error) {
-	rsp, err := c.DeleteCloudContextV2WithBody(ctx, workspaceIdParam, cloudContextParam, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteCloudContextV2Resp(rsp)
-}
-
-func (c *ClientWithResponses) DeleteCloudContextV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, cloudContextParam CloudContextParam, body DeleteCloudContextV2JSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteCloudContextV2Resp, error) {
-	rsp, err := c.DeleteCloudContextV2(ctx, workspaceIdParam, cloudContextParam, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteCloudContextV2Resp(rsp)
-}
-
 // DeleteWorkspaceV2WithBodyWithResponse request with arbitrary body returning *DeleteWorkspaceV2Resp
 func (c *ClientWithResponses) DeleteWorkspaceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteWorkspaceV2Resp, error) {
 	rsp, err := c.DeleteWorkspaceV2WithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
@@ -26111,6 +28091,40 @@ func (c *ClientWithResponses) GetDeleteWorkspaceV2ResultWithResponse(ctx context
 	return ParseGetDeleteWorkspaceV2ResultResp(rsp)
 }
 
+// LockWorkspaceWithBodyWithResponse request with arbitrary body returning *LockWorkspaceResp
+func (c *ClientWithResponses) LockWorkspaceWithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LockWorkspaceResp, error) {
+	rsp, err := c.LockWorkspaceWithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLockWorkspaceResp(rsp)
+}
+
+func (c *ClientWithResponses) LockWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body LockWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*LockWorkspaceResp, error) {
+	rsp, err := c.LockWorkspace(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLockWorkspaceResp(rsp)
+}
+
+// CreateAwsEc2InstanceV2WithBodyWithResponse request with arbitrary body returning *CreateAwsEc2InstanceV2Resp
+func (c *ClientWithResponses) CreateAwsEc2InstanceV2WithBodyWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAwsEc2InstanceV2Resp, error) {
+	rsp, err := c.CreateAwsEc2InstanceV2WithBody(ctx, workspaceIdParam, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAwsEc2InstanceV2Resp(rsp)
+}
+
+func (c *ClientWithResponses) CreateAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, body CreateAwsEc2InstanceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAwsEc2InstanceV2Resp, error) {
+	rsp, err := c.CreateAwsEc2InstanceV2(ctx, workspaceIdParam, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAwsEc2InstanceV2Resp(rsp)
+}
+
 // DescribeAwsEc2InstanceV2WithResponse request returning *DescribeAwsEc2InstanceV2Resp
 func (c *ClientWithResponses) DescribeAwsEc2InstanceV2WithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, resourceIdParam ResourceIdParam, reqEditors ...RequestEditorFn) (*DescribeAwsEc2InstanceV2Resp, error) {
 	rsp, err := c.DescribeAwsEc2InstanceV2(ctx, workspaceIdParam, resourceIdParam, reqEditors...)
@@ -26135,6 +28149,15 @@ func (c *ClientWithResponses) CreateGceInstanceV2WithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseCreateGceInstanceV2Resp(rsp)
+}
+
+// UnlockWorkspaceWithResponse request returning *UnlockWorkspaceResp
+func (c *ClientWithResponses) UnlockWorkspaceWithResponse(ctx context.Context, workspaceIdParam WorkspaceIdParam, reqEditors ...RequestEditorFn) (*UnlockWorkspaceResp, error) {
+	rsp, err := c.UnlockWorkspace(ctx, workspaceIdParam, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnlockWorkspaceResp(rsp)
 }
 
 // ServiceStatusWithResponse request returning *ServiceStatusResp
@@ -26519,53 +28542,6 @@ func ParseBackfillWorkspaceApplicationsResp(rsp *http.Response) (*BackfillWorksp
 	return response, nil
 }
 
-// ParseBackfillCromwellRunsForAllWorkspacesResp parses an HTTP response from a BackfillCromwellRunsForAllWorkspacesWithResponse call
-func ParseBackfillCromwellRunsForAllWorkspacesResp(rsp *http.Response) (*BackfillCromwellRunsForAllWorkspacesResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BackfillCromwellRunsForAllWorkspacesResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseBackfillWorkspaceLabelsResp parses an HTTP response from a BackfillWorkspaceLabelsWithResponse call
 func ParseBackfillWorkspaceLabelsResp(rsp *http.Response) (*BackfillWorkspaceLabelsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -26827,53 +28803,6 @@ func ParseGetWorkspaceByUfidResp(rsp *http.Response) (*GetWorkspaceByUfidResp, e
 	return response, nil
 }
 
-// ParseBackfillResourcePropertiesResp parses an HTTP response from a BackfillResourcePropertiesWithResponse call
-func ParseBackfillResourcePropertiesResp(rsp *http.Response) (*BackfillResourcePropertiesResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BackfillResourcePropertiesResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseSyncIamRolesResp parses an HTTP response from a SyncIamRolesWithResponse call
 func ParseSyncIamRolesResp(rsp *http.Response) (*SyncIamRolesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -26921,20 +28850,203 @@ func ParseSyncIamRolesResp(rsp *http.Response) (*SyncIamRolesResp, error) {
 	return response, nil
 }
 
-// ParseAodOperationResp parses an HTTP response from a AodOperationWithResponse call
-func ParseAodOperationResp(rsp *http.Response) (*AodOperationResp, error) {
+// ParseAdminFilterWorkspacesResp parses an HTTP response from a AdminFilterWorkspacesWithResponse call
+func ParseAdminFilterWorkspacesResp(rsp *http.Response) (*AdminFilterWorkspacesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AodOperationResp{
+	response := &AdminFilterWorkspacesResp{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkspaceDescriptionList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWorkspaceDescriptionResp parses an HTTP response from a GetWorkspaceDescriptionWithResponse call
+func ParseGetWorkspaceDescriptionResp(rsp *http.Response) (*GetWorkspaceDescriptionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWorkspaceDescriptionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkspaceDescription
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFixStudyMappingResp parses an HTTP response from a FixStudyMappingWithResponse call
+func ParseFixStudyMappingResp(rsp *http.Response) (*FixStudyMappingResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FixStudyMappingResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFixWorkspaceStudyResp parses an HTTP response from a FixWorkspaceStudyWithResponse call
+func ParseFixWorkspaceStudyResp(rsp *http.Response) (*FixWorkspaceStudyResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FixWorkspaceStudyResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest PermissionDenied
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -26981,6 +29093,100 @@ func ParseAddWorkspaceOwnerResp(rsp *http.Response) (*AddWorkspaceOwnerResp, err
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminReplacePolicyResp parses an HTTP response from a AdminReplacePolicyWithResponse call
+func ParseAdminReplacePolicyResp(rsp *http.Response) (*AdminReplacePolicyResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminReplacePolicyResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminResetWorkspaceStateResp parses an HTTP response from a AdminResetWorkspaceStateWithResponse call
+func ParseAdminResetWorkspaceStateResp(rsp *http.Response) (*AdminResetWorkspaceStateResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminResetWorkspaceStateResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError
@@ -27586,53 +29792,6 @@ func ParseUpdateWorkspaceResp(rsp *http.Response) (*UpdateWorkspaceResp, error) 
 	return response, nil
 }
 
-// ParseListAccessRequirementsResp parses an HTTP response from a ListAccessRequirementsWithResponse call
-func ParseListAccessRequirementsResp(rsp *http.Response) (*ListAccessRequirementsResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListAccessRequirementsResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest AccessRequirementList
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseListWorkspaceApplicationsResp parses an HTTP response from a ListWorkspaceApplicationsWithResponse call
 func ParseListWorkspaceApplicationsResp(rsp *http.Response) (*ListWorkspaceApplicationsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -27808,243 +29967,6 @@ func ParseEnableWorkspaceApplicationResp(rsp *http.Response) (*EnableWorkspaceAp
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCloneWorkspaceResp parses an HTTP response from a CloneWorkspaceWithResponse call
-func ParseCloneWorkspaceResp(rsp *http.Response) (*CloneWorkspaceResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CloneWorkspaceResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CloneWorkspaceResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest CloneWorkspaceResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetCloneWorkspaceResultResp parses an HTTP response from a GetCloneWorkspaceResultWithResponse call
-func ParseGetCloneWorkspaceResultResp(rsp *http.Response) (*GetCloneWorkspaceResultResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetCloneWorkspaceResultResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CloneWorkspaceResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest CloneWorkspaceResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateCloudContextResp parses an HTTP response from a CreateCloudContextWithResponse call
-func ParseCreateCloudContextResp(rsp *http.Response) (*CreateCloudContextResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateCloudContextResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CreateCloudContextResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest CreateCloudContextResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetCreateCloudContextResultResp parses an HTTP response from a GetCreateCloudContextResultWithResponse call
-func ParseGetCreateCloudContextResultResp(rsp *http.Response) (*GetCreateCloudContextResultResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetCreateCloudContextResultResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CreateCloudContextResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest CreateCloudContextResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
-		var dest Conflict
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError
@@ -28629,6 +30551,74 @@ func ParseListValidRegionsResp(rsp *http.Response) (*ListValidRegionsResp, error
 	return response, nil
 }
 
+// ParseEnableMultiRegionApiAccessResp parses an HTTP response from a EnableMultiRegionApiAccessWithResponse call
+func ParseEnableMultiRegionApiAccessResp(rsp *http.Response) (*EnableMultiRegionApiAccessResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnableMultiRegionApiAccessResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest JobResultResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseUpdatePoliciesResp parses an HTTP response from a UpdatePoliciesWithResponse call
 func ParseUpdatePoliciesResp(rsp *http.Response) (*UpdatePoliciesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -28677,6 +30667,53 @@ func ParseUpdatePoliciesResp(rsp *http.Response) (*UpdatePoliciesResp, error) {
 			return nil, err
 		}
 		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBatchMergeCheckResp parses an HTTP response from a BatchMergeCheckWithResponse call
+func ParseBatchMergeCheckResp(rsp *http.Response) (*BatchMergeCheckResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BatchMergeCheckResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BatchMergeCheckResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ServerError
@@ -28925,6 +30962,60 @@ func ParseEnumerateResourcesResp(rsp *http.Response) (*EnumerateResourcesResp, e
 	return response, nil
 }
 
+// ParseEnumerateAppsResp parses an HTTP response from a EnumerateAppsWithResponse call
+func ParseEnumerateAppsResp(rsp *http.Response) (*EnumerateAppsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnumerateAppsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ResourceList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateFlexibleResourceResp parses an HTTP response from a CreateFlexibleResourceWithResponse call
 func ParseCreateFlexibleResourceResp(rsp *http.Response) (*CreateFlexibleResourceResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -29126,6 +31217,227 @@ func ParseCloneFlexibleResourceResp(rsp *http.Response) (*CloneFlexibleResourceR
 			return nil, err
 		}
 		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSecretResp parses an HTTP response from a CreateSecretWithResponse call
+func ParseCreateSecretResp(rsp *http.Response) (*CreateSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreatedControlledSecret
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSecretResp parses an HTTP response from a DeleteSecretWithResponse call
+func ParseDeleteSecretResp(rsp *http.Response) (*DeleteSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSecretResp parses an HTTP response from a GetSecretWithResponse call
+func ParseGetSecretResp(rsp *http.Response) (*GetSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ControlledSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSecretResp parses an HTTP response from a UpdateSecretWithResponse call
+func ParseUpdateSecretResp(rsp *http.Response) (*UpdateSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ControlledSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCloneSecretResp parses an HTTP response from a CloneSecretWithResponse call
+func ParseCloneSecretResp(rsp *http.Response) (*CloneSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CloneSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CloneControlledSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest PermissionDenied
@@ -33860,6 +36172,60 @@ func ParseCloneAwsAuroraDatabaseReferenceResp(rsp *http.Response) (*CloneAwsAuro
 	return response, nil
 }
 
+// ParseGetAuroraDatabaseReferenceCredentialResp parses an HTTP response from a GetAuroraDatabaseReferenceCredentialWithResponse call
+func ParseGetAuroraDatabaseReferenceCredentialResp(rsp *http.Response) (*GetAuroraDatabaseReferenceCredentialResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAuroraDatabaseReferenceCredentialResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetControlledAwsResourceCredentialResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateS3ExternalBucketReferenceResp parses an HTTP response from a CreateS3ExternalBucketReferenceWithResponse call
 func ParseCreateS3ExternalBucketReferenceResp(rsp *http.Response) (*CreateS3ExternalBucketReferenceResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -36120,6 +38486,295 @@ func ParseCloneGitRepoReferenceResp(rsp *http.Response) (*CloneGitRepoReferenceR
 	return response, nil
 }
 
+// ParseCreateSecretReferenceResp parses an HTTP response from a CreateSecretReferenceWithResponse call
+func ParseCreateSecretReferenceResp(rsp *http.Response) (*CreateSecretReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSecretReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SecretReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSecretReferenceByNameResp parses an HTTP response from a GetSecretReferenceByNameWithResponse call
+func ParseGetSecretReferenceByNameResp(rsp *http.Response) (*GetSecretReferenceByNameResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSecretReferenceByNameResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SecretReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSecretReferenceResp parses an HTTP response from a DeleteSecretReferenceWithResponse call
+func ParseDeleteSecretReferenceResp(rsp *http.Response) (*DeleteSecretReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSecretReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSecretReferenceResp parses an HTTP response from a GetSecretReferenceWithResponse call
+func ParseGetSecretReferenceResp(rsp *http.Response) (*GetSecretReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSecretReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SecretReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSecretReferenceResp parses an HTTP response from a UpdateSecretReferenceWithResponse call
+func ParseUpdateSecretReferenceResp(rsp *http.Response) (*UpdateSecretReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSecretReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SecretReferenceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCloneSecretReferenceResp parses an HTTP response from a CloneSecretReferenceWithResponse call
+func ParseCloneSecretReferenceResp(rsp *http.Response) (*CloneSecretReferenceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CloneSecretReferenceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CloneReferencedSecretResourceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateTerraWorkspaceReferenceResp parses an HTTP response from a CreateTerraWorkspaceReferenceWithResponse call
 func ParseCreateTerraWorkspaceReferenceResp(rsp *http.Response) (*CreateTerraWorkspaceReferenceResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -36764,6 +39419,140 @@ func ParseRemoveRoleResp(rsp *http.Response) (*RemoveRoleResp, error) {
 	return response, nil
 }
 
+// ParseRegisterKeyResp parses an HTTP response from a RegisterKeyWithResponse call
+func ParseRegisterKeyResp(rsp *http.Response) (*RegisterKeyResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterKeyResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGenerateChallengeResp parses an HTTP response from a GenerateChallengeWithResponse call
+func ParseGenerateChallengeResp(rsp *http.Response) (*GenerateChallengeResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GenerateChallengeResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GenerateChallengeResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadSecretResp parses an HTTP response from a ReadSecretWithResponse call
+func ParseReadSecretResp(rsp *http.Response) (*ReadSecretResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadSecretResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ReadSecretResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateWorkspaceV2Resp parses an HTTP response from a CreateWorkspaceV2WithResponse call
 func ParseCreateWorkspaceV2Resp(rsp *http.Response) (*CreateWorkspaceV2Resp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -37311,114 +40100,6 @@ func ParseGetCloneWorkspaceV2ResultResp(rsp *http.Response) (*GetCloneWorkspaceV
 	return response, nil
 }
 
-// ParseGetDeleteCloudContextV2ResultResp parses an HTTP response from a GetDeleteCloudContextV2ResultWithResponse call
-func ParseGetDeleteCloudContextV2ResultResp(rsp *http.Response) (*GetDeleteCloudContextV2ResultResp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetDeleteCloudContextV2ResultResp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeleteCloudContextV2Resp parses an HTTP response from a DeleteCloudContextV2WithResponse call
-func ParseDeleteCloudContextV2Resp(rsp *http.Response) (*DeleteCloudContextV2Resp, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteCloudContextV2Resp{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest JobResultResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest PermissionDenied
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest ServerError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseDeleteWorkspaceV2Resp parses an HTTP response from a DeleteWorkspaceV2WithResponse call
 func ParseDeleteWorkspaceV2Resp(rsp *http.Response) (*DeleteWorkspaceV2Resp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -37527,6 +40208,107 @@ func ParseGetDeleteWorkspaceV2ResultResp(rsp *http.Response) (*GetDeleteWorkspac
 	return response, nil
 }
 
+// ParseLockWorkspaceResp parses an HTTP response from a LockWorkspaceWithResponse call
+func ParseLockWorkspaceResp(rsp *http.Response) (*LockWorkspaceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &LockWorkspaceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateAwsEc2InstanceV2Resp parses an HTTP response from a CreateAwsEc2InstanceV2WithResponse call
+func ParseCreateAwsEc2InstanceV2Resp(rsp *http.Response) (*CreateAwsEc2InstanceV2Resp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateAwsEc2InstanceV2Resp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreateControlledAwsEc2InstanceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest CreateControlledAwsEc2InstanceResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDescribeAwsEc2InstanceV2Resp parses an HTTP response from a DescribeAwsEc2InstanceV2WithResponse call
 func ParseDescribeAwsEc2InstanceV2Resp(rsp *http.Response) (*DescribeAwsEc2InstanceV2Resp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -37615,6 +40397,53 @@ func ParseCreateGceInstanceV2Resp(rsp *http.Response) (*CreateGceInstanceV2Resp,
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnlockWorkspaceResp parses an HTTP response from a UnlockWorkspaceWithResponse call
+func ParseUnlockWorkspaceResp(rsp *http.Response) (*UnlockWorkspaceResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnlockWorkspaceResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest PermissionDenied
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest Conflict

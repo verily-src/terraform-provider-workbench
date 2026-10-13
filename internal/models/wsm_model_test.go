@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/wsm"
+	wsmClient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestNewWorkspaceModel(t *testing.T) {
@@ -27,8 +27,8 @@ func TestNewWorkspaceModel(t *testing.T) {
 			workspace: &wsm.WorkspaceDescription{
 				Id:              id,
 				UserFacingId:    "test-workspace",
-				Description:     client.Ptr("This is a test workspace"),
-				DisplayName:     client.Ptr("Test Workspace"),
+				Description:     wsmClient.Ptr("This is a test workspace"),
+				DisplayName:     wsmClient.Ptr("Test Workspace"),
 				OrgId:           &orgId,
 				CrgId:           &crgId,
 				CreatedBy:       "test-user",
@@ -157,9 +157,9 @@ func TestConvertToCreateRequest(t *testing.T) {
 				Location: types.StringValue("us"),
 			},
 			want: wsm.CreateWorkspaceV2JSONRequestBody{
-				UserFacingId:         client.Ptr("test-workspace"),
-				Description:          client.Ptr("This is a test workspace"),
-				DisplayName:          client.Ptr("Test Workspace"),
+				UserFacingId:         wsmClient.Ptr("test-workspace"),
+				Description:          wsmClient.Ptr("This is a test workspace"),
+				DisplayName:          wsmClient.Ptr("Test Workspace"),
 				CloudResourceGroupId: &crgId,
 				OrganizationId:       &orgId,
 				Properties: buildProperties(map[string]string{
@@ -188,7 +188,7 @@ func TestConvertToCreateRequest(t *testing.T) {
 				PodID:          types.StringValue(crgId),
 			},
 			want: wsm.CreateWorkspaceV2JSONRequestBody{
-				UserFacingId:         client.Ptr("test-workspace"),
+				UserFacingId:         wsmClient.Ptr("test-workspace"),
 				CloudResourceGroupId: &crgId,
 				OrganizationId:       &orgId,
 				Properties: buildProperties(map[string]string{
@@ -251,7 +251,7 @@ func buildPolicies(policies []testPolicy) *[]wsm.WsmPolicyInput {
 	for _, p := range policies {
 		var additionalData []wsm.WsmPolicyPair
 		for k, v := range p.AdditionalData {
-			additionalData = append(additionalData, wsm.WsmPolicyPair{Key: client.Ptr(k), Value: client.Ptr(v)})
+			additionalData = append(additionalData, wsm.WsmPolicyPair{Key: wsmClient.Ptr(k), Value: wsmClient.Ptr(v)})
 		}
 		inputs = append(inputs, wsm.WsmPolicyInput{
 			Namespace:      p.Namespace,

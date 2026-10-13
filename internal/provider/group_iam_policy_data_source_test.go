@@ -13,9 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-	"github.com/verily-src/terraform-provider-workbench/internal/client"
 	"github.com/verily-src/terraform-provider-workbench/internal/models"
 	"github.com/verily-src/terraform-provider-workbench/internal/openapi/user"
+	wsmclient "github.com/verily-src/terraform-provider-workbench/internal/workspace-manager/goclient"
 )
 
 func TestAccGroupIamPolicyDataSource(t *testing.T) {
@@ -68,7 +68,7 @@ func TestAccGroupIamPolicyDataSource(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(client.Ptr(desc))
+			_ = json.NewEncoder(w).Encode(wsmclient.Ptr(desc))
 		}
 	}))
 	defer mockServer.Close()

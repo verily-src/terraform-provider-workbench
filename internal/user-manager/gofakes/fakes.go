@@ -1,5 +1,5 @@
 // Package fakes provides testing fakes for other services.
-package fakes
+package gofakes
 
 import (
 	"net"
